@@ -15,7 +15,7 @@ class Labyrinth(Enum):
 
 
 class Cells:
-    def __init__(self, x, y, width, height):
+    def __init__(self, width, height):
         # 0 - пустая клетка
         # 1 - препятствие
         # 21 - лестница только вверх
@@ -24,8 +24,5 @@ class Cells:
         EMPTY = 0
         BARRIER = 1
         ELEVATOR = 2
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+
 
