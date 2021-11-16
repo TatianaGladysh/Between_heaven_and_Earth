@@ -3,15 +3,36 @@
 import pygame
 
 
-def process_event(event):
+# предполагаю что на данный момент hero_coordinates = [координата х, координата у, координата z, parameter],
+# если parameter = True персонаж внутри лифта, если parameter = False - то вне лифта
+# наверное целесообразно добавить еще один парметрв этот массив отвечающий за то в комнате перс. или нет
+
+
+def process_event(event, hero_coordinates):
     game_end = False
     if event.type == pygame.QUIT:
         game_end = True
+    # обработка событий с клавиатуры
     if event.type == pygame.KEYDOWN:
-        if event.mod != pygame.KMOD_LSHIFT and event.key == pygame.K_a:
-            print(1)
-        elif event.mod != pygame.KMOD_LSHIFT and event.key == pygame.K_d:
-            print(2)
-        else:
-            print(3)
-    return game_end
+        # движение по главной плоскости xOy вдоль x
+        if event.key == pygame.K_a:
+            hero_coordinates[0] -= 1
+        elif event.key == pygame.K_d:
+            hero_coordinates[0] += 1
+        # лифт (необходимо добавить условие нахождения лифта в ячеке нахождения перс.
+        elif event.key == pygame.K_F:
+            if hero_coordinates[3]:
+                # механизм запускающий отрисовку выхождения из лифта (например отдельный параметр True or False)
+                pass
+            else:
+                # механизм запускающий отрисовку вхождения в лифт (например отдельный параметр True or False,
+                # который передается в раздел отрисовки)
+                pass
+        # опускается на один этаж, меняется координата по y
+        elif event.key == pygame.K_DOWN and hero_coordinates[3] == True:
+            hero_coordinates[1] -= 1
+        # поднимается на один этаж, меняется координата по y
+        elif event.key == pygame.K_UP and hero_coordinates[3] == True:
+            hero_coordinates[1] += 1
+    return game_end, hero_coordinates
+
