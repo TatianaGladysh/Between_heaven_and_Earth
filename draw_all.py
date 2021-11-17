@@ -1,7 +1,5 @@
 # здесь отдельно от всего можно рисовать объекты
 
-from game_field import Room
-from heroes import MainHero, Character
 from main import WIDTH
 import pygame
 
@@ -27,6 +25,7 @@ class Painter:
         self.main_hero = _main_hero
         self.characters = _characters
         self.img_scale_k = self.calculate_scale_k()
+        self.animator = Animator()
 
     def get_unit_height(self):
         """
@@ -59,24 +58,6 @@ class Painter:
         screen_z = self.unit_depth * (game_obj_z - game_hero_z)
         return screen_x, screen_y, screen_z
 
-    # def calculate_transparency(self, obj):
-    #     """
-    #     рассчитывает, какая непрозрачность объекта в связи с его расположением по отношению к главному персонажу
-    #     :param obj: объект
-    #     :return: непрозрачность, которую должно иметь изображение объекта
-    #     """
-    #     game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
-    #     game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
-    #     if game_obj_z == game_hero_z:
-    #         opacity = 255
-    #     elif game_obj_z > game_hero_z:
-    #         opacity = 0
-    #     elif game_obj_z < game_hero_z and game_obj_z <= game_hero_z:
-    #         opacity = 64
-    #     else:
-    #         opacity = 0
-    #     return opacity
-
     def update_room_pic(self, room, opacity):
         """
         Вызывает функцию отрисовки картинки, подавая в нее соответствующий комнате файл и прозрачность
@@ -87,7 +68,7 @@ class Painter:
         x = screen_cords[0]
         y = screen_cords[1] + screen_cords[2]
         img_file = room.get_img()
-        self.update_img(x, y, img_file, opacity)
+        self.update_image_from_file(self.surf, x, y, img_file, opacity, self.img_scale_k)
 
     def update_rooms_pics(self):
         """
@@ -111,7 +92,7 @@ class Painter:
                 for room in (left_room, middle_room, right_room):
                     self.update_room_pic(room, opacity)
 
-    def update_pics(self):
+    def update_all_pics(self):
         """
         Обновляет картинки комнат и героев на экране
         """
@@ -136,6 +117,26 @@ class Painter:
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         self.surf.blit(img_surf, img_rect)
+
+    @staticmethod
+    def update_image_from_file(surf, x, y, file, opacity, scale_k):
+        """
+        Отрисовывает на экран картинку из файла
+        :param surf: main Surface
+        :param scale_k: размер относительно единичной длины
+        :param x: расположение по горизонтвли центра картинки на экране
+        :param y: расположение по вертикали центра картинки на экране
+        :param file: файл картинки
+        :param opacity: непрозрачность картинки
+        """
+        img_surf = pygame.image.load(file)
+        img_surf = pygame.transform.scale(img_surf, scale_k)
+        img_surf.set_alpha(opacity)
+        img_rect = img_surf.get_rect(center=(x, y))
+        surf.blit(img_surf, img_rect)
+
+    def update(self):
+        self.update_all_pics()
 
 
 class Animator:
