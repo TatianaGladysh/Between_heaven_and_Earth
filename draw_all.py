@@ -8,11 +8,11 @@ import pygame
 
 class Painter:
 
-    def __init__(self, _surf, _rooms, _main_hero, _characters):
+    def __init__(self, _surf, _labyrinth, _main_hero, _characters):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         :param _surf: surface of the game
-        :param _rooms: массив всех комнат игры
+        :param _labyrinth: массив всех комнат игры
         :param _main_hero: объект класса MainHero - главный персонаж игры, которым управляет пользователь
         :param _characters: стальные персонажи игры
         """
@@ -21,10 +21,12 @@ class Painter:
         self.unit_height = self.get_unit_height()
         self.unit_depth = self.unit_height * (1 / 3)
         self.zero_x, self.zero_y = _main_hero.get_cords()
-        self.rooms = _rooms
+        self.main_hero_screen_x = self.zero_x
+        self.main_hero_screen_y = self.zero_y
+        self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
-        self.img_scale_k = 1
+        self.img_scale_k = self.calculate_scale_k()
 
     def get_unit_height(self):
         """
@@ -44,26 +46,6 @@ class Painter:
         img_width = img_surf.get_width()
         return self.unit_width / img_width
 
-    @staticmethod
-    def read_img_file(obj):
-        """
-        Определяет то, какое фото должно быть у объекта по его типу
-        (будет дописываться)
-        :param obj: объект
-        """
-        if isinstance(obj, Room):
-            obj_type = obj.get_type()
-            if obj_type == "elevator":
-                return "assets/elevator/close_elevator.png"
-            elif obj_type == "empty":
-                return "assets/Default_room.png"
-            elif obj_type == "door":
-                pass
-        if isinstance(obj, MainHero):
-            pass
-        if isinstance(obj, Character):
-            pass
-
     def transform_game_cords_in_screen_cords(self, obj):
         """
         Пересчитывает координыты из игровых в экранные
@@ -77,36 +59,64 @@ class Painter:
         screen_z = self.unit_depth * (game_obj_z - game_hero_z)
         return screen_x, screen_y, screen_z
 
-    def calculate_transparency(self, obj):
+    # def calculate_transparency(self, obj):
+    #     """
+    #     рассчитывает, какая непрозрачность объекта в связи с его расположением по отношению к главному персонажу
+    #     :param obj: объект
+    #     :return: непрозрачность, которую должно иметь изображение объекта
+    #     """
+    #     game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
+    #     game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
+    #     if game_obj_z == game_hero_z:
+    #         opacity = 255
+    #     elif game_obj_z > game_hero_z:
+    #         opacity = 0
+    #     elif game_obj_z < game_hero_z and game_obj_z <= game_hero_z:
+    #         opacity = 64
+    #     else:
+    #         opacity = 0
+    #     return opacity
+
+    def update_room_pic(self, room, opacity):
         """
-        рассчитывает, какая непрозрачность объекта в связи с его расположением по отношению к главному персонажу
-        :param obj: объект
-        :return: непрозрачность, которую должно иметь изображение объекта
+        Вызывает функцию отрисовки картинки, подавая в нее соответствующий комнате файл и прозрачность
+        :param opacity: непрозрачность
+        :param room: объект класса Room
         """
-        game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
-        game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
-        if game_obj_z == game_hero_z:
-            opacity = 255
-        elif game_obj_z > game_hero_z:
-            opacity = 0
-        elif game_obj_z < game_hero_z and game_obj_z <= game_hero_z:
+        screen_cords = self.transform_game_cords_in_screen_cords(room)
+        x = screen_cords[0]
+        y = screen_cords[1] + screen_cords[2]
+        img_file = room.get_img()
+        self.update_img(x, y, img_file, opacity)
+
+    def update_rooms_pics(self):
+        """
+        Выявляет, какие комнаты нужно отрисовать и вызывает функцию отрисовки
+        """
+        for i in range(-2, 3):
+            for j in range(-1, 2):
+                opacity = 255
+                x0, y0, z0 = self.main_hero.get_cords()
+                room = self.labyrinth.get_room(x0 + i, y0 + j, z0)
+                self.update_room_pic(room, opacity)
+
+        for i in range(-1, 2):
             opacity = 64
-        else:
-            opacity = 0
-        return opacity
+            x0, y0, z0 = self.main_hero.get_cords()
+            check_room = self.labyrinth.get_room(x0 + i, y0, z0 - 1)
+            if check_room.type == "door":
+                middle_room = check_room
+                left_room = self.labyrinth.get_room(x0 + i - 1, y0, z0 - 1)
+                right_room = self.labyrinth.get_room(x0 + i + 1, y0, z0 - 1)
+                for room in (left_room, middle_room, right_room):
+                    self.update_room_pic(room, opacity)
 
     def update_pics(self):
         """
         Обновляет картинки комнат и героев на экране
         """
         self.update_background_pics()
-        for room in self.rooms:
-            opacity = self.calculate_transparency(room)
-            if opacity > 0:
-                screen_cords = self.transform_game_cords_in_screen_cords(room)
-                x = screen_cords[0]
-                y = screen_cords[1] + screen_cords[2]
-                self.update_img(x, y, self.read_img_file(room), opacity)
+        self.update_rooms_pics()
 
     def update_background_pics(self):
         """
@@ -120,10 +130,13 @@ class Painter:
         :param y: расположение по вертикали центра картинки на экране
         :param file: файл картинки
         :param opacity: непрозрачность картинки
-        :return:
         """
         img_surf = pygame.image.load(file)
         img_surf = pygame.transform.scale(img_surf, size=self.img_scale_k)
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         self.surf.blit(img_surf, img_rect)
+
+
+class Animator:
+    pass
