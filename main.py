@@ -20,14 +20,13 @@ class Game:
 
     def start(self):
         self.finished = False
-        self.controller.update()
         self.update()
 
 
     def update(self):
         while not self.finished:
             self.clock.tick(FPS)
-            #self.controller.update()
+            self.controller.update()
             for event in pygame.event.get():
                 self.finished, self.hero_coordinates = process_event(event, self.hero_coordinates)
 

@@ -6,8 +6,6 @@ import pygame
 # предполагаю что на данный момент hero_coordinates = [координата х, координата у, координата z, parameter],
 # если parameter = True персонаж внутри лифта, если parameter = False - то вне лифта
 # наверное целесообразно добавить еще один парметрв этот массив отвечающий за то в комнате перс. или нет
-
-
 def process_event(event, hero_coordinates):
     game_end = False
     if event.type == pygame.QUIT:
@@ -35,3 +33,5 @@ def process_event(event, hero_coordinates):
         elif event.key == pygame.K_UP and hero_coordinates[2] != 5 and hero_coordinates[3]:
             hero_coordinates[2] += 1
     return game_end, hero_coordinates
+
+# FIXME нужно сделать изменяемым максимальный ожидаемый размер массива, заменив число 5 (мб еще)
