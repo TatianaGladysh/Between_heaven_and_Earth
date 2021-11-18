@@ -132,7 +132,8 @@ class StartScreenSaver(GameScreenSaver):
         Обновление картинки заднего плана
         """
         img_surf = pygame.image.load(self.background_img)
-        img_surf = pygame.transform.scale(img_surf, (WIDTH * self.background_scale_k, HEIGHT * self.background_scale_k))
+        img_surf = pygame.transform.scale(img_surf, (
+        int(WIDTH * self.background_scale_k), int(HEIGHT * self.background_scale_k)))
         img_rect = img_surf.get_rect()
         self.surf.blit(img_surf, img_rect)
 
@@ -251,7 +252,7 @@ class StartButton(Button):
             self.img_file = "assets/buttons/start_button.png"
 
         self.img_surf = pygame.image.load(self.img_file)
-        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.update_pic()
 
     def update_pic(self):
@@ -261,7 +262,7 @@ class StartButton(Button):
         self.update_image(255)
 
     def update_image(self, opacity):
-        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.img_surf.set_alpha(opacity)
         img_rect = self.img_surf.get_rect(center=(self.x + self.unit_width // 2, self.y + self.unit_height // 2))
         self.surf.blit(self.img_surf, img_rect)
