@@ -4,11 +4,12 @@ from draw_all import Painter
 
 pygame.init()
 
-update_image_from_file = getattr(Painter, "update_image_from_file")
+
+# update_image_from_file = getattr(Painter, "update_image_from_file")
 
 
 class ScreenSaverController:
-    def __init__(self, _labyrinth, _main_hero, _characters, _surf, _fps):
+    def __init__(self, _surf, _fps, _labyrinth=None, _main_hero=None, _characters=None):
         """
 
         :param _labyrinth: лабиринт с комнатами
@@ -35,6 +36,7 @@ class ScreenSaverController:
             self.start_screen_saver.update()
         elif self.main_screen_saver.active:
             self.main_screen_saver.update()
+        pygame.display.update()
 
 
 class MouseController:
@@ -122,7 +124,7 @@ class StartScreenSaver(GameScreenSaver):
         Рассчет коэффициента размера картинки заднего фона
         """
         img_surf = pygame.image.load(self.background_img)
-        k = img_surf.get_height() / HEIGHT
+        k = HEIGHT / img_surf.get_height()
         return k
 
     def background_update(self):
@@ -130,7 +132,7 @@ class StartScreenSaver(GameScreenSaver):
         Обновление картинки заднего плана
         """
         img_surf = pygame.image.load(self.background_img)
-        img_surf = pygame.transform.scale(img_surf, size=self.background_scale_k)
+        img_surf = pygame.transform.scale(img_surf, (WIDTH * self.background_scale_k, HEIGHT * self.background_scale_k))
         img_rect = img_surf.get_rect()
         self.surf.blit(img_surf, img_rect)
 
@@ -158,7 +160,7 @@ class MainScreenSaver(GameScreenSaver):
         self.main_hero = _main_hero
         self.characters = _characters
         self.active = _active
-        self.painter = Painter(self.surf, self.labyrinth, self.main_hero, self.characters)
+        # self.painter = Painter(self.surf, self.labyrinth, self.main_hero, self.characters)
         self.notifications = [Notification()]
 
     def draw_game_space(self):
@@ -235,7 +237,9 @@ class StartButton(Button):
         """
         super().__init__(self.start, _surf)
         self.img_file = "assets/buttons/start_button.png"
-        self.img = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file)
+        self.img_height = self.img_surf.get_height()
+        self.img_width = self.img_surf.get_width()
 
     def update(self):
         """
@@ -246,14 +250,21 @@ class StartButton(Button):
         else:
             self.img_file = "assets/buttons/start_button.png"
 
-        self.img = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
         self.update_pic()
 
     def update_pic(self):
         """
         обновляет картинку кнопки
         """
-        update_image_from_file(self.surf, self.x, self.y, self.img_file, 255, self.scale_k)
+        self.update_image(255)
+
+    def update_image(self, opacity):
+        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
+        self.img_surf.set_alpha(opacity)
+        img_rect = self.img_surf.get_rect(center=(self.x + self.unit_width // 2, self.y + self.unit_height // 2))
+        self.surf.blit(self.img_surf, img_rect)
 
     def start(self):
         pass

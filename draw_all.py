@@ -6,7 +6,7 @@ import pygame
 
 class Painter:
 
-    def __init__(self, _surf, _labyrinth, _main_hero, _characters):
+    def __init__(self, _surf, _labyrinth=None, _main_hero=None, _characters=None):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         :param _surf: surface of the game
@@ -130,7 +130,9 @@ class Painter:
         :param opacity: непрозрачность картинки
         """
         img_surf = pygame.image.load(file)
-        img_surf = pygame.transform.scale(img_surf, scale_k)
+        img_width = img_surf.get_width()
+        img_height = img_surf.get_height()
+        img_surf = pygame.transform.scale(img_surf, (scale_k * img_width, scale_k * img_height))
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         surf.blit(img_surf, img_rect)
