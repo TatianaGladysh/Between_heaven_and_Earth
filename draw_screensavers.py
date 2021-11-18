@@ -1,6 +1,7 @@
 import pygame
 from main import WIDTH, HEIGHT
 from draw_all import Painter
+from event_processing import MouseController
 
 pygame.init()
 
@@ -37,58 +38,6 @@ class ScreenSaverController:
         elif self.main_screen_saver.active:
             self.main_screen_saver.update()
         pygame.display.update()
-
-
-class MouseController:
-
-    def __init__(self, _start_button):
-        """
-        Объект класса наблюдает за нажатостью кнопки и за клики по кнопкам на экране
-        :param _start_button: кнопка старта
-        """
-        self.mouse = pygame.mouse
-        self.pressed = False
-        self.start_button = _start_button
-        self.active_screen = "start"
-
-    def check_button_click(self, button):
-        """
-        Проверяет нажатие мыши по кнопкам на экране
-        :param button: кнопка
-        """
-        if isinstance(button, Button):
-            button_x, button_y = button.get_cords()
-            button_width = button.get_width()
-            button_height = button.get_height()
-            mouse_x, mouse_y = self.mouse.get_pos()
-            if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
-                return True
-        else:
-            return False
-
-    def event_check(self):
-        """
-        Обрабатывает события мыши
-        """
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONUP:
-                if self.check_button_click(self.start_button) and self.start_button.pressed:
-                    self.active_screen = self.start_button.click()
-                    self.start_button.pressed = False
-
-            if event.type == pygame.MOUSEMOTION:
-                if not self.check_button_click(self.start_button):
-                    self.start_button.pressed = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.check_button_click(self.start_button):
-                    self.start_button.pressed = True
-
-    def update(self):
-        """
-        Функция обновления проверки событий, связанных с мышью
-        """
-        self.event_check()
 
 
 class GameScreenSaver:
@@ -133,7 +82,7 @@ class StartScreenSaver(GameScreenSaver):
         """
         img_surf = pygame.image.load(self.background_img)
         img_surf = pygame.transform.scale(img_surf, (
-        int(WIDTH * self.background_scale_k), int(HEIGHT * self.background_scale_k)))
+            int(WIDTH * self.background_scale_k), int(HEIGHT * self.background_scale_k)))
         img_rect = img_surf.get_rect()
         self.surf.blit(img_surf, img_rect)
 
@@ -161,7 +110,7 @@ class MainScreenSaver(GameScreenSaver):
         self.main_hero = _main_hero
         self.characters = _characters
         self.active = _active
-        # self.painter = Painter(self.surf, self.labyrinth, self.main_hero, self.characters)
+        self.painter = Painter(self.surf, self.labyrinth, self.main_hero, self.characters)
         self.notifications = [Notification()]
 
     def draw_game_space(self):
