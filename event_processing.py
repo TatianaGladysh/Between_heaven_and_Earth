@@ -35,3 +35,55 @@ def process_event(event, hero_coordinates):
     return game_end, hero_coordinates
 
 # FIXME нужно сделать изменяемым максимальный ожидаемый размер массива, заменив число 5 (мб еще)
+
+
+class MouseController:
+
+    def __init__(self, _start_button):
+        """
+        Объект класса наблюдает за нажатостью кнопки и за клики по кнопкам на экране
+        :param _start_button: кнопка старта
+        """
+        self.mouse = pygame.mouse
+        self.pressed = False
+        self.start_button = _start_button
+        self.active_screen = "start"
+
+    def check_button_click(self, button):
+        """
+        Проверяет нажатие мыши по кнопкам на экране
+        :param button: кнопка
+        """
+        if isinstance(button, Button):
+            button_x, button_y = button.get_cords()
+            button_width = button.get_width()
+            button_height = button.get_height()
+            mouse_x, mouse_y = self.mouse.get_pos()
+            if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
+                return True
+        else:
+            return False
+
+    def event_check(self):
+        """
+        Обрабатывает события мыши
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP:
+                if self.check_button_click(self.start_button) and self.start_button.pressed:
+                    self.active_screen = self.start_button.click()
+                    self.start_button.pressed = False
+
+            if event.type == pygame.MOUSEMOTION:
+                if not self.check_button_click(self.start_button):
+                    self.start_button.pressed = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.check_button_click(self.start_button):
+                    self.start_button.pressed = True
+
+    def update(self):
+        """
+        Функция обновления проверки событий, связанных с мышью
+        """
+        self.event_check()
