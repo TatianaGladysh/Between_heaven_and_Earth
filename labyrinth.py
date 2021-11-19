@@ -54,11 +54,22 @@ class Labyrinth:
         """
         Возвращает комнату по данным координатам
         """
-        if 0 <= x < self.width and 0 <= y < self.height and 0 <= z < self.depth:
-            return self.template[x][y][z]
-        else:
-            print("Out of range")
-            return self.template[0][0][0]
+        # FIXME надо разобраться с порядком переменных в массиве и сделать здесь проверку
+        # if 0 <= x < self.width and 0 <= y < self.height and 0 <= z < self.depth:
+        #     return self.template[x][y][z]
+        # else:
+        #     print("Out of range")
+        #     return self.template[0][0][0]
+        return self.template[x][y][z]
 
+
+# FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
+    # у нас есть отличные свойства лабиринта self.width, .height и .depth
     def get_x_width(self):
         return len(self.template[0][0])
+
+    def get_y_width(self):
+        return len(self.template[0])
+
+    def get_z_width(self):
+        return len(self.template)
