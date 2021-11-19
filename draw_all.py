@@ -8,7 +8,11 @@ import heroes
 class Painter:
 
     def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int, _labyrinth: labyrinth.Labyrinth,
-                 _characters: list[heroes.Character], _main_hero: heroes.MainHero):
+                 _characters, _main_hero: heroes.MainHero):
+        # FIXME неработающая типизация, поэтому пока ее убрала
+        # def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int,
+        #              _labyrinth: labyrinth.Labyrinth,
+        #              _characters: list[heroes.Character()], _main_hero: heroes.MainHero):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         :param _surf: surface of the game
@@ -57,6 +61,7 @@ class Painter:
     def transform_game_cords_in_screen_cords(self, obj):
         """
         Пересчитывает координыты из игровых в экранные
+
         :param obj: объект
         :return: координаты объекта на экране(screen_z - проекция его координаты в глубину на плоскость экрана)
         """
@@ -72,6 +77,7 @@ class Painter:
     def update_room_pic(self, room: game_field.Room, opacity: int):
         """
         Вызывает функцию отрисовки картинки, подавая в нее соответствующий комнате файл и прозрачность
+
         :param opacity: непрозрачность
         :param room: объект класса Room
         """
@@ -146,7 +152,7 @@ class Painter:
         img_surf = pygame.image.load(file)
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
-        img_surf = pygame.transform.scale(img_surf, (scale_k * img_width, scale_k * img_height))
+        img_surf = pygame.transform.scale(img_surf, (int(scale_k * img_width), int(scale_k * img_height)))
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         surf.blit(img_surf, img_rect)

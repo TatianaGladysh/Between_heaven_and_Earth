@@ -1,6 +1,11 @@
 from game_field import Room
 
 
+# FIXME есть какая-то реальная причина делать массив так,
+#  чтобы к его координатам приходилось обращаться в обратном порядке? Это очень неудобно
+
+# FIXME что такое дверь? У нас же нет дверей между комнатами?
+
 class Labyrinth:
     def __init__(self, _filename):
         """
@@ -50,7 +55,11 @@ class Labyrinth:
         """
         Возвращает комнату по данным координатам
         """
-        return self.template[x][y][z]
+        if 0 <= x < self.width and 0 <= y < self.height and 0 <= z < self.depth:
+            return self.template[x][y][z]
+        else:
+            print("Out of range")
+            return self.template[0][0][0]
 
     def get_x_width(self):
         return len(self.template[0][0])

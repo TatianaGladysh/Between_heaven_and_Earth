@@ -29,7 +29,6 @@ class ScreenSaverController:
 
     def update(self):
         """
-
         Вызывает функции обновления объекта отрисовки игровых объектов и интерфейса
         """
         self.surf.fill("WHITE")

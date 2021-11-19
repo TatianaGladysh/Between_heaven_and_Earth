@@ -33,7 +33,7 @@ class EventProcessor:
                             # (например отдельный параметр True or False)
                             self.main_hero.inside_elevator = False
                         elif self.have_an_elevator("here"):
-                            # в условии проверяет есть ли лифт в том метсе где находится перс.
+                            # в условии проверяет есть ли лифт в том месте где находится персонаж
                             # механизм запускающий отрисовку вхождения в лифт
                             # (например отдельный параметр True or False,
                             # который передается в раздел отрисовки)
@@ -46,12 +46,12 @@ class EventProcessor:
                     elif event.key == pygame.K_UP and self.main_hero.inside_elevator and self.have_an_elevator(
                             "overhead"):
                         self.main_hero.y -= 1
-                    # механизм захождения в комнату
+                    # механизм входа в комнату
                     elif event.key == pygame.K_e:
                         if self.have_a_door("behind"):
-                            self.main_hero.z -= 1
-                        elif self.have_a_door("front"):
                             self.main_hero.z += 1
+                        elif self.have_a_door("front"):
+                            self.main_hero.z -= 1
 
                 # мышь
 
@@ -74,12 +74,17 @@ class EventProcessor:
 
     def have_a_door(self, direction):
         """
-        функция проверяет наличие дври в ячейке нахождения персонажа
+        функция проверяет наличие двери в ячейке нахождения персонажа
         """
         if direction == "behind":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type == "door"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z + 1).type == "door"
         elif direction == "front":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z).type == "door"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type == "door"
+        # FIXME у нас же нет дверей? скорее должно быть так
+        # if direction == "behind":
+        #     return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z + 1).type != "block"
+        # elif direction == "front":
+        #     return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type != "block"
 
     def have_an_elevator(self, direction):
         """
@@ -106,7 +111,8 @@ class EventProcessor:
     def set_active_screen(self, screen_name: str):
         self.active_screen.set_value(screen_name)
 
-    def update_events_statuses_and_objs_cords(self):
+    def update_events_statuses_and_objects_cords(self):
+        # FIXME мб сразу давать ссылку на следующую функцию?
         self.global_event_process()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
