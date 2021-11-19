@@ -3,7 +3,6 @@ from heroes import MainHero, Character
 from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
 from labyrinth import Labyrinth
-from mouse_control import MouseController
 
 pygame.init()
 
@@ -22,7 +21,6 @@ class Game:
         self.active_screen = Activity()
         self.fps = FPS
         self.screen_controller = ScreenSaverController(self.game_screen, self.fps, WIDTH, HEIGHT, self.active_screen)
-        self.mouse_controller = MouseController(self.screen_controller.start_screen_saver.start_button)
         self.event_controller = EventProcessor(self.active_screen,
                                                self.screen_controller.start_screen_saver.start_button)
         self.previous_screen = "start_screen"
