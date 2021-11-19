@@ -66,7 +66,7 @@ class Labyrinth:
 
     @staticmethod
     def def_room(letter_cods, x, y, z):
-        code = letter_cods[2-x][2-y][z]
+        code = letter_cods[2 - x][2 - y][z]
         room_type = ""
         if code == "0":
             room_type = "empty"
@@ -78,7 +78,7 @@ class Labyrinth:
             room_type = "block"
         return Room((x, y, z), room_type)
 
-    def get_room(self, x, y, z):
+    def get_room(self, x, y, z) -> object:
         """
         Возвращает комнату по данным координатам
         """
@@ -88,7 +88,7 @@ class Labyrinth:
         # else:
         #     print("Out of range")
         #     return self.template[0][0][0]
-        return self.template[x][y][z].get_cords()
+        return self.template[x][y][z]
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth
@@ -101,7 +101,5 @@ class Labyrinth:
     def get_z_width(self):
         return len(self.template)
 
-
 # one = Labyrinth('3.txt')
 # print(one.get_room(2, 1, 1))
-
