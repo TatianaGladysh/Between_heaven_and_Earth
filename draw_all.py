@@ -4,6 +4,9 @@ import game_field
 import labyrinth
 import heroes
 
+rooms_in_line = 5
+rooms_in_column = 3
+
 
 class Painter:
 
@@ -21,10 +24,13 @@ class Painter:
         :param _characters: остальные персонажи игры
         """
         self.surf = _surf
+
         self.window_width = _window_width
         self.window_height = _window_height
-        self.unit_width = self.window_width / 5
-        self.unit_height = self.get_unit_height()
+        self.unit_height = self.window_height / rooms_in_line / 2
+        # нужно будет убрать масштабирование FIXME
+        self.img_scale_k = self.calculate_scale_k()
+        self.unit_width = self.get_unit_width()
         self.unit_depth = self.unit_height * (1 / 3)
         # self.zero_x, self.zero_y, self.zero_z = tuple(_main_hero.get_cords())
         self.main_hero_screen_x = self.window_width // 2
@@ -32,7 +38,6 @@ class Painter:
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
-        self.img_scale_k = self.calculate_scale_k()
         self.animator = Animator()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
@@ -40,23 +45,22 @@ class Painter:
         self.main_hero = _main_hero
         self.characters = _characters
 
-    def get_unit_height(self):
+    def get_unit_width(self):
         """
-        рассчитывает единичную высоту (которую должна иметь картинка на экране)
-        :return: единичная высота
+        рассчитывает единичную ширину (которую должна иметь картинка на экране)
+        :return: единичная ширина
         """
         img_surf = pygame.image.load("assets/Default_room.png")
-        img_rect = img_surf.get_rect()
-        k = img_rect.height / img_rect.width
-        return k * self.unit_width
+        img_width = img_surf.get_width()
+        return img_width * self.img_scale_k
 
     def calculate_scale_k(self):
         """
         Рассчитыват коэффициент размера изображений
         """
         img_surf = pygame.image.load("assets/Default_room.png")
-        img_width = img_surf.get_width()
-        return self.unit_width / img_width
+        img_height = img_surf.get_width()
+        return self.unit_height / img_height
 
     def transform_game_cords_in_screen_cords(self, obj):
         """
@@ -65,14 +69,14 @@ class Painter:
         :param obj: объект
         :return: координаты объекта на экране(screen_z - проекция его координаты в глубину на плоскость экрана)
         """
-        print(obj.get_cords())
         game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
         game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
         screen_x = self.main_hero_screen_x + self.unit_width * (game_obj_x - game_hero_x)
         screen_y = self.main_hero_screen_y + self.unit_height * (game_obj_y - game_hero_y)
         screen_z = self.unit_depth * (game_obj_z - game_hero_z)
-        # print(screen_x, screen_y, screen_z)
-        return screen_x, screen_y, screen_z
+        print(screen_x, screen_y)
+        screen_y += screen_z
+        return screen_x, screen_y
 
     def update_room_pic(self, room: game_field.Room, opacity: int):
         """
@@ -81,9 +85,7 @@ class Painter:
         :param opacity: непрозрачность
         :param room: объект класса Room
         """
-        screen_cords = self.transform_game_cords_in_screen_cords(room)
-        x = screen_cords[0]
-        y = screen_cords[1] + screen_cords[2]
+        x, y = self.transform_game_cords_in_screen_cords(room)
         img_file = room.get_img()
         self.update_image_from_file(self.surf, x, y, img_file, opacity, self.img_scale_k)
 
@@ -93,11 +95,11 @@ class Painter:
         """
 
         x0, y0, z0 = self.main_hero.get_cords()
-        print(x0, y0, z0)
         for i in range(-2, 3):
             for j in range(-1, 2):
                 opacity = 255
                 if x0 + i >= 0 and y0 + j >= 0 and z0 >= 0:
+                    # нужно добавить проверку на максимальный размер
                     room = self.labyrinth.get_room(x0 + i, y0 + j, z0)
                     self.update_room_pic(room, opacity)
 
@@ -118,6 +120,11 @@ class Painter:
         """
         self.update_background_pics()
         self.update_rooms_pics()
+        self.update_heroes()
+
+    def update_heroes(self):
+        self.update_image_from_file(self.surf, self.main_hero_screen_x, self.main_hero_screen_y,
+                                    self.main_hero.img_file, 255, self.img_scale_k)
 
     def update_background_pics(self):
         """
@@ -159,6 +166,7 @@ class Painter:
 
     def update(self):
         self.update_all_pics()
+        # добавить анматора
 
 
 class Animator:
