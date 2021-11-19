@@ -80,11 +80,6 @@ class EventProcessor:
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z + 1).type == "door"
         elif direction == "front":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type == "door"
-        # FIXME у нас же нет дверей? скорее должно быть так
-        # if direction == "behind":
-        #     return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z + 1).type != "block"
-        # elif direction == "front":
-        #     return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type != "block"
 
     def have_an_elevator(self, direction):
         """
