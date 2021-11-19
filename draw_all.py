@@ -1,31 +1,40 @@
 # здесь отдельно от всего можно рисовать объекты
-
-from main import WIDTH
 import pygame
+import game_field
+import labyrinth
+import heroes
 
 
 class Painter:
 
-    def __init__(self, _surf, _labyrinth=None, _main_hero=None, _characters=None):
+    def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int, _labyrinth: labyrinth.Labyrinth,
+                 _characters: list[heroes.Character], _main_hero: heroes.MainHero):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         :param _surf: surface of the game
         :param _labyrinth: массив всех комнат игры
         :param _main_hero: объект класса MainHero - главный персонаж игры, которым управляет пользователь
-        :param _characters: стальные персонажи игры
+        :param _characters: остальные персонажи игры
         """
         self.surf = _surf
-        self.unit_width = WIDTH / 5
+        self.window_width = _window_width
+        self.window_height = _window_height
+        self.unit_width = self.window_width / 5
         self.unit_height = self.get_unit_height()
         self.unit_depth = self.unit_height * (1 / 3)
-        self.zero_x, self.zero_y = _main_hero.get_cords()
-        self.main_hero_screen_x = self.zero_x
-        self.main_hero_screen_y = self.zero_y
+        # self.zero_x, self.zero_y, self.zero_z = tuple(_main_hero.get_cords())
+        self.main_hero_screen_x = self.window_width // 2
+        self.main_hero_screen_y = self.window_height // 2
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
         self.img_scale_k = self.calculate_scale_k()
         self.animator = Animator()
+
+    def set_game_params(self, _labyrinth, _main_hero, _characters):
+        self.labyrinth = _labyrinth
+        self.main_hero = _main_hero
+        self.characters = _characters
 
     def get_unit_height(self):
         """
@@ -51,14 +60,16 @@ class Painter:
         :param obj: объект
         :return: координаты объекта на экране(screen_z - проекция его координаты в глубину на плоскость экрана)
         """
+        print(obj.get_cords())
         game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
         game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
-        screen_x = self.zero_x * self.unit_width * (game_obj_x - game_hero_x)
-        screen_y = self.zero_y * self.unit_height * (game_obj_y - game_hero_y)
+        screen_x = self.main_hero_screen_x + self.unit_width * (game_obj_x - game_hero_x)
+        screen_y = self.main_hero_screen_y + self.unit_height * (game_obj_y - game_hero_y)
         screen_z = self.unit_depth * (game_obj_z - game_hero_z)
+        # print(screen_x, screen_y, screen_z)
         return screen_x, screen_y, screen_z
 
-    def update_room_pic(self, room, opacity):
+    def update_room_pic(self, room: game_field.Room, opacity: int):
         """
         Вызывает функцию отрисовки картинки, подавая в нее соответствующий комнате файл и прозрачность
         :param opacity: непрозрачность
@@ -74,12 +85,15 @@ class Painter:
         """
         Выявляет, какие комнаты нужно отрисовать и вызывает функцию отрисовки
         """
+
+        x0, y0, z0 = self.main_hero.get_cords()
+        print(x0, y0, z0)
         for i in range(-2, 3):
             for j in range(-1, 2):
                 opacity = 255
-                x0, y0, z0 = self.main_hero.get_cords()
-                room = self.labyrinth.get_room(x0 + i, y0 + j, z0)
-                self.update_room_pic(room, opacity)
+                if x0 + i >= 0 and y0 + j >= 0 and z0 >= 0:
+                    room = self.labyrinth.get_room(x0 + i, y0 + j, z0)
+                    self.update_room_pic(room, opacity)
 
         for i in range(-1, 2):
             opacity = 64
