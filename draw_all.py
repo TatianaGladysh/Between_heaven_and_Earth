@@ -1,6 +1,5 @@
 # здесь отдельно от всего можно рисовать объекты
 import pygame
-import game_field
 import labyrinth
 import heroes
 
@@ -78,7 +77,7 @@ class Painter:
         screen_y += screen_z
         return screen_x, screen_y
 
-    def update_room_pic(self, room: game_field.Room, opacity: int):
+    def update_room_pic(self, room: labyrinth.Room, opacity: int):
         """
         Вызывает функцию отрисовки картинки, подавая в нее соответствующий комнате файл и прозрачность
 
