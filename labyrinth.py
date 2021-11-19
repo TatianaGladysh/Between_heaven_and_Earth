@@ -1,4 +1,32 @@
-from game_field import Room
+class Room:
+    def __init__(self, coordinates, type_of_room):
+        self.room_coordinates = coordinates
+        self.type = type_of_room
+        self.img_file = self.def_img_file()
+
+    def get_cords(self):
+        return tuple(self.room_coordinates)
+
+    def get_type(self):
+        return self.type
+
+    def def_img_file(self):
+        if self.type == "empty":
+            return "assets/Default_room.png"
+        if self.type == "elevator":
+            return "assets/elevator/close_elevator.png"
+        if self.type == "door":
+            # нужно нарисовать картинку комнаты с дверью
+            return "assets/Default_room.png"
+        if self.type == "block":
+            # нужно нарисовать картинку закрытой комнаты(стены)
+            return "assets/Default_room.png"
+
+    def get_img(self):
+        return self.img_file
+
+    def set_img(self, filename):
+        self.img_file = filename
 
 
 # FIXME есть какая-то реальная причина делать массив так,
@@ -21,7 +49,7 @@ class Labyrinth:
             layer = []
             for line in lines:
                 if line[0] in "xed0":
-                    layer.append(list(line[:-1].split()))  # записываем в срез этажи по очереди
+                    layer.append(list(line.split()))  # записываем в срез этажи по очереди
                 elif layer:
                     all_layers.append(layer)  # добывляем срез в массив со всеми срезами
                     layer = []
@@ -33,12 +61,12 @@ class Labyrinth:
         for i in range(x_len):
             for j in range(y_len):
                 for k in range(z_len):
-                    template[k][j][i] = self.def_room(all_layers, i, j, k)
+                    template[i][j][k] = self.def_room(all_layers, i, j, k)
         return template, x_len, y_len, z_len
 
     @staticmethod
     def def_room(letter_cods, x, y, z):
-        code = letter_cods[z][y][x]
+        code = letter_cods[2-x][2-y][z]
         room_type = ""
         if code == "0":
             room_type = "empty"
@@ -60,10 +88,9 @@ class Labyrinth:
         # else:
         #     print("Out of range")
         #     return self.template[0][0][0]
-        return self.template[x][y][z]
+        return self.template[x][y][z].get_cords()
 
-
-# FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
+    # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth
     def get_x_width(self):
         return len(self.template[0][0])
@@ -73,3 +100,8 @@ class Labyrinth:
 
     def get_z_width(self):
         return len(self.template)
+
+
+# one = Labyrinth('3.txt')
+# print(one.get_room(2, 1, 1))
+
