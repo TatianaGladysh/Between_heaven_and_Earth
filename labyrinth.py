@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Room:
     def __init__(self, coordinates, type_of_room):
         self.room_coordinates = coordinates
@@ -57,7 +60,8 @@ class Labyrinth:
         x_len = len(all_layers[0][0])
         y_len = len(all_layers[0])
         z_len = len(all_layers)
-        template = [[[None] * x_len] * y_len] * z_len
+        template = np.zeros((x_len, y_len, z_len), dtype=Room)
+        # template = [[[None] * z_len] * y_len] * x_len
         for i in range(x_len):
             for j in range(y_len):
                 for k in range(z_len):
