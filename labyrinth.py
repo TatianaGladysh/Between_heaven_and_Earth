@@ -62,15 +62,15 @@ class Labyrinth:
         z_len = len(all_layers)
         template = np.zeros((x_len, y_len, z_len), dtype=Room)
         # template = [[[None] * z_len] * y_len] * x_len
-        for i in range(x_len):
-            for j in range(y_len):
-                for k in range(z_len):
-                    template[i][j][k] = self.def_room(all_layers, i, j, k)
+        for z_cor in range(z_len):
+            for y_cor in range(y_len):
+                for x_cor in range(z_len):
+                    template[z_cor][y_cor][x_cor] = self.def_room(all_layers, x_cor, y_cor, z_cor)
         return template, x_len, y_len, z_len
 
     @staticmethod
-    def def_room(letter_cods, x, y, z):
-        code = letter_cods[2 - x][2 - y][z]
+    def def_room(letter_cods, x_cor, y_cor, z_cor):
+        code = letter_cods[z_cor][y_cor][x_cor]
         room_type = ""
         if code == "0":
             room_type = "empty"
@@ -80,19 +80,14 @@ class Labyrinth:
             room_type = "door"
         elif code == "x":
             room_type = "block"
-        return Room((x, y, z), room_type)
+        return Room((x_cor, y_cor, z_cor), room_type)
 
     def get_room(self, x, y, z) -> object:
         """
         Возвращает комнату по данным координатам
         """
         # FIXME надо разобраться с порядком переменных в массиве и сделать здесь проверку
-        # if 0 <= x < self.width and 0 <= y < self.height and 0 <= z < self.depth:
-        #     return self.template[x][y][z]
-        # else:
-        #     print("Out of range")
-        #     return self.template[0][0][0]
-        return self.template[x][y][z]
+        return self.template[z][y][x]
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth

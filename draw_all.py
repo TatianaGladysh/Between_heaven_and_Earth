@@ -95,7 +95,7 @@ class Painter:
 
         x0, y0, z0 = self.main_hero.get_cords()
         for i in range(-2, 3):
-            for j in range(-1, 2):
+            for j in range(-2, 3):
                 opacity = 255
                 if x0 + i >= 0 and y0 + j >= 0 and z0 >= 0:
                     # нужно добавить проверку на максимальный размер
