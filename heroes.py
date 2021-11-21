@@ -11,7 +11,7 @@ class MainHero(Hero):
     def __init__(self, _start_position):
         super().__init__(_start_position)
         self.inside_elevator = False
-        self.img_file = "assets/will_be_made_later.png"
+        self.img_file = "assets/main_hero.png"
 
     def check_task(self):
         pass
@@ -21,4 +21,4 @@ class Character(Hero):
 
     def __init__(self, _start_position):
         super().__init__(_start_position)
-        self.img_file = "assets/will_be_made_later.png"
+        self.img_file = "assets/main_hero.png"
