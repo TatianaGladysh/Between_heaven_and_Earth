@@ -22,9 +22,10 @@ class EventProcessor:
 
                 if self.active_screen == "main_screen":
 
-                    if event.key == pygame.K_a and self.main_hero.x != 0:
+                    if event.key == pygame.K_a and self.main_hero.x != 0 and not self.main_hero.inside_elevator:
                         self.main_hero.x -= 1
-                    elif event.key == pygame.K_d and self.main_hero.x != self.labyrinth.width-1:
+                    elif event.key == pygame.K_d and self.main_hero.x != self.labyrinth.width - 1 and \
+                            not self.main_hero.inside_elevator:
                         self.main_hero.x += 1
                     # лифт
                     elif event.key == pygame.K_f:
@@ -39,7 +40,7 @@ class EventProcessor:
                             # который передается в раздел отрисовки)
                             self.main_hero.inside_elevator = True
                     # опускается на один этаж, меняется координата по y
-                    elif event.key == pygame.K_DOWN and self.main_hero.y != self.labyrinth.height-1:
+                    elif event.key == pygame.K_DOWN and self.main_hero.y != self.labyrinth.height - 1:
                         if self.main_hero.inside_elevator and self.have_an_elevator("below"):
                             self.main_hero.y += 1
                     # поднимается на один этаж, меняется координата по y
@@ -50,7 +51,7 @@ class EventProcessor:
                     # FIXME может, дать возможность делать проходные комнаты и
                     # дать возможность выбирать игроку напраление движения как в лифте?
                     elif event.key == pygame.K_e:
-                        if self.main_hero.z != self.labyrinth.depth-1 and self.have_a_door("behind"):
+                        if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
                             self.main_hero.z += 1
                         elif self.main_hero.z != 0 and self.have_a_door("front"):
                             self.main_hero.z -= 1
@@ -88,7 +89,7 @@ class EventProcessor:
         функция проверяет наличие лифта в ячейке нахождения персонажа (вдруг клавиша будет нажата случайно)
         """
         if direction == "below":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y + 1, self.main_hero).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y + 1, self.main_hero.z).type == "elevator"
         elif direction == "overhead":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y - 1, self.main_hero.z).type == "elevator"
         elif direction == "here":
