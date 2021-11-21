@@ -20,10 +20,10 @@ class Room:
             return "assets/elevator/close_elevator.png"
         if self.type == "door":
             # нужно нарисовать картинку комнаты с дверью
-            return "assets/Default_room.png"
+            return "assets/door_room.png"
         if self.type == "block":
             # нужно нарисовать картинку закрытой комнаты(стены)
-            return "assets/Default_room.png"
+            return "assets/block_room.png"
 
     def get_img(self):
         return self.img_file
@@ -82,12 +82,12 @@ class Labyrinth:
             room_type = "block"
         return Room((x_cor, y_cor, z_cor), room_type)
 
-    def get_room(self, x, y, z) -> object:
+    def get_room(self, x, y, z):
         """
         Возвращает комнату по данным координатам
         """
         # FIXME надо разобраться с порядком переменных в массиве и сделать здесь проверку
-        return self.template[z][y][x]
+        return self.template[int(z)][int(y)][int(x)]
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth
