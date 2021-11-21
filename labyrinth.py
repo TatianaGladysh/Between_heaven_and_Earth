@@ -64,7 +64,7 @@ class Labyrinth:
         # template = [[[None] * z_len] * y_len] * x_len
         for z_cor in range(z_len):
             for y_cor in range(y_len):
-                for x_cor in range(z_len):
+                for x_cor in range(x_len):
                     template[z_cor][y_cor][x_cor] = self.def_room(all_layers, x_cor, y_cor, z_cor)
         return template, x_len, y_len, z_len
 
