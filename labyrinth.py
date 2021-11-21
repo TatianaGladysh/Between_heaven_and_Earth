@@ -60,7 +60,7 @@ class Labyrinth:
         x_len = len(all_layers[0][0])
         y_len = len(all_layers[0])
         z_len = len(all_layers)
-        template = np.zeros((x_len, y_len, z_len), dtype=Room)
+        template = np.zeros((z_len, y_len, x_len), dtype=Room)
         # template = [[[None] * z_len] * y_len] * x_len
         for z_cor in range(z_len):
             for y_cor in range(y_len):
