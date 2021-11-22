@@ -32,9 +32,8 @@ class Game:
         """
         потом можно будет сделать выбор карты
         """
-        self.labyrinth = Labyrinth("3.txt")
+        self.labyrinth = Labyrinth("levels/3.txt")
         self.main_hero = MainHero((0, 0, 0))  # потом нужно будет сделать задаваемые координаты из файла с
-        self.characters = [Character((1, 0, 0))]  # лабиринтом, поэтому они вводятся не при запуске игры
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
 
@@ -64,7 +63,6 @@ class Activity:
     def set_value(self, name):
         """
         смена экрана игры
-
         :param name: имя нового экрана
         """
         self.value = name
@@ -72,7 +70,6 @@ class Activity:
     def __eq__(self, other):
         """
         Равен ли наш объект данному
-
         :param other: данный объект
         :return: True или False: равен или нет
         """
