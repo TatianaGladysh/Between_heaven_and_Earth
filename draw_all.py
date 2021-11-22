@@ -79,7 +79,7 @@ class Painter:
         screen_x = self.zero_screen_cord_x + game_obj_x * self.unit_width
         screen_y = self.zero_screen_cord_y + game_obj_y * self.unit_height
         screen_z = self.unit_depth * (game_obj_z - game_hero_z)
-        screen_y += screen_z
+        screen_y -= screen_z
         return screen_x, screen_y
 
     def update_room_pic(self, room: labyrinth.Room, opacity: int):
@@ -101,20 +101,17 @@ class Painter:
         for i in range(0, self.labyrinth.get_x_width()):
             for j in range(0, self.labyrinth.get_y_width()):
                 opacity = 255
+                print(i, j, z0)
                 room = self.labyrinth.get_room(i, j, z0)
                 if isinstance(room, labyrinth.Room):
                     self.update_room_pic(room, opacity)
 
         for i in range(-1, 2):
-            opacity = 100
+            opacity = 64
             x0, y0, z0 = self.main_hero.get_cords()
             check_room = self.labyrinth.get_room(x0 + i, y0, z0 - 1)
             if check_room.type == "door":
-                middle_room = check_room
-                left_room = self.labyrinth.get_room(x0 + i - 1, y0, z0 - 1)
-                right_room = self.labyrinth.get_room(x0 + i + 1, y0, z0 - 1)
-                for room in (left_room, middle_room, right_room):
-                    self.update_room_pic(room, opacity)
+                self.update_room_pic(check_room, opacity)
 
     def update_all_pics(self):
         """
