@@ -24,6 +24,8 @@ class Room:
         if self.type == "block":
             # нужно нарисовать картинку закрытой комнаты(стены)
             return "assets/block_room.png"
+        if self.type == "none":
+            return "assets/none.png"
 
     def get_img(self):
         return self.img_file
@@ -87,7 +89,11 @@ class Labyrinth:
         Возвращает комнату по данным координатам
         """
         # FIXME надо разобраться с порядком переменных в массиве и сделать здесь проверку
-        return self.template[int(z)][int(y)][int(x)]
+        try:
+            return self.template[int(z)][int(y)][int(x)]
+        except IndexError:
+            print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
+            return NoneRoom()
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth
@@ -99,6 +105,11 @@ class Labyrinth:
 
     def get_z_width(self):
         return len(self.template)
+
+
+class NoneRoom(Room):
+    def __init__(self):
+        super(NoneRoom, self).__init__((-10, -10, -10), "none")
 
 # one = Labyrinth('3.txt')
 # print(one.get_room(2, 1, 1))
