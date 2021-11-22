@@ -19,20 +19,23 @@ class Game:
         self.game_screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.labyrinth = None
+        self.labyrinth_file = LabyrinthFile()
         self.main_hero = None
         self.characters = None
         self.active_screen = Activity()
         self.fps = FPS
-        self.screen_controller = ScreenSaverController(self.game_screen, self.fps, WIDTH, HEIGHT, self.active_screen)
+        self.screen_controller = ScreenSaverController(self.game_screen, self.fps, WIDTH, HEIGHT, self.active_screen,
+                                                       self.labyrinth_file)
         self.event_processor = EventProcessor(self.active_screen,
-                                              self.screen_controller.start_screen_saver.start_button)
+                                              self.screen_controller.start_screen_saver.start_button,
+                                              self.screen_controller.level_screen_saver.level_buttons)
         self.previous_screen = "start_screen"
 
-    def start_main_part(self):
+    def start_main_part(self, level_file_name):
         """
         потом можно будет сделать выбор карты
         """
-        self.labyrinth = Labyrinth("levels/3.txt")
+        self.labyrinth = Labyrinth(level_file_name)
         self.main_hero = MainHero((0, 0, 0))  # потом нужно будет сделать задаваемые координаты из файла с
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
@@ -49,7 +52,8 @@ class Game:
             self.event_processor.update_events_statuses_and_objects_cords()
             if self.event_processor.active_screen != self.previous_screen:
                 self.previous_screen = self.active_screen.value
-                self.start_main_part()
+                if self.active_screen == "main_screen":
+                    self.start_main_part(self.labyrinth_file)
             self.screen_controller.update()
 
 
@@ -74,6 +78,18 @@ class Activity:
         :return: True или False: равен или нет
         """
         return self.value == other
+
+
+class LabyrinthFile:
+
+    def __init__(self):
+        self.value = ""
+
+    def set_value(self, file_name):
+        self.value = file_name
+
+    def get_value(self):
+        return self.value
 
 
 if __name__ == "__main__":

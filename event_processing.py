@@ -3,8 +3,10 @@ import pygame
 
 class EventProcessor:
 
-    def __init__(self, _active_screen, _start_button, _main_hero=None, _labyrinth=None, _characters=None):
+    def __init__(self, _active_screen, _start_button, _level_buttons, _main_hero=None, _labyrinth=None,
+                 _characters=None):
         self.start_button = _start_button
+        self.level_buttons = _level_buttons
         self.quit = False
         self.active_screen = _active_screen
         self.main_hero = _main_hero
@@ -51,31 +53,32 @@ class EventProcessor:
                     # FIXME может, дать возможность делать проходные комнаты и
                     # дать возможность выбирать игроку напраление движения как в лифте?
                     elif event.key == pygame.K_e:
-                        print(self.have_a_door("behind"), self.have_a_door("front"))
                         if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
                             self.main_hero.z += 1
                         elif self.main_hero.z != 0 and self.have_a_door("front"):
                             self.main_hero.z -= 1
-                        print(self.main_hero.z)
 
                 # мышь
 
+            if self.active_screen == "level_screen":
+                for button in self.level_buttons:
+                    self.screen_buttons_check(event, button)
             if self.active_screen == "start_screen":
+                self.screen_buttons_check(event, self.start_button)
 
-                # start_button events
+    def screen_buttons_check(self, event, button):
+        if event.type == pygame.MOUSEBUTTONUP:
+            if self.check_button_click(button) and button.pressed:
+                button.click()
+                button.pressed = False
 
-                if event.type == pygame.MOUSEBUTTONUP:
-                    if self.check_button_click(self.start_button) and self.start_button.pressed:
-                        self.start_button.click()
-                        self.start_button.pressed = False
+        if event.type == pygame.MOUSEMOTION:
+            if not self.check_button_click(button):
+                button.pressed = False
 
-                if event.type == pygame.MOUSEMOTION:
-                    if not self.check_button_click(self.start_button):
-                        self.start_button.pressed = False
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.check_button_click(self.start_button):
-                        self.start_button.pressed = True
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.check_button_click(button):
+                button.pressed = True
 
     def have_a_door(self, direction):
         """
@@ -106,7 +109,8 @@ class EventProcessor:
         button_width = button.get_width()
         button_height = button.get_height()
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        return button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height
+        return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
+            button_y - button_x // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
         self.active_screen.set_value(screen_name)
