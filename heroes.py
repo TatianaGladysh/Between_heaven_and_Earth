@@ -1,10 +1,10 @@
 class Hero:
     def __init__(self, _start_position):
-        self.labyrinth_position = _start_position
+        self.x, self.y, self.z = _start_position[0], _start_position[1], _start_position[2]
         self.x, self.y, self.z = self.get_cords()
 
     def get_cords(self):
-        return tuple(self.labyrinth_position)
+        return self.x, self.y, self.z
 
 
 class MainHero(Hero):
