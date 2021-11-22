@@ -23,9 +23,9 @@ class ScreenSaverController:
         self.window_height = _window_height
         self.window_width = _window_width
         self.start_screen_saver = StartScreenSaver(self.surf, self.fps, self.window_width, self.window_height,
-                                                   _active=True)
+                                                   _active_screen)
         self.main_screen_saver = MainScreenSaver(self.window_width, self.window_height, self.labyrinth, self.main_hero,
-                                                 self.characters, self.surf, self.fps)
+                                                 self.characters, self.surf, self.fps, self.active_screen)
 
     def update(self):
         """
@@ -50,12 +50,13 @@ class ScreenSaverController:
 
 class GameScreenSaver:
 
-    def __init__(self, _surf, _fps):
+    def __init__(self, _surf, _fps, _active_screen):
         """
         Объект класса - заставка экрана игры
         :param _surf: Main Surface of the game
         :param _fps: частота обновления кадров игры
         """
+        self.active_screen = _active_screen
         self.surf = _surf
         self.delta_time = 1 / _fps
         self.game_time = 0
@@ -63,17 +64,16 @@ class GameScreenSaver:
 
 class StartScreenSaver(GameScreenSaver):
 
-    def __init__(self, _surf, _fps, _window_width, _window_height, _active=True):
+    def __init__(self, _surf, _fps, _window_width, _window_height, _active_screen):
         """
         Объект класса
         :param _surf: Main Surface of the game
         :param _fps: частота обновления кадров игры
         """
-        super().__init__(_surf, _fps)
-        self.start_button = StartButton(_surf, _window_width, _window_height)
+        super().__init__(_surf, _fps, _active_screen)
+        self.start_button = StartButton(_surf, _window_width, _window_height, _active_screen)
         self.window_height = _window_height
         self.window_width = _window_width
-        self.active = _active
         self.background_img = "assets/backgrounds/start_background.png"
         self.background_scale_k = self.calculate_background_scale_k()
 
@@ -105,7 +105,7 @@ class StartScreenSaver(GameScreenSaver):
 
 class MainScreenSaver(GameScreenSaver):
 
-    def __init__(self, _window_width, _window_height, _labyrinth, _main_hero, _characters, _surf, _fps):
+    def __init__(self, _window_width, _window_height, _labyrinth, _main_hero, _characters, _surf, _fps, _active_screen):
         """
         Главная заставка игры, где пользователь может управлять героем
         :param _surf: Main Surface of the game
@@ -113,7 +113,7 @@ class MainScreenSaver(GameScreenSaver):
         :param _main_hero: главный герой игры
         :param _characters: другие герои игры
         """
-        super().__init__(_surf, _fps)
+        super().__init__(_surf, _fps, _active_screen)
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
@@ -142,6 +142,15 @@ class MainScreenSaver(GameScreenSaver):
         self.main_hero = _main_hero
         self.characters = _characters
         self.painter.set_game_params(self.labyrinth, self.main_hero, self.characters)
+
+
+class LevelScreenSaver(GameScreenSaver):
+
+    def __init__(self, _surf, _fps, _window_width, _window_height, _active_screen):
+        super().__init__(_surf, _fps, _active_screen)
+        self.window_width = _window_width
+        self.window_height = _window_height
+        self.levels_count = 10
 
 
 class Button:
@@ -199,7 +208,7 @@ class Button:
 
 class StartButton(Button):
 
-    def __init__(self, _surf, _window_width, _window_height):
+    def __init__(self, _surf, _window_width, _window_height, _active_screen):
         """
         Кнопка старта на начальном экране игры
         """
@@ -208,6 +217,7 @@ class StartButton(Button):
         self.img_surf = pygame.image.load(self.img_file)
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
+        self.active_screen = _active_screen
 
     def update(self):
         """
@@ -235,7 +245,14 @@ class StartButton(Button):
         self.surf.blit(self.img_surf, img_rect)
 
     def start(self):
-        pass
+        self.pressed = False
+        self.active_screen.set_value("main_screen")
+
+
+class LevelButton(Button):
+
+    def __init__(self):
+        super(LevelButton, self).__init__()
 
 
 class Notification:
