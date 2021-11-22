@@ -51,10 +51,12 @@ class EventProcessor:
                     # FIXME может, дать возможность делать проходные комнаты и
                     # дать возможность выбирать игроку напраление движения как в лифте?
                     elif event.key == pygame.K_e:
+                        print(self.have_a_door("behind"), self.have_a_door("front"))
                         if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
                             self.main_hero.z += 1
                         elif self.main_hero.z != 0 and self.have_a_door("front"):
                             self.main_hero.z -= 1
+                        print(self.main_hero.z)
 
                 # мышь
 
@@ -64,7 +66,7 @@ class EventProcessor:
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     if self.check_button_click(self.start_button) and self.start_button.pressed:
-                        self.set_active_screen("main_screen")
+                        self.start_button.click()
                         self.start_button.pressed = False
 
                 if event.type == pygame.MOUSEMOTION:
@@ -80,7 +82,7 @@ class EventProcessor:
         функция проверяет наличие двери в ячейке нахождения персонажа
         """
         if direction == "behind":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z + 1).type == "door"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z).type == "door"
         elif direction == "front":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z - 1).type == "door"
 
