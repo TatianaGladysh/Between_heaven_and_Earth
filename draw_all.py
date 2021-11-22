@@ -101,7 +101,6 @@ class Painter:
         for i in range(0, self.labyrinth.get_x_width()):
             for j in range(0, self.labyrinth.get_y_width()):
                 opacity = 255
-                print(i, j, z0)
                 room = self.labyrinth.get_room(i, j, z0)
                 if isinstance(room, labyrinth.Room):
                     self.update_room_pic(room, opacity)
