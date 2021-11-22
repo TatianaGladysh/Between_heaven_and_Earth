@@ -46,9 +46,10 @@ class Labyrinth:
         """
         self.file = _filename
         self.template, self.width, self.height, self.depth = self.input_labyrinth()
+        self.none_room = NoneRoom()
 
     def input_labyrinth(self):
-        with open(self.file, "r") as file:
+        with open(self.file.get_value(), "r") as file:
             lines = file.readlines()  # читаем все строки
             all_layers = []
             layer = []
@@ -62,8 +63,8 @@ class Labyrinth:
         x_len = len(all_layers[0][0])
         y_len = len(all_layers[0])
         z_len = len(all_layers)
+        print(x_len, y_len, z_len)
         template = np.zeros((z_len, y_len, x_len), dtype=Room)
-        # template = [[[None] * z_len] * y_len] * x_len
         for z_cor in range(z_len):
             for y_cor in range(y_len):
                 for x_cor in range(x_len):
@@ -89,11 +90,15 @@ class Labyrinth:
         Возвращает комнату по данным координатам
         """
         # FIXME надо разобраться с порядком переменных в массиве и сделать здесь проверку
-        try:
-            return self.template[int(z)][int(y)][int(x)]
-        except IndexError:
-            print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
-            return NoneRoom()
+        if x >= 0 and y >= 0 and z >= 0:
+            try:
+                return self.template[int(z)][int(y)][int(x)]
+            except IndexError:
+                print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
+                return self.none_room
+        else:
+            print("Requested room with negative coordinates")
+            return self.none_room
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
     # у нас есть отличные свойства лабиринта self.width, .height и .depth
