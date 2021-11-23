@@ -66,7 +66,6 @@ class EventProcessor:
         elif event.key == pygame.K_e:
             if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
                 self.main_hero.move_z_axis(1)
-                print(self.main_hero.z)
             elif self.main_hero.z != 0 and self.have_a_door("front"):
                 self.main_hero.move_z_axis(-1)
 
