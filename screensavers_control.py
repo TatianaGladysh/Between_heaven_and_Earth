@@ -78,6 +78,7 @@ class GameScreenSaver:
         Рассчет коэффициента размера картинки заднего фона
         """
         img_surf = pygame.image.load(self.background_img)
+        print(self.window_height, img_surf.get_height())
         k = self.window_height / img_surf.get_height()
         return k
 
@@ -87,7 +88,7 @@ class GameScreenSaver:
         """
         img_surf = pygame.image.load(self.background_img)
         img_surf = pygame.transform.scale(img_surf, (
-            int(self.window_width * self.background_scale_k), int(self.window_height * self.background_scale_k)))
+            int(img_surf.get_width() * self.background_scale_k), int(img_surf.get_height() * self.background_scale_k)))
         img_rect = img_surf.get_rect()
         self.surf.blit(img_surf, img_rect)
 
@@ -133,7 +134,7 @@ class MainScreenSaver(GameScreenSaver):
         :param _main_hero: главный герой игры
         :param _characters: другие герои игры
         """
-        super().__init__(_surf, _fps, _window_width, _window_height, "assets/backgrounds/main_background.png")
+        super().__init__(_surf, _window_width, _window_height, _fps, "assets/backgrounds/main_background.png")
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
@@ -200,8 +201,8 @@ class LevelScreenSaver(GameScreenSaver):
                 buttons_array[i] = LevelButton(self.surf, self.window_width, self.window_height, button_x, button_y,
                                                self.active_screen, i, self.labyrinth_file)
             zero_button_x = self.window_width // 2 - (
-                        ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
-                            self.levels_count - 1) / 2 * indent)
+                    ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
+                      self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
                 button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
                 button_y = zero_button_y + indent + button_height
