@@ -33,12 +33,12 @@ class EventProcessor:
                 self.screen_buttons_check(event, self.start_button)
 
     def move_main_hero(self, event):
-        if event.key == pygame.K_a and self.main_hero.x != 0 and not self.main_hero.inside_elevator:
+        if event.key == pygame.K_a and self.main_hero.arrival_x != 0 and not self.main_hero.inside_elevator:
             if not self.labyrinth.get_room(self.main_hero.x - 1, self.main_hero.y, self.main_hero.z).type == "block":
                 self.main_hero.move_x_axis(-1)
-        elif event.key == pygame.K_d and self.main_hero.x != self.labyrinth.width - 1 and \
+        elif event.key == pygame.K_d and self.main_hero.arrival_x != self.labyrinth.width - 1 and \
                 not self.main_hero.inside_elevator:
-            if not self.labyrinth.get_room(self.main_hero.x - 1, self.main_hero.y, self.main_hero.z).type == "block":
+            if not self.labyrinth.get_room(self.main_hero.x + 1, self.main_hero.y, self.main_hero.z).type == "block":
                 self.main_hero.move_x_axis(1)
         # лифт
         elif event.key == pygame.K_f:
@@ -66,6 +66,7 @@ class EventProcessor:
         elif event.key == pygame.K_e:
             if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
                 self.main_hero.move_z_axis(1)
+                print(self.main_hero.z)
             elif self.main_hero.z != 0 and self.have_a_door("front"):
                 self.main_hero.move_z_axis(-1)
 
@@ -97,11 +98,11 @@ class EventProcessor:
         функция проверяет наличие лифта в ячейке нахождения персонажа (вдруг клавиша будет нажата случайно)
         """
         if direction == "below":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y + 1, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y + 1, self.main_hero.z).type == "elevator"
         elif direction == "overhead":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y - 1, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y - 1, self.main_hero.z).type == "elevator"
         elif direction == "here":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y, self.main_hero.z).type == "elevator"
 
     @staticmethod
     def check_button_click(button):

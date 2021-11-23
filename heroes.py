@@ -34,8 +34,7 @@ class MainHero(Hero):
         self.speed_y = sign(self.max_speed, move_by_length)
 
     def move_z_axis(self, move_by_length):
-        self.arrival_y = round(self.z + move_by_length)
-        self.speed_z = sign(self.max_speed, move_by_length)
+        self.z += move_by_length
 
     def check_own_and_arrival_pos(self):
         if abs(self.x - self.arrival_x) < self.epsilon:
