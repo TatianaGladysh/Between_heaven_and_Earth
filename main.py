@@ -12,6 +12,7 @@ HEIGHT = 600
 
 
 class Game:
+
     def __init__(self):
         """
         Вся игра со совим лабиринтом, героями
@@ -26,7 +27,7 @@ class Game:
         self.fps = FPS
         self.screen_controller = ScreenSaverController(self.game_screen, self.fps, WIDTH, HEIGHT, self.active_screen,
                                                        self.labyrinth_file)
-        self.event_processor = EventProcessor(self.active_screen,
+        self.event_processor = EventProcessor(self, self.active_screen,
                                               self.screen_controller.start_screen_saver.start_button,
                                               self.screen_controller.level_screen_saver.level_buttons)
         self.previous_screen = "start_screen"
@@ -36,7 +37,8 @@ class Game:
         потом можно будет сделать выбор карты
         """
         self.labyrinth = Labyrinth(level_file_name)
-        self.main_hero = MainHero((0, 0, 0), self.fps)  # потом нужно будет сделать задаваемые координаты из файла с
+        self.main_hero = MainHero((0, 0, 0), self.fps, self)
+        # потом нужно будет сделать задаваемые координаты из файла с
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
 
@@ -58,6 +60,7 @@ class Game:
 
 
 class Activity:
+
     def __init__(self):
         """
         инициализиция окна игры

@@ -11,9 +11,8 @@ class Hero:
 
 
 class MainHero(Hero):
-    def __init__(self, _start_position, _fps):
+    def __init__(self, _start_position, _fps, _game):
         super().__init__(_start_position)
-        self.inside_elevator = False
         self.img_file = "assets/main_hero.png"
         self.dt = 1 / _fps
         self.max_speed = 10
@@ -21,6 +20,16 @@ class MainHero(Hero):
         self.speed_y = 0
         self.speed_z = 0
         self.epsilon = 0.1
+        self.game = _game
+        self.inside_elevator = False
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "inside_elevator":
+            try:
+                self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
+            except AttributeError:
+                print("Main hero is not announced")
 
     def check_task(self):
         pass
