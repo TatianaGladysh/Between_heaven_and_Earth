@@ -4,6 +4,8 @@ import numpy as np
 
 pygame.init()
 
+LevelsCount = 6
+
 
 class ScreenSaverController:
     def __init__(self, _surf, _fps, _window_width, _window_height, _active_screen, _labyrinth_file, _labyrinth=None,
@@ -25,7 +27,7 @@ class ScreenSaverController:
         self.window_height = _window_height
         self.window_width = _window_width
         self.level_screen_saver = LevelScreenSaver(self.surf, self.fps, self.window_width, self.window_height,
-                                                   self.active_screen, 4, self.labyrinth_file)
+                                                   self.active_screen, LevelsCount, self.labyrinth_file)
         self.start_screen_saver = StartScreenSaver(self.surf, self.fps, self.window_width, self.window_height,
                                                    _active_screen)
         self.main_screen_saver = MainScreenSaver(self.window_width, self.window_height, self.labyrinth, self.main_hero,
@@ -131,7 +133,7 @@ class MainScreenSaver(GameScreenSaver):
         :param _main_hero: главный герой игры
         :param _characters: другие герои игры
         """
-        super().__init__(_surf, _fps, _window_width, _window_height, "assets/backgrounds/start_background.png")
+        super().__init__(_surf, _fps, _window_width, _window_height, "assets/backgrounds/main_background.png")
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
@@ -145,6 +147,7 @@ class MainScreenSaver(GameScreenSaver):
         """
         функция отрисовки главного пространства игры
         """
+        self.update_background()
         self.painter.update()
 
     def update(self):
@@ -189,16 +192,19 @@ class LevelScreenSaver(GameScreenSaver):
                                                self.active_screen, i, self.labyrinth_file)
         elif self.levels_count <= 10:
             zero_button_x = self.window_width // 2 - (
-                    (self.levels_count // 2 / 2 - 1 / 2) * button_width + (self.levels_count - 1) / 2 * indent)
-            zero_button_y = self.window_height // 2 - button_height - indent // 2
+                    ((self.levels_count + 1) // 2 / 2 - 1 / 2) * button_width + (self.levels_count - 1) / 2 * indent)
+            zero_button_y = self.window_height // 2 - button_height // 2 - indent // 2
             for i in range((self.levels_count + 1) // 2):
                 button_x = zero_button_x + i * (indent + button_width)
                 button_y = zero_button_y
                 buttons_array[i] = LevelButton(self.surf, self.window_width, self.window_height, button_x, button_y,
                                                self.active_screen, i, self.labyrinth_file)
+            zero_button_x = self.window_width // 2 - (
+                        ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
+                            self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
-                button_x = zero_button_x + i - (self.levels_count + 1) // 2
-                button_y = zero_button_y + indent
+                button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
+                button_y = zero_button_y + indent + button_height
                 buttons_array[i] = LevelButton(self.surf, self.window_width, self.window_height, button_x, button_y,
                                                self.active_screen, i, self.labyrinth_file)
 

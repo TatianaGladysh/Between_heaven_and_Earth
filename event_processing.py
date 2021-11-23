@@ -110,7 +110,7 @@ class EventProcessor:
         button_height = button.get_height()
         mouse_x, mouse_y = pygame.mouse.get_pos()
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-            button_y - button_x // 2 <= mouse_y <= button_y + button_height // 2
+            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
         self.active_screen.set_value(screen_name)
