@@ -94,10 +94,10 @@ class Labyrinth:
             try:
                 return self.template[int(z)][int(y)][int(x)]
             except IndexError:
-                print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
+                # print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
                 return self.none_room
         else:
-            print("Requested room with negative coordinates")
+            # print("Requested room with negative coordinates")
             return self.none_room
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться

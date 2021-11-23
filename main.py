@@ -6,7 +6,7 @@ from labyrinth import Labyrinth
 
 pygame.init()
 
-FPS = 60
+FPS = 200
 WIDTH = 1000
 HEIGHT = 600
 
@@ -36,7 +36,7 @@ class Game:
         потом можно будет сделать выбор карты
         """
         self.labyrinth = Labyrinth(level_file_name)
-        self.main_hero = MainHero((0, 0, 0))  # потом нужно будет сделать задаваемые координаты из файла с
+        self.main_hero = MainHero((0, 0, 0), self.fps)  # потом нужно будет сделать задаваемые координаты из файла с
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
 
