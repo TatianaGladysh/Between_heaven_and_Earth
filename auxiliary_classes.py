@@ -8,7 +8,7 @@ class LinearFunction:
         self.delta_time = 1 / _fps
         self.ratio = (self.end_value - self.start_value) / self.time_interval
 
-    def changing(self):
+    def update(self):
         if self.past_time < self.delay:
             self.past_time += self.delta_time
             return self.start_value
