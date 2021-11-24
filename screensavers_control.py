@@ -72,6 +72,7 @@ class GameScreenSaver:
         self.window_width = _window_width
         self.window_height = _window_height
         self.background_img = _background_img
+        self.background_surf = pygame.image.load(self.background_img)
         self.background_scale_k = self.calculate_background_scale_k()
 
     def calculate_background_scale_k(self):
@@ -86,9 +87,9 @@ class GameScreenSaver:
         """
         Обновление картинки заднего плана
         """
-        img_surf = pygame.image.load(self.background_img)
-        img_surf = pygame.transform.scale(img_surf, (
-            int(img_surf.get_width() * self.background_scale_k), int(img_surf.get_height() * self.background_scale_k)))
+        img_surf = pygame.transform.scale(self.background_surf, (
+            int(self.background_surf.get_width() * self.background_scale_k),
+            int(self.background_surf.get_height() * self.background_scale_k)))
         img_rect = img_surf.get_rect()
         self.surf.blit(img_surf, img_rect)
 
@@ -203,7 +204,7 @@ class LevelScreenSaver(GameScreenSaver):
                                                self.active_screen, i, self.labyrinth_file)
             zero_button_x = self.window_width // 2 - (
                     ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
-                        self.levels_count - 1) / 2 * indent)
+                     self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
                 button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
                 button_y = zero_button_y + indent + button_height

@@ -100,8 +100,7 @@ class Painter:
         :param room: объект класса Room
         """
         x, y = self.transform_game_cords_in_screen_cords(room)
-        img_file = room.get_img()
-        self.update_image_from_file(self.surf, x, y, img_file, opacity, self.img_scale_k)
+        self.update_image(self.surf, room.img_surf, x, y, opacity, self.img_scale_k)
 
     def update_rooms_pics(self):
         """
@@ -137,55 +136,54 @@ class Painter:
 
     def update_elevator_inside(self):
         self.elevator_inside.x, self.elevator_inside.y = self.transform_game_cords_in_screen_cords(self.main_hero)
-        self.update_image_from_file(self.surf, self.elevator_inside.x, self.elevator_inside.y,
-                                    self.elevator_inside.img_file, 255, self.img_scale_k)
+        self.update_image(self.surf, self.elevator_inside.img_surf, self.elevator_inside.x, self.elevator_inside.y, 255,
+                          self.img_scale_k)
 
     def update_main_hero_pic(self):
         if not self.main_hero.inside_elevator:
             main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width
             main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height
-            self.update_image_from_file(self.surf, main_hero_screen_x, main_hero_screen_y,
-                                        self.main_hero.img_file, 255, self.img_scale_k)
+            self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
+                              self.img_scale_k)
         else:
             main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + \
                 self.elevator_correction_x
             main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height + \
                 self.elevator_correction_y
-            self.update_image_from_file(self.surf, main_hero_screen_x, main_hero_screen_y,
-                                        self.main_hero.img_file, 255, self.img_scale_k)
+            self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
+                              self.img_scale_k)
 
     def update_characters(self):
         pass
 
-    def update_img(self, x, y, file, opacity):
-        """
-        Отрисовывает на экран картинку из файла
-        :param x: расположение по горизонтвли центра картинки на экране
-        :param y: расположение по вертикали центра картинки на экране
-        :param file: файл картинки
-        :param opacity: непрозрачность картинки
-        """
-        img_surf = pygame.image.load(file)
-        img_surf = pygame.transform.scale(img_surf, size=self.img_scale_k)
-        img_surf.set_alpha(opacity)
-        img_rect = img_surf.get_rect(center=(x, y))
-        self.surf.blit(img_surf, img_rect)
+    # def update_img(self, x, y, file, opacity):
+    #     """
+    #     Отрисовывает на экран картинку из файла
+    #     :param x: расположение по горизонтвли центра картинки на экране
+    #     :param y: расположение по вертикали центра картинки на экране
+    #     :param file: файл картинки
+    #     :param opacity: непрозрачность картинки
+    #     """
+    #     img_surf = pygame.image.load(file)
+    #     img_surf = pygame.transform.scale(img_surf, size=self.img_scale_k)
+    #     img_surf.set_alpha(opacity)
+    #     img_rect = img_surf.get_rect(center=(x, y))
+    #     self.surf.blit(img_surf, img_rect)
 
     @staticmethod
-    def update_image_from_file(surf, x, y, file, opacity, scale_k):
+    def update_image(surf, obj_surf, x, y, opacity, scale_k):
         """
         Отрисовывает на экран картинку из файла
+        :param y:
+        :param x:
+        :param obj_surf:
         :param surf: main Surface
         :param scale_k: размер относительно единичной длины
-        :param x: расположение по горизонтвли центра картинки на экране
-        :param y: расположение по вертикали центра картинки на экране
-        :param file: файл картинки
         :param opacity: непрозрачность картинки
         """
-        img_surf = pygame.image.load(file)
-        img_width = img_surf.get_width()
-        img_height = img_surf.get_height()
-        img_surf = pygame.transform.scale(img_surf, (int(scale_k * img_width), int(scale_k * img_height)))
+        img_width = obj_surf.get_width()
+        img_height = obj_surf.get_height()
+        img_surf = pygame.transform.scale(obj_surf, (int(scale_k * img_width), int(scale_k * img_height)))
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         surf.blit(img_surf, img_rect)
@@ -223,11 +221,17 @@ class Animator:
 class ElevatorInside:
     def __init__(self):
         self.img_file = "assets/elevator/elevator_inside.png"
+        self.img_surf = pygame.image.load(self.img_file)
         self.screen_x, self.screen_y = -10, -10
 
     def set_screen_cords(self, x, y):
         self.screen_x = x
         self.screen_y = y
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "img_file":
+            self.img_surf = pygame.image.load(self.img_file)
 
 # class ExecuteLaterFunc:
 #

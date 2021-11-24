@@ -1,11 +1,18 @@
 import numpy as np
+import pygame.image
 
 
 class Room:
     def __init__(self, coordinates, type_of_room):
         self.room_coordinates = coordinates
         self.type = type_of_room
-        self.img_file = self.def_img_file()
+        self.img_file, self.img_surf = self.def_img_file()
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "img_file":
+            self.img_surf = pygame.image.load(self.img_file)
+            print(self.img_file)
 
     def get_cords(self):
         return tuple(self.room_coordinates)
@@ -15,23 +22,29 @@ class Room:
 
     def def_img_file(self):
         if self.type == "empty":
-            return "assets/Default_room.png"
+            img_file = "assets/Default_room.png"
+            return img_file, pygame.image.load(img_file)
         if self.type == "elevator":
-            return "assets/elevator/close_elevator.png"
+            img_file = "assets/elevator/close_elevator.png"
+            return img_file, pygame.image.load(img_file)
         if self.type == "door":
             # нужно нарисовать картинку комнаты с дверью
-            return "assets/door_room.png"
+            img_file = "assets/door_room.png"
+            return img_file, pygame.image.load(img_file)
         if self.type == "block":
             # нужно нарисовать картинку закрытой комнаты(стены)
-            return "assets/block_room.png"
+            img_file = "assets/block_room.png"
+            return img_file, pygame.image.load(img_file)
         if self.type == "none":
-            return "assets/none.png"
+            img_file = "assets/none.png"
+            return img_file, pygame.image.load(img_file)
 
     def get_img(self):
         return self.img_file
 
     def set_img(self, filename):
         self.img_file = filename
+        self.img_surf = pygame.image.load(self.img_file)
 
 
 # FIXME есть какая-то реальная причина делать массив так,
