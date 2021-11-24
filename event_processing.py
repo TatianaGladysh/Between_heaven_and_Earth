@@ -67,9 +67,10 @@ class EventProcessor:
         # FIXME может, дать возможность делать проходные комнаты и
         # дать возможность выбирать игроку напраление движения как в лифте?
         elif event.key == pygame.K_e:
-            if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
+            if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door(
+                    "behind") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(1)
-            elif self.main_hero.z != 0 and self.have_a_door("front"):
+            elif self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(-1)
 
     def screen_buttons_check(self, event, button):
@@ -119,7 +120,7 @@ class EventProcessor:
         button_height = button.get_height()
         mouse_x, mouse_y = pygame.mouse.get_pos()
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
         self.active_screen.set_value(screen_name)
