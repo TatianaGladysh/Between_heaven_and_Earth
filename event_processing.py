@@ -53,11 +53,11 @@ class EventProcessor:
                 # который передается в раздел отрисовки)
                 self.main_hero.inside_elevator = True
         # опускается на один этаж, меняется координата по y
-        elif event.key == pygame.K_DOWN and self.main_hero.y != self.labyrinth.height - 1:
+        elif event.key == pygame.K_DOWN and self.main_hero.arrival_y != self.labyrinth.height - 1:
             if self.main_hero.inside_elevator and self.have_an_elevator("below"):
                 self.main_hero.move_y_axis(1)
         # поднимается на один этаж, меняется координата по y
-        elif event.key == pygame.K_UP and self.main_hero.y != 0:
+        elif event.key == pygame.K_UP and self.main_hero.arrival_y != 0:
             if self.main_hero.inside_elevator and self.have_an_elevator("overhead"):
                 self.main_hero.move_y_axis(-1)
         # механизм входа в комнату
