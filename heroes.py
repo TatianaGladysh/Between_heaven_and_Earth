@@ -1,5 +1,7 @@
 from math import copysign as sign
 
+import pygame.image
+
 
 class Hero:
     def __init__(self, _start_position):
@@ -11,16 +13,28 @@ class Hero:
 
 
 class MainHero(Hero):
-    def __init__(self, _start_position, _fps):
+    def __init__(self, _start_position, _fps, _game):
         super().__init__(_start_position)
-        self.inside_elevator = False
         self.img_file = "assets/main_hero.png"
+        self.img_surf = pygame.image.load(self.img_file)
         self.dt = 1 / _fps
-        self.max_speed = 10
+        self.max_speed = 7
         self.speed_x = 0
         self.speed_y = 0
         self.speed_z = 0
         self.epsilon = 0.1
+        self.game = _game
+        self.inside_elevator = False
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "inside_elevator":
+            try:
+                self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
+            except AttributeError:
+                print("Main hero is not announced")
+        if key == "img_file":
+            self.img_surf = pygame.image.load(self.img_file)
 
     def check_task(self):
         pass

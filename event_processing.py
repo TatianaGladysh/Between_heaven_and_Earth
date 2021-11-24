@@ -3,7 +3,7 @@ import pygame
 
 class EventProcessor:
 
-    def __init__(self, _active_screen, _start_button, _level_buttons, _main_hero=None, _labyrinth=None,
+    def __init__(self, _game, _active_screen, _start_button, _level_buttons, _main_hero=None, _labyrinth=None,
                  _characters=None):
         self.start_button = _start_button
         self.level_buttons = _level_buttons
@@ -12,6 +12,7 @@ class EventProcessor:
         self.main_hero = _main_hero
         self.labyrinth = _labyrinth
         self.characters = _characters
+        self.game = _game
 
     def global_event_process(self):
         for event in pygame.event.get():
@@ -56,17 +57,20 @@ class EventProcessor:
         elif event.key == pygame.K_DOWN and self.main_hero.arrival_y != self.labyrinth.height - 1:
             if self.main_hero.inside_elevator and self.have_an_elevator("below"):
                 self.main_hero.move_y_axis(1)
+                self.game.screen_controller.main_screen_saver.painter.animator.elevator_closing()
         # поднимается на один этаж, меняется координата по y
         elif event.key == pygame.K_UP and self.main_hero.arrival_y != 0:
             if self.main_hero.inside_elevator and self.have_an_elevator("overhead"):
                 self.main_hero.move_y_axis(-1)
+                self.game.screen_controller.main_screen_saver.painter.animator.elevator_closing()
         # механизм входа в комнату
         # FIXME может, дать возможность делать проходные комнаты и
         # дать возможность выбирать игроку напраление движения как в лифте?
         elif event.key == pygame.K_e:
-            if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door("behind"):
+            if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door(
+                    "behind") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(1)
-            elif self.main_hero.z != 0 and self.have_a_door("front"):
+            elif self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(-1)
 
     def screen_buttons_check(self, event, button):
@@ -97,11 +101,14 @@ class EventProcessor:
         функция проверяет наличие лифта в ячейке нахождения персонажа (вдруг клавиша будет нажата случайно)
         """
         if direction == "below":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y + 1, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y + 1,
+                                           self.main_hero.z).type == "elevator"
         elif direction == "overhead":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y - 1, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y - 1,
+                                           self.main_hero.z).type == "elevator"
         elif direction == "here":
-            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y, self.main_hero.z).type == "elevator"
+            return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y,
+                                           self.main_hero.z).type == "elevator"
 
     @staticmethod
     def check_button_click(button):

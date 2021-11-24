@@ -32,7 +32,10 @@ class Painter:
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
-        self.animator = Animator()
+        self.animator = Animator(self.labyrinth, self.main_hero)
+        self.elevator_correction_x = 0
+        self.elevator_correction_y = 0
+        self.elevator_inside = ElevatorInside()
 
     def calculate_unit_lengths(self):
         img_surf = pygame.image.load("assets/Default_room.png")
@@ -53,6 +56,14 @@ class Painter:
         self.calculate_unit_lengths()
         self.calculate_scale_k()
         self.calculate_zero_screen_cords()
+        self.calculate_elevator_correction_cords()
+        self.animator.__setattr__("labyrinth", self.labyrinth)
+        self.animator.__setattr__("main_hero", self.main_hero)
+        self.animator.__setattr__("characters", self.characters)
+
+    def calculate_elevator_correction_cords(self):
+        self.elevator_correction_y = - 0.09166 * self.unit_height
+        self.elevator_correction_x = - 0.0083 * self.unit_width
 
     def calculate_zero_screen_cords(self):
         self.zero_screen_cord_x = int(
@@ -72,7 +83,7 @@ class Painter:
         """
         Пересчитывает координыты из игровых в экранные
         :param obj: объект
-        :return: координаты объекта на экране(screen_z - проекция его координаты в глубину на плоскость экрана)
+        :return: координаты объекта на экране
         """
         game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
         game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
@@ -89,8 +100,7 @@ class Painter:
         :param room: объект класса Room
         """
         x, y = self.transform_game_cords_in_screen_cords(room)
-        img_file = room.get_img()
-        self.update_image_from_file(self.surf, x, y, img_file, opacity, self.img_scale_k)
+        self.update_image(self.surf, room.img_surf, x, y, opacity, self.img_scale_k)
 
     def update_rooms_pics(self):
         """
@@ -116,61 +126,125 @@ class Painter:
         """
         Обновляет картинки комнат и героев на экране
         """
-        self.update_background_pics()
-        self.update_rooms_pics()
-        self.update_heroes()
+        if self.main_hero.inside_elevator:
+            self.update_elevator_inside()
+            self.update_main_hero_pic()
+            self.update_rooms_pics()
+        else:
+            self.update_rooms_pics()
+            self.update_main_hero_pic()
+
+    def update_elevator_inside(self):
+        self.elevator_inside.x, self.elevator_inside.y = self.transform_game_cords_in_screen_cords(self.main_hero)
+        self.update_image(self.surf, self.elevator_inside.img_surf, self.elevator_inside.x, self.elevator_inside.y, 255,
+                          self.img_scale_k)
 
     def update_main_hero_pic(self):
-        main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width
-        main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height
-        self.update_image_from_file(self.surf, main_hero_screen_x, main_hero_screen_y,
-                                    self.main_hero.img_file, 255, self.img_scale_k)
+        if not self.main_hero.inside_elevator:
+            main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width
+            main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height
+            self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
+                              self.img_scale_k)
+        else:
+            main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + \
+                self.elevator_correction_x
+            main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height + \
+                self.elevator_correction_y
+            self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
+                              self.img_scale_k)
 
-    def update_heroes(self):
-        self.update_main_hero_pic()
+    def update_characters(self):
+        pass
 
-    def update_background_pics(self):
-        """
-        Будет отрисовывать задний фон на экране
-        """
-
-    def update_img(self, x, y, file, opacity):
-        """
-        Отрисовывает на экран картинку из файла
-        :param x: расположение по горизонтвли центра картинки на экране
-        :param y: расположение по вертикали центра картинки на экране
-        :param file: файл картинки
-        :param opacity: непрозрачность картинки
-        """
-        img_surf = pygame.image.load(file)
-        img_surf = pygame.transform.scale(img_surf, size=self.img_scale_k)
-        img_surf.set_alpha(opacity)
-        img_rect = img_surf.get_rect(center=(x, y))
-        self.surf.blit(img_surf, img_rect)
+    # def update_img(self, x, y, file, opacity):
+    #     """
+    #     Отрисовывает на экран картинку из файла
+    #     :param x: расположение по горизонтвли центра картинки на экране
+    #     :param y: расположение по вертикали центра картинки на экране
+    #     :param file: файл картинки
+    #     :param opacity: непрозрачность картинки
+    #     """
+    #     img_surf = pygame.image.load(file)
+    #     img_surf = pygame.transform.scale(img_surf, size=self.img_scale_k)
+    #     img_surf.set_alpha(opacity)
+    #     img_rect = img_surf.get_rect(center=(x, y))
+    #     self.surf.blit(img_surf, img_rect)
 
     @staticmethod
-    def update_image_from_file(surf, x, y, file, opacity, scale_k):
+    def update_image(surf, obj_surf, x, y, opacity, scale_k):
         """
         Отрисовывает на экран картинку из файла
+        :param y:
+        :param x:
+        :param obj_surf:
         :param surf: main Surface
         :param scale_k: размер относительно единичной длины
-        :param x: расположение по горизонтвли центра картинки на экране
-        :param y: расположение по вертикали центра картинки на экране
-        :param file: файл картинки
         :param opacity: непрозрачность картинки
         """
-        img_surf = pygame.image.load(file)
-        img_width = img_surf.get_width()
-        img_height = img_surf.get_height()
-        img_surf = pygame.transform.scale(img_surf, (int(scale_k * img_width), int(scale_k * img_height)))
+        img_width = obj_surf.get_width()
+        img_height = obj_surf.get_height()
+        img_surf = pygame.transform.scale(obj_surf, (int(scale_k * img_width), int(scale_k * img_height)))
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         surf.blit(img_surf, img_rect)
 
     def update(self):
         self.update_all_pics()
-        # добавить анматора
+        self.animator.update()
 
 
 class Animator:
-    pass
+
+    def __init__(self, _labyrinth, _main_hero):
+        self.labyrinth = _labyrinth
+        self.main_hero = _main_hero
+
+    def elevator_opening(self):
+        elevator_room = self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z)
+        elevator_room.set_img("assets/elevator/open_elevator.png")
+
+    def elevator_closing(self):
+        elevator_room = self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z)
+        elevator_room.set_img("assets/elevator/close_elevator.png")
+        # потом сделать чтобы он сначала открывался, потом закрывался
+
+    def enter_exit_in_elevator(self):
+        if self.main_hero.inside_elevator:
+            self.elevator_opening()
+        else:
+            self.elevator_closing()
+
+    def update(self):
+        pass
+
+
+class ElevatorInside:
+    def __init__(self):
+        self.img_file = "assets/elevator/elevator_inside.png"
+        self.img_surf = pygame.image.load(self.img_file)
+        self.screen_x, self.screen_y = -10, -10
+
+    def set_screen_cords(self, x, y):
+        self.screen_x = x
+        self.screen_y = y
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "img_file":
+            self.img_surf = pygame.image.load(self.img_file)
+
+# class ExecuteLaterFunc:
+#
+#     def __init__(self, _fps, _func, _time_interval, _func_args: tuple = tuple()):
+#         self.func = _func
+#         self.args = _func_args
+#         self.time_interval = _time_interval
+#         self.dt = 1 / _fps
+#
+#     def execute(self):
+#         self.func(self.args)
+#
+#     def update(self):
+#         self.time_interval -= self.dt
+#         if self.time_interval <= 0:
+#             self.execute()

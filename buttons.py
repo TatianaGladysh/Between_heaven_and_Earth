@@ -104,9 +104,9 @@ class StartButton(Button):
 class LevelButton(Button):
 
     def __init__(self, _surf, _window_width, _window_height, _x, _y, _active_screen, _id, _labyrinth_file):
+        self.id = _id
         super(LevelButton, self).__init__(self.launch_lvl, _surf, _window_width, _window_height)
         self.active_screen = _active_screen
-        self.id = _id
         self.x = _x
         self.y = _y
         self.block = self.adopted_from_file()
@@ -115,6 +115,16 @@ class LevelButton(Button):
         self.labyrinth_file = _labyrinth_file
         self.width, self.height = self.calculate_dimensions()
         self.unit_width, self.unit_height = self.width, self.height
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "img_file":
+            self.img_surf = pygame.image.load(self.img_file)
+        elif key == "pressed":
+            if self.pressed:
+                self.img_file = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
+            else:
+                self.img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
 
     @staticmethod
     def calculate_dimensions():
@@ -141,17 +151,12 @@ class LevelButton(Button):
         self.active_screen.set_value("main_screen")
 
     def update_pic(self, opacity=255):
-        img_surf = pygame.image.load(self.img_file)
+        img_surf = self.img_surf
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(self.x, self.y))
         self.surf.blit(img_surf, img_rect)
 
     def update(self):
-        if self.pressed:
-            # self.img_file = "pressed_" + str(self.id) + "_lvl_button.png"
-            self.img_file = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
-        else:
-            self.img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
         self.update_pic()
 
     def get_width(self):
