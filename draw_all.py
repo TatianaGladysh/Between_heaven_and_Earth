@@ -9,13 +9,8 @@ indent = 40
 
 class Painter:
 
-    def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int, _fps,
-                 _labyrinth: labyrinth.Labyrinth,
-                 _characters, _main_hero: heroes.MainHero):
-        # FIXME неработающая типизация, поэтому пока ее убрала
-        # def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int,
-        #              _labyrinth: labyrinth.Labyrinth,
-        #              _characters: list[heroes.Character()], _main_hero: heroes.MainHero):
+    def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int, _fps: int,
+                 _labyrinth: labyrinth.Labyrinth, _characters, _main_hero: heroes.MainHero):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         :param _surf: surface of the game
@@ -43,13 +38,27 @@ class Painter:
         self.grid_cells_cords_and_opacity = []
 
     def draw_grid_cell(self, x, y, opacity):
+        """
+        Вызывает отрисовку единицы сетки экрана
+        :param x: координаты на экране центра клетки,
+        :param y: которую обрамляет рамка
+        :param opacity: прозрачность
+        """
         self.update_image(self.surf, self.grid_unit_surf, x, y, opacity, self.img_scale_k)
 
     def update_elevator_correction_cords(self, x, y):
+        """
+        обновляет значения корректировочных координат персонажа при заходе/выходе из лифта
+        :param x: значения корректировочных координат
+        :param y: на экране
+        """
         self.elevator_correction_x = x
         self.elevator_correction_y = y
 
     def calculate_unit_lengths(self):
+        """
+        рассчитывает единичные размеры комнат(по сути, размеры комнат на экране)
+        """
         img_surf = pygame.image.load("assets/Default_room.png")
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
@@ -61,7 +70,13 @@ class Painter:
         self.unit_height = int(self.unit_width / k)
         self.unit_depth = int(self.unit_height * 0.18333333333)
 
-    def set_game_params(self, _labyrinth, _main_hero, _characters):
+    def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero: heroes.MainHero, _characters):
+        """
+        при запуске основной части игры устанавливает параметры:
+        :param _labyrinth: лабиринт
+        :param _main_hero: главный герой
+        :param _characters: другие персонажи
+        """
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
@@ -70,11 +85,10 @@ class Painter:
         self.calculate_zero_screen_cords()
         self.animator.set_game_params()
 
-    def calculate_elevator_correction_cords(self):
-        self.elevator_correction_y = - 0.09166 * self.unit_height
-        self.elevator_correction_x = - 0.0083 * self.unit_width
-
     def calculate_zero_screen_cords(self):
+        """
+        рассчитывает координаты левой верхней клетки на экране
+        """
         self.zero_screen_cord_x = int(
             self.window_width / 2 - self.unit_width * self.labyrinth.get_x_width() / 2 + self.unit_width / 2)
         self.zero_screen_cord_y = int(self.window_height / 2 - self.unit_height *
@@ -91,7 +105,7 @@ class Painter:
     def transform_game_cords_in_screen_cords(self, obj):
         """
         Пересчитывает координыты из игровых в экранные
-        :param obj: объект
+        :param obj: объект класса Room, MainHero или Character
         :return: координаты объекта на экране
         """
         game_hero_x, game_hero_y, game_hero_z = self.main_hero.get_cords()
@@ -133,6 +147,9 @@ class Painter:
                 self.update_room_pic(check_room, opacity)
 
     def update_grid_img(self):
+        """
+        вызывает функции обновления клеток сетки
+        """
         for params in self.grid_cells_cords_and_opacity:
             self.draw_grid_cell(*params)
         self.grid_cells_cords_and_opacity = []
@@ -153,11 +170,17 @@ class Painter:
             self.update_grid_img()
 
     def update_elevator_inside(self):
+        """
+        обновляет картинку внутренности лифта
+        """
         self.elevator_inside.x, self.elevator_inside.y = self.transform_game_cords_in_screen_cords(self.main_hero)
         self.update_image(self.surf, self.elevator_inside.img_surf, self.elevator_inside.x, self.elevator_inside.y, 255,
                           self.img_scale_k)
 
     def update_main_hero_pic(self):
+        """
+        вызывает функцию обновления изображения главного героя
+        """
         main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + self.elevator_correction_x
         main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y
         self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
@@ -185,12 +208,19 @@ class Painter:
         surf.blit(img_surf, img_rect)
 
     def update(self):
+        """
+        вызывает функции обновления рисунков комнат, героев и обновление анимаций
+        """
         self.update_all_pics()
         self.animator.update()
 
 
 class ElevatorInside:
+
     def __init__(self):
+        """
+        отвечает за отрисовку лифта изнутри
+        """
         self.img_file = "assets/elevator/elevator_inside.png"
         self.img_surf = pygame.image.load(self.img_file)
         self.screen_x, self.screen_y = -10, -10
