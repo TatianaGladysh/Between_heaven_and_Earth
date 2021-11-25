@@ -46,23 +46,23 @@ class EventProcessor:
             if self.main_hero.inside_elevator:
                 # механизм запускающий отрисовку выхождения из лифта
                 # (например отдельный параметр True or False)
+                self.game.screen_controller.main_screen_saver.painter.animator.elevator_exit()
                 self.main_hero.inside_elevator = False
             elif self.have_an_elevator("here"):
                 # в условии проверяет есть ли лифт в том месте где находится персонаж
                 # механизм запускающий отрисовку вхождения в лифт
                 # (например отдельный параметр True or False,
                 # который передается в раздел отрисовки)
+                self.game.screen_controller.main_screen_saver.painter.animator.elevator_entering()
                 self.main_hero.inside_elevator = True
         # опускается на один этаж, меняется координата по y
         elif event.key == pygame.K_DOWN and self.main_hero.arrival_y != self.labyrinth.height - 1:
             if self.main_hero.inside_elevator and self.have_an_elevator("below"):
                 self.main_hero.move_y_axis(1)
-                self.game.screen_controller.main_screen_saver.painter.animator.elevator_closing()
         # поднимается на один этаж, меняется координата по y
         elif event.key == pygame.K_UP and self.main_hero.arrival_y != 0:
             if self.main_hero.inside_elevator and self.have_an_elevator("overhead"):
                 self.main_hero.move_y_axis(-1)
-                self.game.screen_controller.main_screen_saver.painter.animator.elevator_closing()
         # механизм входа в комнату
         # FIXME может, дать возможность делать проходные комнаты и
         # дать возможность выбирать игроку напраление движения как в лифте?

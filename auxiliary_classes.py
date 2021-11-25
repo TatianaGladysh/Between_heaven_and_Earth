@@ -14,7 +14,3 @@ class LinearFunction:
             return self.start_value
         elif self.past_time < self.delay + self.time_interval:
             return self.start_value + self.delta_time * self.ratio
-
-
-
-

@@ -12,7 +12,6 @@ class Room:
         self.__dict__[key] = value
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file)
-            print(self.img_file)
 
     def get_cords(self):
         return tuple(self.room_coordinates)
@@ -46,6 +45,9 @@ class Room:
         self.img_file = filename
         self.img_surf = pygame.image.load(self.img_file)
 
+    def set_surf(self, surf):
+        self.img_surf = surf
+
 
 # FIXME есть какая-то реальная причина делать массив так,
 #  чтобы к его координатам приходилось обращаться в обратном порядке? Это очень неудобно
@@ -76,7 +78,6 @@ class Labyrinth:
         x_len = len(all_layers[0][0])
         y_len = len(all_layers[0])
         z_len = len(all_layers)
-        print(x_len, y_len, z_len)
         template = np.zeros((z_len, y_len, x_len), dtype=Room)
         for z_cor in range(z_len):
             for y_cor in range(y_len):
@@ -107,10 +108,10 @@ class Labyrinth:
             try:
                 return self.template[int(z)][int(y)][int(x)]
             except IndexError:
-                print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
+                # print("Room in (" + str(x) + ", " + str(y) + ", " + str(z) + ") does not exist")
                 return self.none_room
         else:
-            print("Requested room with negative coordinates")
+            # print("Requested room with negative coordinates")
             return self.none_room
 
     # FIXME я написала эти функции до перестанови координат лабиринта, потом от них будет лучше избавиться
@@ -128,6 +129,3 @@ class Labyrinth:
 class NoneRoom(Room):
     def __init__(self):
         super(NoneRoom, self).__init__((-10, -10, -10), "none")
-
-# one = Labyrinth('3.txt')
-# print(one.get_room(2, 1, 1))

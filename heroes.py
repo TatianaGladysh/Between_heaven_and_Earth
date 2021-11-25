@@ -7,9 +7,13 @@ class Hero:
     def __init__(self, _start_position):
         self.x, self.y, self.z = _start_position[0], _start_position[1], _start_position[2]
         self.arrival_x, self.arrival_y, self.arrival_z = self.x, self.y, self.z
+        self.img_surf = None
 
     def get_cords(self):
         return self.x, self.y, self.z
+
+    def set_surf(self, surf):
+        self.img_surf = surf
 
 
 class MainHero(Hero):
@@ -25,6 +29,7 @@ class MainHero(Hero):
         self.epsilon = 0.1
         self.game = _game
         self.inside_elevator = False
+        self.move_blocked = False
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -32,7 +37,8 @@ class MainHero(Hero):
             try:
                 self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
             except AttributeError:
-                print("Main hero is not announced")
+                # print("Main hero is not announced")
+                pass
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file)
 
@@ -64,9 +70,10 @@ class MainHero(Hero):
 
     def update(self):
         self.check_own_and_arrival_pos()
-        self.x += self.speed_x * self.dt
-        self.y += self.speed_y * self.dt
-        self.z += self.speed_z * self.dt
+        if not self.move_blocked:
+            self.x += self.speed_x * self.dt
+            self.y += self.speed_y * self.dt
+            self.z += self.speed_z * self.dt
 
 
 class Character(Hero):
