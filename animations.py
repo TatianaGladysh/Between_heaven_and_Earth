@@ -30,17 +30,32 @@ class ElevatorAnimator:
         elif isinstance(animation, ElevatorCorrectionCordsAnimation):
             self.cords_animations.append(animation)
 
-    def add_later_on_funcs(self, func, delay, args=()):
+    def add_later_on_funcs(self, func, delay, args=None):
+        if args is None:
+            args = []
         self.later_on_funcs.append(LaterOnFunc(func, delay, self.painter.fps, args))
 
-    def change_rendering_of_layers(self):
-        self.painter.draw_main_hero_in_the_elevator = not self.painter.draw_main_hero_in_the_elevator
+    def change_rendering_of_layers(self, value=None):
+        if value is None:
+            self.painter.draw_main_hero_in_the_elevator = not self.painter.draw_main_hero_in_the_elevator
+        else:
+            self.painter.draw_main_hero_in_the_elevator = value
+
+    def emergency_finish_all_animations(self):
+        for animation in self.images_animations:
+            animation.emergency_finish()
+        for func in self.later_on_funcs:
+            func.emergency_finish()
+        for animation in self.cords_animations:
+            animation.emergency_finish()
+        self.images_animations = self.cords_animations = self.later_on_funcs = []
 
     def elevator_entering(self):
+        self.emergency_finish_all_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.2))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2)
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2, args=[True])
         self.add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
                                                                            self.max_elevator_correction_y),
                                                             _time_interval=0.2, _fps=self.painter.fps))
@@ -49,13 +64,14 @@ class ElevatorAnimator:
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.2, _delay=0.2))
 
     def elevator_exit(self):
+        self.emergency_finish_all_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.2))
         self.add_animation(
             ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=0.2, _fps=self.painter.fps,
                                              _delay=0.2))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2)
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2, args=[False])
         self.add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.2,
@@ -63,17 +79,20 @@ class ElevatorAnimator:
 
     def update(self):
         for animation in self.images_animations:
-            animation.update()
             if animation.done:
-                del animation
+                self.images_animations.remove(animation)
+            else:
+                animation.update()
         for animation in self.cords_animations:
-            animation.update()
             if animation.done:
-                del animation
+                self.cords_animations.remove(animation)
+            else:
+                animation.update()
         for func in self.later_on_funcs:
-            func.update()
             if func.done:
-                del func
+                self.later_on_funcs.remove(func)
+            else:
+                func.update()
 
 
 class ElevatorCorrectionCordsAnimation:
@@ -95,6 +114,12 @@ class ElevatorCorrectionCordsAnimation:
         self.variable_y += self.variable_step_y
         self.painter.update_elevator_correction_cords(self.variable_x, self.variable_y)
 
+    def emergency_finish(self):
+        self.variable_x = self.end_value_cords[0]
+        self.variable_y = self.end_value_cords[1]
+        self.painter.update_elevator_correction_cords(self.variable_x, self.variable_y)
+        self.done = True
+
     def update(self):
         self.time += self.dt
         if self.delay <= self.time <= self.delay + self.time_interval and not self.done:
@@ -104,7 +129,9 @@ class ElevatorCorrectionCordsAnimation:
 
 
 class LaterOnFunc:
-    def __init__(self, _func, _time_interval, _fps, _args=()):
+    def __init__(self, _func, _time_interval, _fps, _args=None):
+        if _args is None:
+            _args = []
         self.func = _func
         self.time_interval = _time_interval
         self.args = _args
@@ -116,36 +143,14 @@ class LaterOnFunc:
         self.done = True
         self.func(*self.args)
 
+    def emergency_finish(self):
+        self.execute()
+
     def update(self):
         self.time += self.dt
         if self.time_interval <= self.time:
             if not self.done:
                 self.execute()
-
-
-# class ElevatorAnimator:
-#
-#     def get_animation(self, animation_id):
-#         for animation in self.images_and_cords_animations:
-#             if animation.id == animation_id:
-#                 return animation
-#
-#     def elevator_entering(self):
-#         elevator_room = self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z)
-#         self.images_and_cords_animations.append(ElevatorOpeningAnimation(elevator_room, self.fps, self.main_hero))
-#
-#     def elevator_exit(self):
-#         elevator_room = self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z)
-#         new_animation = ElevatorOpeningAnimation(elevator_room, self.fps, self.main_hero)
-#         self.add_animation(new_animation)
-#
-#         # потом сделать чтобы он сначала открывался, потом закрывался
-#
-#     def enter_exit_in_elevator(self):
-#         if self.main_hero.inside_elevator:
-#             self.elevator_entering()
-#         else:
-#             self.elevator_exit()
 
 
 class ImageAnimation:
@@ -189,6 +194,11 @@ class ImageAnimation:
             pass
         # при нелинейной анимации можно будет изменять время cool_count
 
+    def emergency_finish(self):
+        self.active_surf_number = self.frames_count
+        self.active_surf = self.frame_surfaces[-1]
+        self.finish()
+
     def finish(self):
         self.done = True
 
@@ -205,12 +215,16 @@ class ElevatorOpeningAnimation(ImageAnimation):
 
     def __init__(self, _obj, _fps, _main_hero, _time_interval, _delay=0):
         self.main_hero = _main_hero
-        self.frames_files = ["assets/elevator/close_elevator.png", "assets/elevator/closing_elevator_9.png",
-                             "assets/elevator/closing_elevator_8.png", "assets/elevator/closing_elevator_7.png",
-                             "assets/elevator/closing_elevator_6.png", "assets/elevator/closing_elevator_5.png",
-                             "assets/elevator/closing_elevator_4.png", "assets/elevator/closing_elevator_3.png",
-                             "assets/elevator/closing_elevator_2.png", "assets/elevator/closing_elevator_1.png",
-                             "assets/elevator/open_elevator.png"]
+        self.frames_files = ["assets/elevator/close_elevator.png", "assets/elevator/closing_elevator_18.png",
+                             "assets/elevator/closing_elevator_17.png", "assets/elevator/closing_elevator_16.png",
+                             "assets/elevator/closing_elevator_15.png", "assets/elevator/closing_elevator_14.png",
+                             "assets/elevator/closing_elevator_13.png", "assets/elevator/closing_elevator_12.png",
+                             "assets/elevator/closing_elevator_11.png", "assets/elevator/closing_elevator_10.png",
+                             "assets/elevator/closing_elevator_9.png", "assets/elevator/closing_elevator_8.png",
+                             "assets/elevator/closing_elevator_7.png", "assets/elevator/closing_elevator_6.png",
+                             "assets/elevator/closing_elevator_5.png", "assets/elevator/closing_elevator_4.png",
+                             "assets/elevator/closing_elevator_3.png", "assets/elevator/closing_elevator_2.png",
+                             "assets/elevator/closing_elevator_1.png", "assets/elevator/open_elevator.png"]
         self.main_hero = _main_hero
         super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
 
@@ -230,7 +244,11 @@ class ElevatorClosingAnimation(ImageAnimation):
                              "assets/elevator/closing_elevator_4.png", "assets/elevator/closing_elevator_5.png",
                              "assets/elevator/closing_elevator_6.png", "assets/elevator/closing_elevator_7.png",
                              "assets/elevator/closing_elevator_8.png", "assets/elevator/closing_elevator_9.png",
-                             "assets/elevator/close_elevator.png"]
+                             "assets/elevator/closing_elevator_10.png", "assets/elevator/closing_elevator_11.png",
+                             "assets/elevator/closing_elevator_12.png", "assets/elevator/closing_elevator_13.png",
+                             "assets/elevator/closing_elevator_14.png", "assets/elevator/closing_elevator_15.png",
+                             "assets/elevator/closing_elevator_16.png", "assets/elevator/closing_elevator_17.png",
+                             "assets/elevator/closing_elevator_18.png", "assets/elevator/close_elevator.png"]
         self.main_hero = _main_hero
         super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
 
