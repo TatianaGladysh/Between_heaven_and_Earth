@@ -23,6 +23,7 @@ class Painter:
         :param _main_hero: объект класса MainHero - главный персонаж игры, которым управляет пользователь
         :param _characters: остальные персонажи игры
         """
+        self.grid_unit_surf = pygame.image.load("assets/grid_unit.png")
         self.fps = _fps
         self.surf = _surf
         self.window_width = _window_width
@@ -39,6 +40,10 @@ class Painter:
         self.draw_main_hero_in_the_elevator = False
         self.animator = ElevatorAnimator(self)
         self.elevator_inside = ElevatorInside()
+        self.grid_cells_cords_and_opacity = []
+
+    def draw_grid_cell(self, x, y, opacity):
+        self.update_image(self.surf, self.grid_unit_surf, x, y, opacity, self.img_scale_k)
 
     def update_elevator_correction_cords(self, x, y):
         self.elevator_correction_x = x
@@ -105,6 +110,7 @@ class Painter:
         """
         x, y = self.transform_game_cords_in_screen_cords(room)
         self.update_image(self.surf, room.img_surf, x, y, opacity, self.img_scale_k)
+        self.grid_cells_cords_and_opacity.append((x, y, opacity))
 
     def update_rooms_pics(self):
         """
@@ -126,6 +132,11 @@ class Painter:
             if check_room.type == "door":
                 self.update_room_pic(check_room, opacity)
 
+    def update_grid_img(self):
+        for params in self.grid_cells_cords_and_opacity:
+            self.draw_grid_cell(*params)
+        self.grid_cells_cords_and_opacity = []
+
     def update_all_pics(self):
         """
         Обновляет картинки комнат и героев на экране
@@ -134,10 +145,12 @@ class Painter:
             self.update_elevator_inside()
             self.update_main_hero_pic()
             self.update_rooms_pics()
+            self.update_grid_img()
         else:
             self.update_elevator_inside()
             self.update_rooms_pics()
             self.update_main_hero_pic()
+            self.update_grid_img()
 
     def update_elevator_inside(self):
         self.elevator_inside.x, self.elevator_inside.y = self.transform_game_cords_in_screen_cords(self.main_hero)
