@@ -1,7 +1,7 @@
 import pygame
 from draw_all import Painter
 import numpy as np
-from buttons import LevelButton, StartButton
+from buttons import LevelButton, StartButton, BackToLevelsButton
 
 pygame.init()
 
@@ -144,6 +144,7 @@ class MainScreenSaver(GameScreenSaver):
         self.painter = Painter(self.surf, self.window_width, self.window_height, _fps, self.labyrinth, self.main_hero,
                                self.characters)
         self.notifications = [Notification()]
+        self.back_to_levels_button = BackToLevelsButton(_surf, _window_width, _window_height, _active_screen)
 
     def draw_game_space(self):
         """
@@ -160,6 +161,7 @@ class MainScreenSaver(GameScreenSaver):
         self.draw_game_space()
         for notification in self.notifications:
             notification.update()
+        self.back_to_levels_button.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
         self.labyrinth = _labyrinth
@@ -204,7 +206,7 @@ class LevelScreenSaver(GameScreenSaver):
                                                self.active_screen, i, self.labyrinth_file)
             zero_button_x = self.window_width // 2 - (
                     ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
-                    self.levels_count - 1) / 2 * indent)
+                        self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
                 button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
                 button_y = zero_button_y + indent + button_height
