@@ -51,7 +51,7 @@ class MainHero(Hero):
 
     def move_y_axis(self, move_by_length):
         self.arrival_y = round(self.y + move_by_length)
-        self.speed_y = sign(self.max_speed, move_by_length)
+        self.speed_y = sign(20 * self.max_speed, move_by_length)
 
     def move_z_axis(self, move_by_length):
         self.arrival_z = round(self.z + move_by_length)
@@ -61,7 +61,7 @@ class MainHero(Hero):
         if abs(self.x - self.arrival_x) < self.epsilon:
             self.speed_x = 0
             self.x = round(self.x)
-        if abs(self.y - self.arrival_y) < self.epsilon:
+        if abs(self.y - self.arrival_y) < 3 * self.epsilon:
             self.speed_y = 0
             self.y = round(self.y)
         if abs(self.z - self.arrival_z) < self.epsilon:
@@ -78,7 +78,7 @@ class MainHero(Hero):
 
 class Character(Hero):
 
-    def __init__(self, _start_position: list, _labyrinth, _max_speed, fps,):
+    def __init__(self, _start_position: list, _labyrinth, _max_speed, fps):
         super().__init__(_start_position)
         self.speed_x = 0
         self.max_speed = _max_speed
