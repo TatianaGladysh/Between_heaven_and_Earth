@@ -29,7 +29,8 @@ class Game:
                                                        self.labyrinth_file)
         self.event_processor = EventProcessor(self, self.active_screen,
                                               self.screen_controller.start_screen_saver.start_button,
-                                              self.screen_controller.level_screen_saver.level_buttons)
+                                              self.screen_controller.level_screen_saver.level_buttons,
+                                              self.screen_controller.main_screen_saver.back_to_levels_button)
         self.previous_screen = "start_screen"
 
     def start_main_part(self, level_file_name):

@@ -3,10 +3,11 @@ import pygame
 
 class EventProcessor:
 
-    def __init__(self, _game, _active_screen, _start_button, _level_buttons, _main_hero=None, _labyrinth=None,
-                 _characters=None):
+    def __init__(self, _game, _active_screen, _start_button, _level_buttons, _back_to_levels_button, _main_hero=None,
+                 _labyrinth=None, _characters=None):
         self.start_button = _start_button
         self.level_buttons = _level_buttons
+        self.back_to_levels_button = _back_to_levels_button
         self.quit = False
         self.active_screen = _active_screen
         self.main_hero = _main_hero
@@ -19,18 +20,15 @@ class EventProcessor:
             if event.type == pygame.QUIT:
                 self.quit = True
                 continue
-            # обработка событий с клавиатуры
-            if event.type == pygame.KEYDOWN:
-                # движение по главной плоскости xOy вдоль x
-
-                if self.active_screen == "main_screen":
+            if self.active_screen == "main_screen":
+                if event.type == pygame.KEYDOWN:
                     self.move_main_hero(event)
-                # мышь
-
-            if self.active_screen == "level_screen":
+                else:
+                    self.screen_buttons_check(event, self.back_to_levels_button)
+            elif self.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)
-            if self.active_screen == "start_screen":
+            elif self.active_screen == "start_screen":
                 self.screen_buttons_check(event, self.start_button)
 
     def move_main_hero(self, event):
@@ -64,8 +62,6 @@ class EventProcessor:
             if self.main_hero.inside_elevator and self.have_an_elevator("overhead"):
                 self.main_hero.move_y_axis(-1)
         # механизм входа в комнату
-        # FIXME может, дать возможность делать проходные комнаты и
-        # дать возможность выбирать игроку напраление движения как в лифте?
         elif event.key == pygame.K_e:
             if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door(
                     "behind") and not self.main_hero.inside_elevator:
