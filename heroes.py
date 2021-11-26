@@ -1,5 +1,5 @@
 from math import copysign as sign
-
+from random import randint
 import pygame.image
 
 
@@ -78,6 +78,36 @@ class MainHero(Hero):
 
 class Character(Hero):
 
-    def __init__(self, _start_position):
+    def __init__(self, _start_position: list, _labyrinth, _max_speed, fps,):
         super().__init__(_start_position)
-        self.img_file = "assets/main_hero.png"
+        self.speed_x = 0
+        self.max_speed = _max_speed
+        self.epsilon = 0.1
+        self.delta_time = 1 / fps
+        self.labyrinth = _labyrinth
+        self.image = None
+
+    def move_x_axis(self):
+        if self.arrival_x == self.x:
+            move_by_length = (-1) * randint(2, 3)
+            if self.block_check(move_by_length):
+                self.arrival_x = self.x + move_by_length
+                self.speed_x = sign(self.max_speed, move_by_length)
+
+    def block_check(self, move_by_length):
+        if not self.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block":
+            return True
+        return False
+
+    def update(self):
+        self.move_check()
+        self.x += self.speed_x * self.delta_time
+
+    def move_check(self):
+        if abs(self.x - self.arrival_x) < self.epsilon:
+            self.speed_x = 0
+            self.x = self.arrival_x
+
+    def image_change(self):
+        pass
+
