@@ -147,7 +147,7 @@ class LevelButton(Button):
             return block
 
     def launch_lvl(self):
-        self.labyrinth_file.set_value("levels/" + str(self.id) + ".txt")
+        self.labyrinth_file.set_value("levels/" + str(self.id) + ".json")
         self.active_screen.set_value("main_screen")
 
     def update_pic(self, opacity=255):

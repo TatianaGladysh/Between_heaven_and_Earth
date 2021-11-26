@@ -82,14 +82,14 @@ class ElevatorAnimator:
         self.emergency_finish_all_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.2))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2, args=[True])
+                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15))
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[True])
         self.add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
                                                                            self.max_elevator_correction_y),
-                                                            _time_interval=0.2, _fps=self.painter.fps))
+                                                            _time_interval=0.15, _fps=self.painter.fps))
         self.add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.2, _delay=0.2))
+                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15, _delay=0.15))
 
     def elevator_exit(self):
         """
@@ -99,15 +99,15 @@ class ElevatorAnimator:
         self.emergency_finish_all_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.2))
+                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15))
         self.add_animation(
-            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=0.2, _fps=self.painter.fps,
+            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=0.15, _fps=self.painter.fps,
                                              _delay=0.2))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.2, args=[False])
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[False])
         self.add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.2,
-                                     _delay=0.2))
+                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15,
+                                     _delay=0.15))
 
     def update(self):
         """

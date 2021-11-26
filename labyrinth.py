@@ -1,5 +1,6 @@
 import numpy as np
 import pygame.image
+import json
 
 
 class Room:
@@ -60,30 +61,36 @@ class Labyrinth:
         двумерный массив, в котором массивы - строчки, параллельные оси Ox, в текстовом файле это прописано.
         """
         self.file = _filename
-        self.template, self.width, self.height, self.depth = self.input_labyrinth()
         self.none_room = NoneRoom()
+        self.width, self.height, self.depth = 0, 0, 0
+        self.template = None
+        self.input_labyrinth()
 
     def input_labyrinth(self):
         with open(self.file.get_value(), "r") as file:
-            lines = file.readlines()  # читаем все строки
-            all_layers = []
-            layer = []
-            for line in lines:
-                if line[0] in "xed0":
-                    layer.append(list(line.split()))  # записываем в срез этажи по очереди
-                elif layer:
-                    all_layers.append(layer)  # добывляем срез в массив со всеми срезами
-                    layer = []
-        # преобразуем буквы из файла в объекты Room
+            file_dict = json.load(file)
+            labyrinth_layers_dict = file_dict["layers"]
+            self.input_rooms(labyrinth_layers_dict)
+
+    def input_rooms(self, labyrinth_layers_dict):
+        """
+        читает из словаря комнаты и добавляет из в template
+        :param labyrinth_layers_dict: часть словаря из json файла, содержащая типы комнат
+        """
+        all_layers = []
+        for layer_name in labyrinth_layers_dict:
+            layer = list(
+                labyrinth_layers_dict[layer_name][i].split() for i in range(len(labyrinth_layers_dict[layer_name])))
+            all_layers.append(layer)
         x_len = len(all_layers[0][0])
         y_len = len(all_layers[0])
         z_len = len(all_layers)
-        template = np.zeros((z_len, y_len, x_len), dtype=Room)
+        self.template = np.zeros((z_len, y_len, x_len), dtype=Room)
         for z_cor in range(z_len):
             for y_cor in range(y_len):
                 for x_cor in range(x_len):
-                    template[z_cor][y_cor][x_cor] = self.def_room(all_layers, x_cor, y_cor, z_cor)
-        return template, x_len, y_len, z_len
+                    self.template[z_cor][y_cor][x_cor] = self.def_room(all_layers, x_cor, y_cor, z_cor)
+        self.width, self.height, self.depth = x_len, y_len, z_len
 
     @staticmethod
     def def_room(letter_cods, x_cor, y_cor, z_cor):
