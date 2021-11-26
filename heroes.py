@@ -110,4 +110,3 @@ class Character(Hero):
 
     def image_change(self):
         pass
-

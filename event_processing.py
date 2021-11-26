@@ -62,11 +62,12 @@ class EventProcessor:
             if self.main_hero.inside_elevator and self.have_an_elevator("overhead"):
                 self.main_hero.move_y_axis(-1)
         # механизм входа в комнату
-        elif event.key == pygame.K_e:
+        elif event.key == pygame.K_w:
             if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door(
                     "behind") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(1)
-            elif self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
+        elif event.key == pygame.K_s:
+            if self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(-1)
 
     def screen_buttons_check(self, event, button):
