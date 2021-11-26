@@ -3,15 +3,20 @@ import pygame
 
 class Button:
 
-    def __init__(self, _command, _surf, _window_width, _window_height):
+    def __init__(self, game, _command, _args=None):
         """
         Кнопка на начальном экране игры
         """
-        self.window_height = _window_height
-        self.window_width = _window_width
+        if _args is None:
+            _args = []
+        self.args = _args
+        self.window_height = game.screen_height
+        self.window_width = game.screen_width
         self.command = _command
-        self.surf = _surf
+        self.surf = game.game_surf
         self.pressed = False
+        self.img_file = "assets/none.png"
+        self.img_surf = pygame.image.load(self.img_file)
         self.x = 0
         self.y = 0
         self.unit_width = 0
@@ -21,7 +26,7 @@ class Button:
         """
         Вызывает функцию, привязанную к кнопке
         """
-        self.command()
+        self.command(*self.args)
 
     def get_cords(self):
         """
@@ -41,19 +46,26 @@ class Button:
         """
         return self.unit_height
 
+    def update_image(self, opacity):
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
+        self.img_surf.set_alpha(opacity)
+        img_rect = self.img_surf.get_rect(center=(self.x, self.y))
+        self.surf.blit(self.img_surf, img_rect)
+
 
 class StartButton(Button):
 
-    def __init__(self, _surf, _window_width, _window_height, _active_screen):
+    def __init__(self, _game):
         """
         Кнопка старта на начальном экране игры
         """
-        super().__init__(self.start, _surf, _window_width, _window_height)
+        self.game = _game
+        super().__init__(self.game, self.start)
         self.img_file = "assets/buttons/start_button.png"
         self.img_surf = pygame.image.load(self.img_file)
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
-        self.active_screen = _active_screen
+        self.active_screen = self.game.active_screen
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
 
     def calculate_cords(self):
@@ -90,29 +102,22 @@ class StartButton(Button):
         """
         self.update_image(255)
 
-    def update_image(self, opacity):
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.img_surf.set_alpha(opacity)
-        img_rect = self.img_surf.get_rect(center=(self.x, self.y))
-        self.surf.blit(self.img_surf, img_rect)
-
     def start(self):
         self.pressed = False
-        self.active_screen.set_value("level_screen")
+        self.game.active_screen = "level_screen"
 
 
 class LevelButton(Button):
 
-    def __init__(self, _surf, _window_width, _window_height, _x, _y, _active_screen, _id, _labyrinth_file):
+    def __init__(self, _x, _y, _id, _game):
+        self.game = _game
         self.id = _id
-        super(LevelButton, self).__init__(self.launch_lvl, _surf, _window_width, _window_height)
-        self.active_screen = _active_screen
+        super(LevelButton, self).__init__(self.game, self.launch_lvl)
         self.x = _x
         self.y = _y
         self.block = self.adopted_from_file()
         self.img_file = self.read_img_file()
         self.pressed = False
-        self.labyrinth_file = _labyrinth_file
         self.width, self.height = self.calculate_dimensions()
         self.unit_width, self.unit_height = self.width, self.height
 
@@ -147,8 +152,8 @@ class LevelButton(Button):
             return block
 
     def launch_lvl(self):
-        self.labyrinth_file.set_value("levels/" + str(self.id) + ".json")
-        self.active_screen.set_value("main_screen")
+        self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
+        self.game.active_screen = "main_screen"
 
     def update_pic(self, opacity=255):
         img_surf = self.img_surf
@@ -173,22 +178,21 @@ class LevelButton(Button):
 
 
 class BackToLevelsButton(Button):
-    def __init__(self, _surf, _window_width, _window_height, _active_screen):
+    def __init__(self, _game):
         """
         Кнопка возвращения на экран с уровнями на экране игры
         """
-        super().__init__(self.start, _surf, _window_width, _window_height)
+        self.game = _game
+        super().__init__(self.game, self.start)
         self.img_file = "assets/buttons/start_button.png"
         self.img_surf = pygame.image.load(self.img_file)
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
-        self.active_screen = _active_screen
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
 
     def calculate_cords(self):
         """
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
-
         :return: координаты, коэффициент размера, длину и высоту
         """
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
@@ -220,12 +224,6 @@ class BackToLevelsButton(Button):
         """
         self.update_image(255)
 
-    def update_image(self, opacity):
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.img_surf.set_alpha(opacity)
-        img_rect = self.img_surf.get_rect(center=(self.x, self.y))
-        self.surf.blit(self.img_surf, img_rect)
-
     def start(self):
         self.pressed = False
-        self.active_screen.set_value("level_screen")
+        self.game.active_screen = "level_screen"

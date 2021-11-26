@@ -3,32 +3,30 @@ import pygame
 
 class EventProcessor:
 
-    def __init__(self, _game, _active_screen, _start_button, _level_buttons, _back_to_levels_button, _main_hero=None,
-                 _labyrinth=None, _characters=None):
-        self.start_button = _start_button
-        self.level_buttons = _level_buttons
-        self.back_to_levels_button = _back_to_levels_button
-        self.quit = False
-        self.active_screen = _active_screen
-        self.main_hero = _main_hero
-        self.labyrinth = _labyrinth
-        self.characters = _characters
+    def __init__(self, _game):
         self.game = _game
+        self.start_button = self.game.screen_controller.start_screen_saver.start_button
+        self.back_to_levels_button = self.game.screen_controller.main_screen_saver.back_to_levels_button
+        self.level_buttons = self.game.screen_controller.level_screen_saver.level_buttons
+        self.quit = False
+        self.main_hero = self.game.main_hero
+        self.labyrinth = self.game.labyrinth
+        self.characters = self.game.characters
 
     def global_event_process(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit = True
                 continue
-            if self.active_screen == "main_screen":
+            if self.game.active_screen == "main_screen":
                 if event.type == pygame.KEYDOWN:
                     self.move_main_hero(event)
                 else:
                     self.screen_buttons_check(event, self.back_to_levels_button)
-            elif self.active_screen == "level_screen":
+            elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)
-            elif self.active_screen == "start_screen":
+            elif self.game.active_screen == "start_screen":
                 self.screen_buttons_check(event, self.start_button)
 
     def move_main_hero(self, event):
@@ -117,10 +115,10 @@ class EventProcessor:
         button_height = button.get_height()
         mouse_x, mouse_y = pygame.mouse.get_pos()
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
-        self.active_screen.set_value(screen_name)
+        self.game.active_screen = screen_name
 
     def update_events_statuses_and_objects_cords(self):
         # FIXME мб сразу давать ссылку на следующую функцию?

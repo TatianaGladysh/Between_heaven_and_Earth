@@ -9,27 +9,23 @@ indent = 40
 
 class Painter:
 
-    def __init__(self, _surf: pygame.Surface, _window_width: int, _window_height: int, _fps: int,
-                 _labyrinth: labyrinth.Labyrinth, _characters, _main_hero: heroes.MainHero):
+    def __init__(self, _game, _width, _height):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
-        :param _surf: surface of the game
-        :param _labyrinth: массив всех комнат игры
-        :param _main_hero: объект класса MainHero - главный персонаж игры, которым управляет пользователь
-        :param _characters: остальные персонажи игры
         """
+        self.game = _game
         self.grid_unit_surf = pygame.image.load("assets/grid_unit.png")
-        self.fps = _fps
-        self.surf = _surf
-        self.window_width = _window_width
-        self.window_height = _window_height
+        self.fps = self.game.fps
+        self.surf = self.game.game_surf
+        self.window_width = self.game.screen_width
+        self.window_height = self.game.screen_height
         self.unit_height, self.unit_width, self.unit_depth = 0, 0, 0
         self.zero_screen_cord_x = 0
         self.zero_screen_cord_y = 0
         self.img_scale_k = 0
-        self.labyrinth = _labyrinth
-        self.main_hero = _main_hero
-        self.characters = _characters
+        self.labyrinth = self.game.labyrinth
+        self.main_hero = self.game.main_hero
+        self.characters = self.game.characters
         self.elevator_correction_x = 0
         self.elevator_correction_y = 0
         self.draw_main_hero_in_the_elevator = False

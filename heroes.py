@@ -1,6 +1,6 @@
 from math import copysign as sign
 from random import randint
-import pygame.image
+import pygame
 
 
 class Hero:
@@ -17,19 +17,21 @@ class Hero:
 
 
 class MainHero(Hero):
-    def __init__(self, _start_position, _fps, _game):
-        super().__init__(_start_position)
+    def __init__(self, _game):
+        self.game = _game
+        super().__init__((0, 0, 0))
         self.img_file = "assets/main_hero.png"
         self.img_surf = pygame.image.load(self.img_file)
-        self.dt = 1 / _fps
+        self.dt = 1 / self.game.fps
         self.max_speed = 7
         self.speed_x = 0
         self.speed_y = 0
         self.speed_z = 0
         self.epsilon = 0.1
-        self.game = _game
         self.inside_elevator = False
         self.move_blocked = False
+
+
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value

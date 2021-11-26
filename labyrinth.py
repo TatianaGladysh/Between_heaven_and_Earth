@@ -67,7 +67,7 @@ class Labyrinth:
         self.input_labyrinth()
 
     def input_labyrinth(self):
-        with open(self.file.get_value(), "r") as file:
+        with open(self.file, "r") as file:
             file_dict = json.load(file)
             labyrinth_layers_dict = file_dict["layers"]
             self.input_rooms(labyrinth_layers_dict)
