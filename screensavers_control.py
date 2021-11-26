@@ -204,7 +204,7 @@ class LevelScreenSaver(GameScreenSaver):
                                                self.active_screen, i, self.labyrinth_file)
             zero_button_x = self.window_width // 2 - (
                     ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
-                    self.levels_count - 1) / 2 * indent)
+                        self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
                 button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
                 button_y = zero_button_y + indent + button_height
