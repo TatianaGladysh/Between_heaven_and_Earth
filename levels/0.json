@@ -1,31 +1,73 @@
 {
   "layers": {
     "layer_1": [
-      "0 e 0 0",
-      "0 e d 0"
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x"
     ],
-    "layer_2": [
-      "e 0 0 d",
-      "e 0 0 0"
+    "layer_2" : [
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x"
     ],
-    "layer_3": [
-      "0 x 0 e",
-      "0 0 0 e"
+    "layer_3" : [
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x"
+    ],
+    "layer_4" : [
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x",
+      "0 0 e e d d x x"
     ]
   },
   "main_hero": {
-    "cords": [0, 0, 0],
-    "task": [3, 1, 1]
+    "start_cords": [0, 0, 0]
   },
   "characters": [
     {
-      "name": "karas",
-      "cords": [
-        0,
-        1,
-        2
-      ],
+      "name": "Leonid",
+      "task": "Сдать экзамен по СТО",
+      "start_cords": [1, 0, 0],
       "appearance_stage": 0
+    },
+    {
+      "name": "Roma",
+      "task": "Доказать теорему Пуанкаре",
+      "start_cords": [1, 0, 0],
+      "appearance_stage": 1
+    },
+    {
+      "name": "Hiryanov",
+      "task": "Пояснить за то, как попасть в Гугл",
+      "start_cords": [1, 0, 0],
+      "appearance_stage": 2
+    },
+    {
+      "name": "Kozheva",
+      "task": "Объяснить в каком кольце твоя домашка",
+      "start_cords": [1, 0, 0],
+      "appearance_stage": 3
+    },
+    {
+      "name": "Klemeshov",
+      "task": "Доказать, что оригинальность доклада больше 10 %",
+      "start_cords": [1, 0, 0],
+      "appearance_stage": 4
+    },
+    {
+      "name": "Kiselev",
+      "task": "Алгебра ли алгебра Ли?",
+      "start_cords": [1, 0, 0],
+      "appearance_stage": 5
     }
   ]
 }

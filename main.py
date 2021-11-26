@@ -1,8 +1,11 @@
+from pprint import pprint
+
 import pygame
 from heroes import MainHero, Character
 from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
 from labyrinth import Labyrinth
+import json
 
 pygame.init()
 
@@ -31,12 +34,27 @@ class Game:
         self.event_processor = EventProcessor(self)
         self.previous_screen = "start_screen"
 
+    def create_main_hero(self):
+        self.main_hero = MainHero(self)
+
+    def create_characters(self):
+        with open(self.labyrinth_file) as file:
+            characters_dict = json.load(file)["characters"]
+        self.characters = []
+        for character_description_dict in characters_dict:
+            cords = character_description_dict["start_cords"]
+            appearance_stage = character_description_dict[ "appearance_stage"]
+            name = character_description_dict["name"]
+            task = character_description_dict["task"]
+            self.characters.append(Character(self, cords, name, task, appearance_stage))
+
     def start_main_part(self, level_file_name):
         """
         потом можно будет сделать выбор карты
         """
         self.labyrinth = Labyrinth(level_file_name)
-        self.main_hero = MainHero(self)
+        self.create_main_hero()
+        self.create_characters()
         # потом нужно будет сделать задаваемые координаты из файла с
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)

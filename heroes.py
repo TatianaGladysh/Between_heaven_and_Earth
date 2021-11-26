@@ -1,6 +1,7 @@
 from math import copysign as sign
 from random import randint
 import pygame
+import json
 
 
 class Hero:
@@ -17,9 +18,11 @@ class Hero:
 
 
 class MainHero(Hero):
+
     def __init__(self, _game):
         self.game = _game
-        super().__init__((0, 0, 0))
+        self.read_cords()
+        super().__init__((self.x, self.y, self.z))
         self.img_file = "assets/main_hero.png"
         self.img_surf = pygame.image.load(self.img_file)
         self.dt = 1 / self.game.fps
@@ -31,7 +34,12 @@ class MainHero(Hero):
         self.inside_elevator = False
         self.move_blocked = False
 
-
+    def read_cords(self):
+        with open(self.game.labyrinth_file, "r") as file:
+            main_hero_cords = json.load(file)["main_hero"]["start_cords"]
+        self.x = main_hero_cords[0]
+        self.y = main_hero_cords[1]
+        self.z = main_hero_cords[2]
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -80,14 +88,34 @@ class MainHero(Hero):
 
 class Character(Hero):
 
-    def __init__(self, _start_position: list, _labyrinth, _max_speed, fps):
+    def __init__(self, _game, _start_position, _name, _task, _appearance_stage):
+        self.game = _game
+        self.task = _task
+        self.name = _name
+        self.appearance_stage = _appearance_stage
         super().__init__(_start_position)
         self.speed_x = 0
-        self.max_speed = _max_speed
+        self.max_speed = 100  # потом
         self.epsilon = 0.1
-        self.delta_time = 1 / fps
-        self.labyrinth = _labyrinth
-        self.image = None
+        self.delta_time = 1 / self.game.fps
+        self.image_file = "assets/none.png"
+        self.def_img_and_surf()
+        self.quest_is_done = False
+
+    def def_img_and_surf(self):
+        if self.name == "Roma":
+            self.image_file = "assets/none.png"
+        elif self.name == "Leonid":
+            self.image_file = "assets/none.png"
+        elif self.name == "Hiryanov":
+            self.image_file = "assets/none.png"
+        elif self.name == "Kozheva":
+            self.image_file = "assets/none.png"
+        elif self.name == "Klemeshov":
+            self.image_file = "assets/none.png"
+        elif self.name == "Kiselev":
+            self.image_file = "assets/none.png"
+        self.img_surf = pygame.image.load(self.image_file)
 
     def move_x_axis(self):
         if self.arrival_x == self.x:
@@ -97,7 +125,7 @@ class Character(Hero):
                 self.speed_x = sign(self.max_speed, move_by_length)
 
     def block_check(self, move_by_length):
-        if not self.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block":
+        if not self.game.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block":
             return True
         return False
 
