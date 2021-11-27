@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import pygame
 from heroes import MainHero, Character
 from event_processing import EventProcessor

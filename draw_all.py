@@ -2,7 +2,7 @@
 import pygame
 import labyrinth
 import heroes
-from animations import ElevatorAnimator
+from animations import Animator
 
 indent = 40
 
@@ -29,7 +29,7 @@ class Painter:
         self.elevator_correction_x = 0
         self.elevator_correction_y = 0
         self.draw_main_hero_in_the_elevator = False
-        self.animator = ElevatorAnimator(self)
+        self.animator = Animator(self)
         self.elevator_inside = ElevatorInside()
         self.grid_cells_cords_and_opacity = []
 
@@ -186,7 +186,7 @@ class Painter:
         pass
 
     @staticmethod
-    def update_image(surf, obj_surf, x, y, opacity, scale_k):
+    def update_image(surf, obj_surf, x, y, opacity, scale_k=1):
         """
         Отрисовывает на экран картинку из файла
         :param y:

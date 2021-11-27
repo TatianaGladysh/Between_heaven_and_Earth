@@ -2,8 +2,10 @@ import pygame
 from labyrinth import Room
 from heroes import Hero
 
+QuestAnimationTime = 3
 
-class ElevatorAnimator:
+
+class Animator:
 
     def __init__(self, _painter):
         """
@@ -18,6 +20,7 @@ class ElevatorAnimator:
         self.images_animations = []
         self.cords_animations = []
         self.later_on_funcs = []
+        self.quests_animations = []
         self.dt = 1 / _painter.fps
         self.fps = _painter.fps
         self.processing = False
@@ -41,6 +44,8 @@ class ElevatorAnimator:
             self.images_animations.append(animation)
         elif isinstance(animation, ElevatorCorrectionCordsAnimation):
             self.cords_animations.append(animation)
+        elif isinstance(animation, QuestAnimation):
+            self.quests_animations.append(animation)
 
     def add_later_on_funcs(self, func, delay, args=None):
         """
@@ -62,9 +67,9 @@ class ElevatorAnimator:
         else:
             self.painter.draw_main_hero_in_the_elevator = value
 
-    def emergency_finish_all_animations(self):
+    def emergency_finish_elevator_animations(self):
         """
-        отвечает за вызов быстрого завершения всех анимаций и функций с задержкой
+        отвечает за вызов быстрого завершения всех анимаций и функций с задержкой лифта
         """
         for animation in self.images_animations:
             animation.emergency_finish()
@@ -79,7 +84,7 @@ class ElevatorAnimator:
         отвечает за анимацию захождения главного героя в лифт
         завершает анимации с лифтом, которые были вызваны и активны до этого
         """
-        self.emergency_finish_all_animations()
+        self.emergency_finish_elevator_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.15))
@@ -96,7 +101,7 @@ class ElevatorAnimator:
         отвечает за анимацию выхода главного героя из лифта
         завершает анимации с лифтом, которые были вызваны и активны до этого
         """
-        self.emergency_finish_all_animations()
+        self.emergency_finish_elevator_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero, _time_interval=0.15))
@@ -130,6 +135,75 @@ class ElevatorAnimator:
                 self.later_on_funcs.remove(func)
             else:
                 func.update()
+        for animation in self.quests_animations:
+            if animation.done:
+                self.quests_animations.remove(animation)
+            else:
+                animation.update()
+
+
+class QuestAnimation:
+
+    def __init__(self, _quest, _fps, _pos_in_order):
+        self.indent = 20
+        self.quest = _quest
+        self.img_surf = pygame.image.load(self.quest.img_file)
+        self.opacity = 255
+        self.dt = 1 / _fps
+        self.step_change = (0 - self.opacity) * (self.dt / QuestAnimationTime)
+        self.time = 0
+        self.done = False
+        self.pos_in_order = _pos_in_order
+        self.screen_x = 0
+        self.screen_y = 0
+        self.unit_width = 0
+        self.unit_height = 0
+        self.scale_k = 0
+        self.calculate_params()
+
+    def calculate_params(self):
+        self.unit_width = self.quest.notification_screen.main_screen.game.screen_width // 5
+        img_width = self.img_surf.get_width()
+        img_height = self.img_surf.get_height()
+        self.scale_k = self.unit_width / img_width
+        self.unit_height = img_height * self.scale_k
+        self.screen_x = self.indent + self.unit_width // 2
+        self.screen_y = self.indent + self.unit_height // 2 + self.pos_in_order * (self.indent + self.pos_in_order)
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "quest":
+            self.img_surf = pygame.image.load(self.quest.img_file)
+
+    def update_pic(self):
+        self.update_image(self.quest.notification_screen.main_screen_saver.game.game_surf, self.img_surf, self.screen_x,
+                          self.screen_y, self.opacity, self.scale_k)
+
+    def update(self):
+        self.time += self.dt
+        if self.time >= QuestAnimationTime:
+            self.done = True
+        else:
+            self.opacity += self.step_change
+            self.update_pic()
+
+    @staticmethod
+    def update_image(surf, obj_surf, x, y, opacity, scale_k=1):
+        """
+        Отрисовывает на экран картинку из файла
+        :param y:
+        :param x:
+        :param obj_surf:
+        :param surf: main Surface
+        :param scale_k: размер относительно единичной длины
+        :param opacity: непрозрачность картинки
+        """
+        img_width = obj_surf.get_width()
+        img_height = obj_surf.get_height()
+        img_surf = pygame.transform.scale(obj_surf, (int(scale_k * img_width), int(scale_k * img_height)))
+        img_surf.set_alpha(opacity)
+        img_rect = img_surf.get_rect(center=(x, y))
+        surf.blit(img_surf, img_rect)
 
 
 class ElevatorCorrectionCordsAnimation:

@@ -279,3 +279,5 @@ class TaskButton(Button):
     def start(self):
         self.pressed = False
         self.game.main_hero.move_blocked = not self.game.main_hero.move_blocked
+        self.game.screen_controller.main_screen_saver.notification_screen.active = \
+            not self.game.screen_controller.main_screen_saver.notification_screen.active
