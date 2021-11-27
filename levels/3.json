@@ -1,11 +1,11 @@
 {
   "layers": {
     "layer_1": [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "x x x d 0 x x x",
+      "x x x e d x x x",
+      "x x x e d x x x",
+      "x 0 0 0 0 0 0 x",
+      "x 0 0 0 0 0 0 x"
     ],
     "layer_2" : [
       "0 0 e e d d x x",

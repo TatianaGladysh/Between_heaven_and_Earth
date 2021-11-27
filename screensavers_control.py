@@ -138,8 +138,6 @@ class MainScreenSaver(GameScreenSaver):
         """
         self.main_hero.update()
         self.draw_game_space()
-        for notification in self.notifications:
-            notification.update()
         self.back_to_levels_button.update()
         self.task_button.update()
         self.notification_screen.update()
@@ -184,10 +182,10 @@ class NotificationsScreen:
         for i in range(len(self.quests)):
             self.quests[i].set_pos_in_order(i)
 
-    def find_quests_by_stage(self, stage):
+    def find_quests_by_stage(self, _stage):
         found_quests = []
         for quest in self.quests:
-            if quest.stage == stage:
+            if quest.stage == _stage:
                 found_quests.append(quest)
         return found_quests
 
@@ -201,6 +199,7 @@ class NotificationsScreen:
     def set_quests(self):
         for character in self.main_screen_saver.characters:
             self.add_quest(character)
+        self.active_stage = 0
 
     def add_quest(self, character):
         self.quests.append(Quest(character, self))
@@ -250,7 +249,7 @@ class Quest:
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
         self.screen_y = (self.indent + self.unit_height) * self.pos_in_quests_order + \
-                         self.indent + self.unit_height // 2
+                        self.indent + self.unit_height // 2
 
     def set_pos_in_order(self, number):
         self.pos_in_quests_order = number

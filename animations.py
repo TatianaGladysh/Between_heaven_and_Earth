@@ -2,7 +2,7 @@ import pygame
 from labyrinth import Room
 from heroes import Hero
 
-QuestAnimationTime = 3
+QuestAnimationTime = 0.5
 
 
 class Animator:
@@ -120,6 +120,11 @@ class Animator:
         если таковые имеются
         :return:
         """
+        for animation in self.quests_animations:
+            if animation.done:
+                self.quests_animations.remove(animation)
+            else:
+                animation.update()
         for animation in self.images_animations:
             if animation.done:
                 self.images_animations.remove(animation)
@@ -135,11 +140,6 @@ class Animator:
                 self.later_on_funcs.remove(func)
             else:
                 func.update()
-        for animation in self.quests_animations:
-            if animation.done:
-                self.quests_animations.remove(animation)
-            else:
-                animation.update()
 
 
 class QuestAnimation:
@@ -162,7 +162,7 @@ class QuestAnimation:
         self.calculate_params()
 
     def calculate_params(self):
-        self.unit_width = self.quest.notification_screen.main_screen.game.screen_width // 5
+        self.unit_width = self.quest.notification_screen.main_screen_saver.game.screen_width // 5
         img_width = self.img_surf.get_width()
         img_height = self.img_surf.get_height()
         self.scale_k = self.unit_width / img_width
