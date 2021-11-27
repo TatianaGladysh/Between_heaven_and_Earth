@@ -7,6 +7,7 @@ class EventProcessor:
         self.game = _game
         self.start_button = self.game.screen_controller.start_screen_saver.start_button
         self.back_to_levels_button = self.game.screen_controller.main_screen_saver.back_to_levels_button
+        self.task_button = self.game.screen_controller.main_screen_saver.task_button
         self.level_buttons = self.game.screen_controller.level_screen_saver.level_buttons
         self.quit = False
         self.main_hero = self.game.main_hero
@@ -19,10 +20,11 @@ class EventProcessor:
                 self.quit = True
                 continue
             if self.game.active_screen == "main_screen":
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN and not self.game.main_hero.move_blocked:
                     self.move_main_hero(event)
                 else:
                     self.screen_buttons_check(event, self.back_to_levels_button)
+                    self.screen_buttons_check(event, self.task_button)
             elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)

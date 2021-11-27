@@ -227,3 +227,55 @@ class BackToLevelsButton(Button):
     def start(self):
         self.pressed = False
         self.game.active_screen = "level_screen"
+
+
+class TaskButton(Button):
+    def __init__(self, _game):
+        """
+        Кнопка открывает список заданий на экране игры
+        """
+        self.game = _game
+        super().__init__(self.game, self.start)
+        self.img_file = "assets/buttons/start_button.png"
+        self.img_surf = pygame.image.load(self.img_file)
+        self.img_height = self.img_surf.get_height()
+        self.img_width = self.img_surf.get_width()
+        self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
+
+    def calculate_cords(self):
+        """
+        Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
+        :return: координаты, коэффициент размера, длину и высоту
+        """
+        img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
+        img_width = img_rect.width
+        img_height = img_rect.height
+        unit_width = self.window_width // 10
+        k = unit_width / img_width
+        unit_height = k * img_height
+        x = self.window_width // 10 * 9
+        y = self.window_height // 5
+        return x, y, k, unit_width, unit_height
+
+    def update(self):
+        """
+        обновляет изображение, которое должно быть у кнопки
+        """
+        if self.pressed:
+            self.img_file = "assets/buttons/pressed_start_button.png"
+        else:
+            self.img_file = "assets/buttons/start_button.png"
+
+        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
+        self.update_pic()
+
+    def update_pic(self):
+        """
+        обновляет картинку кнопки
+        """
+        self.update_image(255)
+
+    def start(self):
+        self.pressed = False
+        self.game.main_hero.move_blocked = not self.game.main_hero.move_blocked

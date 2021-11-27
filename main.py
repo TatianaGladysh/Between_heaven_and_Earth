@@ -43,7 +43,7 @@ class Game:
         self.characters = []
         for character_description_dict in characters_dict:
             cords = character_description_dict["start_cords"]
-            appearance_stage = character_description_dict[ "appearance_stage"]
+            appearance_stage = character_description_dict["appearance_stage"]
             name = character_description_dict["name"]
             task = character_description_dict["task"]
             self.characters.append(Character(self, cords, name, task, appearance_stage))

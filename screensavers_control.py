@@ -1,7 +1,7 @@
 import pygame
 from draw_all import Painter
 import numpy as np
-from buttons import LevelButton, StartButton, BackToLevelsButton
+from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton
 
 pygame.init()
 
@@ -110,7 +110,7 @@ class MainScreenSaver(GameScreenSaver):
     def __init__(self, _game):
         """
         Главная заставка игры, где пользователь может управлять героем
-        :param _surf: Main Surface of the game
+        :param _game: объект класса Game
         """
         self.game = _game
         super().__init__(self.game, "assets/backgrounds/main_background.png")
@@ -120,6 +120,7 @@ class MainScreenSaver(GameScreenSaver):
         self.painter = Painter(self.game, self.game.screen_width, self.game.screen_height)
         self.notifications = [Notification()]
         self.back_to_levels_button = BackToLevelsButton(self.game)
+        self.task_button = TaskButton(self.game)
 
     def draw_game_space(self):
         """
@@ -137,6 +138,7 @@ class MainScreenSaver(GameScreenSaver):
         for notification in self.notifications:
             notification.update()
         self.back_to_levels_button.update()
+        self.task_button.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
         self.labyrinth = _labyrinth
