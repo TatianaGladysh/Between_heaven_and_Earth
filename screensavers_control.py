@@ -52,19 +52,18 @@ class GameScreenSaver:
     def __init__(self, _game, _background_img):
         self.game = _game
         self.surf = self.game.game_surf
-        self.delta_time = 1 / self.game.fps
         self.game_time = 0
         self.window_width = self.game.screen_width
         self.window_height = self.game.screen_height
         self.background_img = _background_img
-        self.background_surf = pygame.image.load(self.background_img)
+        self.background_surf = pygame.image.load(self.background_img).convert_alpha()
         self.background_scale_k = self.calculate_background_scale_k()
 
     def calculate_background_scale_k(self):
         """
         Рассчет коэффициента размера картинки заднего фона
         """
-        img_surf = pygame.image.load(self.background_img)
+        img_surf = pygame.image.load(self.background_img).convert_alpha()
         k = self.window_height / img_surf.get_height()
         return k
 
@@ -94,7 +93,7 @@ class StartScreenSaver(GameScreenSaver):
         """
         Рассчет коэффициента размера картинки заднего фона
         """
-        img_surf = pygame.image.load(self.background_img)
+        img_surf = pygame.image.load(self.background_img).convert_alpha()
         k = self.window_height / img_surf.get_height()
         return k
 
@@ -241,7 +240,7 @@ class Quest:
         self.screen_position = 0
 
     def calculate_screen_params(self):
-        img_surf = pygame.image.load(self.img_file)
+        img_surf = pygame.image.load(self.img_file).convert_alpha()
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
         self.unit_width = self.notification_screen.main_screen_saver.game.screen_width // (3 / 4)
@@ -268,7 +267,7 @@ class Quest:
                 self.img_file = "assets/none.png"
                 self.opacity = 255
         elif key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file)
+            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
     def draw_spawn_animation(self, pos_in_animations_order):
         self.notification_screen.main_screen_saver.painter.animator.add_animation(
@@ -296,7 +295,7 @@ class LevelScreenSaver(GameScreenSaver):
 
     def fill_level_buttons_array(self):
         buttons_array = np.zeros(self.levels_count, dtype=LevelButton)
-        button_surf = pygame.image.load("assets/buttons/0_lvl_button.png")
+        button_surf = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha()
         button_width = button_surf.get_width()
         indent = button_width // 4
         button_height = button_surf.get_height()

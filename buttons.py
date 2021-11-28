@@ -16,7 +16,7 @@ class Button:
         self.surf = game.game_surf
         self.pressed = False
         self.img_file = "assets/none.png"
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.x = 0
         self.y = 0
         self.unit_width = 0
@@ -62,7 +62,7 @@ class StartButton(Button):
         self.game = _game
         super().__init__(self.game, self.start)
         self.img_file = "assets/buttons/start_button.png"
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.active_screen = self.game.active_screen
@@ -92,7 +92,7 @@ class StartButton(Button):
         else:
             self.img_file = "assets/buttons/start_button.png"
 
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.update_pic()
 
@@ -124,7 +124,7 @@ class LevelButton(Button):
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file)
+            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         elif key == "pressed":
             if self.pressed:
                 self.img_file = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
@@ -133,7 +133,7 @@ class LevelButton(Button):
 
     @staticmethod
     def calculate_dimensions():
-        img_surf = pygame.image.load("assets/buttons/0_lvl_button.png")
+        img_surf = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha()
         return img_surf.get_width(), img_surf.get_height()
 
     def read_img_file(self):
@@ -185,7 +185,7 @@ class BackToLevelsButton(Button):
         self.game = _game
         super().__init__(self.game, self.start)
         self.img_file = "assets/buttons/start_button.png"
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -214,7 +214,7 @@ class BackToLevelsButton(Button):
         else:
             self.img_file = "assets/buttons/start_button.png"
 
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.update_pic()
 
@@ -237,7 +237,7 @@ class TaskButton(Button):
         self.game = _game
         super().__init__(self.game, self.start)
         self.img_file = "assets/buttons/start_button.png"
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -266,7 +266,7 @@ class TaskButton(Button):
         else:
             self.img_file = "assets/buttons/start_button.png"
 
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.update_pic()
 

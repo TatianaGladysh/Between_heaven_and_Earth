@@ -14,7 +14,7 @@ class Painter:
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
         """
         self.game = _game
-        self.grid_unit_surf = pygame.image.load("assets/grid_unit.png")
+        self.grid_unit_surf = pygame.image.load("assets/grid_unit.png").convert_alpha()
         self.fps = self.game.fps
         self.surf = self.game.game_surf
         self.window_width = self.game.screen_width
@@ -55,7 +55,7 @@ class Painter:
         """
         рассчитывает единичные размеры комнат(по сути, размеры комнат на экране)
         """
-        img_surf = pygame.image.load("assets/Default_room.png")
+        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
         k = img_width / img_height
@@ -94,7 +94,7 @@ class Painter:
         """
         Рассчитыват коэффициент размера изображений
         """
-        img_surf = pygame.image.load("assets/Default_room.png")
+        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
         img_height = img_surf.get_height()
         self.img_scale_k = self.unit_height / img_height
 
@@ -198,7 +198,8 @@ class Painter:
         """
         img_width = obj_surf.get_width()
         img_height = obj_surf.get_height()
-        img_surf = pygame.transform.scale(obj_surf, (int(scale_k * img_width), int(scale_k * img_height)))
+        img_surf = pygame.transform.scale(obj_surf,
+                                          (int(scale_k * img_width), int(scale_k * img_height))).convert_alpha()
         img_surf.set_alpha(opacity)
         img_rect = img_surf.get_rect(center=(x, y))
         surf.blit(img_surf, img_rect)
@@ -218,7 +219,7 @@ class ElevatorInside:
         отвечает за отрисовку лифта изнутри
         """
         self.img_file = "assets/elevator/elevator_inside.png"
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.screen_x, self.screen_y = -10, -10
 
     def set_screen_cords(self, x, y):
@@ -228,4 +229,4 @@ class ElevatorInside:
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file)
+            self.img_surf = pygame.image.load(self.img_file).convert_alpha()

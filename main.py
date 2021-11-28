@@ -1,13 +1,16 @@
-import pygame
-from heroes import MainHero, Character
-from event_processing import EventProcessor
-from screensavers_control import ScreenSaverController
-from labyrinth import Labyrinth
 import json
+import time
+
+import pygame
+
+from event_processing import EventProcessor
+from heroes import MainHero, Character
+from labyrinth import Labyrinth
+from screensavers_control import ScreenSaverController
 
 pygame.init()
 
-FPS = 180
+FPS = 200
 WIDTH = 1000
 HEIGHT = 600
 
@@ -27,7 +30,7 @@ class Game:
         self.main_hero = None
         self.characters = None
         self.active_screen = "start_screen"
-        self.fps = FPS
+        self.fps = Fps(self.clock)
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
         self.previous_screen = "start_screen"
@@ -60,18 +63,46 @@ class Game:
     def set_active_screen(self, screen_name):
         self.active_screen = screen_name
 
+    def main_process(self):
+        self.event_processor.update_events_statuses_and_objects_cords()
+        if self.active_screen != self.previous_screen:
+            self.previous_screen = self.active_screen
+            if self.active_screen == "main_screen":
+                self.start_main_part(self.labyrinth_file)
+        self.screen_controller.update()
+
     def update(self):
         """
         Основной цикл игры
         """
         while not self.event_processor.quit:
-            self.clock.tick(FPS)
-            self.event_processor.update_events_statuses_and_objects_cords()
-            if self.active_screen != self.previous_screen:
-                self.previous_screen = self.active_screen
-                if self.active_screen == "main_screen":
-                    self.start_main_part(self.labyrinth_file)
-            self.screen_controller.update()
+            self.fps.begin_of_cycle()
+            self.main_process()
+            self.fps.end_of_cycle()
+
+
+class Fps:
+    def __init__(self, _clock):
+        self.value = FPS
+        self.start_time = 0
+        self.end_time = 0
+        self.clock = _clock
+        self.display_delay = 0.5
+        self.display_countdown = 0
+
+    def __rtruediv__(self, other):
+        return other / self.value
+
+    def begin_of_cycle(self):
+        self.start_time = time.time()
+
+    def end_of_cycle(self):
+        self.end_time = time.time()
+        self.value = 1 / (self.end_time - self.start_time)
+        self.display_countdown += (1 / self.value)
+        if self.display_countdown >= self.display_delay:
+            self.display_countdown = 0
+            pygame.display.set_caption("FPS = {:.2f}".format(self.value))
 
 
 if __name__ == "__main__":

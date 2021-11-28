@@ -2,7 +2,8 @@ import pygame
 from labyrinth import Room
 from heroes import Hero
 
-QuestAnimationTime = 0.5
+QuestAnimationTime = 3
+ElevatorOpeningClosingAnimation = 0.5
 
 
 class Animator:
@@ -21,7 +22,6 @@ class Animator:
         self.cords_animations = []
         self.later_on_funcs = []
         self.quests_animations = []
-        self.dt = 1 / _painter.fps
         self.fps = _painter.fps
         self.processing = False
 
@@ -87,14 +87,18 @@ class Animator:
         self.emergency_finish_elevator_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[True])
+                                     self.painter.fps, self.painter.main_hero,
+                                     _time_interval=ElevatorOpeningClosingAnimation))
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=ElevatorOpeningClosingAnimation, args=[True])
         self.add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
                                                                            self.max_elevator_correction_y),
-                                                            _time_interval=0.15, _fps=self.painter.fps))
+                                                            _time_interval=ElevatorOpeningClosingAnimation,
+                                                            _fps=self.painter.fps))
         self.add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15, _delay=0.15))
+                                     self.painter.fps, self.painter.main_hero,
+                                     _time_interval=ElevatorOpeningClosingAnimation,
+                                     _delay=ElevatorOpeningClosingAnimation))
 
     def elevator_exit(self):
         """
@@ -104,15 +108,17 @@ class Animator:
         self.emergency_finish_elevator_animations()
         self.add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15))
+                                     self.painter.fps, self.painter.main_hero,
+                                     _time_interval=ElevatorOpeningClosingAnimation))
         self.add_animation(
-            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=0.15, _fps=self.painter.fps,
-                                             _delay=0.2))
+            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=ElevatorOpeningClosingAnimation,
+                                             _fps=self.painter.fps, _delay=ElevatorOpeningClosingAnimation))
         self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[False])
         self.add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
-                                     self.painter.fps, self.painter.main_hero, _time_interval=0.15,
-                                     _delay=0.15))
+                                     self.painter.fps, self.painter.main_hero,
+                                     _time_interval=ElevatorOpeningClosingAnimation,
+                                     _delay=ElevatorOpeningClosingAnimation))
 
     def update(self):
         """
@@ -144,13 +150,15 @@ class Animator:
 
 class QuestAnimation:
 
-    def __init__(self, _quest, _fps, _pos_in_order):
+    def __init__(self, _quest, _fps, _pos_in_order, _begin_opacity=255):
         self.indent = 20
         self.quest = _quest
-        self.img_surf = pygame.image.load(self.quest.img_file)
+        self.img_surf = pygame.image.load(self.quest.img_file).convert_alpha()
+        self.begin_opacity = _begin_opacity
         self.opacity = 255
-        self.dt = 1 / _fps
-        self.step_change = (0 - self.opacity) * (self.dt / QuestAnimationTime)
+        self.fps = _fps
+        self.dt = 1 / self.fps
+        self.step_change = (0 - self.opacity) * ((1 / self.fps) / QuestAnimationTime)
         self.time = 0
         self.done = False
         self.pos_in_order = _pos_in_order
@@ -173,7 +181,10 @@ class QuestAnimation:
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "quest":
-            self.img_surf = pygame.image.load(self.quest.img_file)
+            self.img_surf = pygame.image.load(self.quest.img_file).convert_alpha()
+        if key == "fps":
+            self.dt = 1 / self.fps
+            self.step_change = (0 - self.begin_opacity) * ((1 / self.fps) / QuestAnimationTime)
 
     def update_pic(self):
         self.update_image(self.quest.notification_screen.main_screen_saver.game.game_surf, self.img_surf, self.screen_x,
@@ -223,11 +234,17 @@ class ElevatorCorrectionCordsAnimation:
         self.end_value_cords = _end_values_cords
         self.time_interval = _time_interval
         self.time = 0
-        self.dt = 1 / _fps
+        self.fps = _fps
+        self.dt = 1 / self.fps
         self.delay = _delay
         self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (_time_interval / self.dt)
         self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (_time_interval / self.dt)
         self.done = False
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "fps":
+            self.dt = 1 / self.fps
 
     def change_variables(self):
         """
@@ -273,8 +290,14 @@ class LaterOnFunc:
         self.time_interval = _time_interval
         self.args = _args
         self.time = 0
-        self.dt = 1 / _fps
+        self.fps = _fps
+        self.dt = 1 / self.fps
         self.done = False
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "fps":
+            self.dt = 1 / self.fps
 
     def execute(self):
         """
@@ -323,13 +346,19 @@ class ImageAnimation:
         self.active_surf_number = 0
         self.active_surf = self.frame_surfaces[0]
         self.time_interval = _time_interval
-        self.dt = 1 / _fps
+        self.fps = _fps
+        self.dt = 1 / self.fps
         self.converting_frame_interval = 0
         self.countdown = self.time_interval / len(self.frames_files)
         self.done = False
         self.nature_of_frames_change = _nature_of_frames_change
         self.id = ImageAnimation.id
         self.delay = _delay
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "fps":
+            self.dt = 1 / self.fps
 
     def get_time_of_action(self):
         """
@@ -344,7 +373,7 @@ class ImageAnimation:
         """
         frames_surfaces = []
         for i in range(len(self.frames_files)):
-            frames_surfaces.append(pygame.image.load(self.frames_files[i]))
+            frames_surfaces.append(pygame.image.load(self.frames_files[i]).convert_alpha())
         return frames_surfaces
 
     def update_frame(self):

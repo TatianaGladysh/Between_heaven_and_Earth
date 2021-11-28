@@ -12,7 +12,7 @@ class Room:
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file)
+            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
     def get_cords(self):
         return tuple(self.room_coordinates)
@@ -23,28 +23,28 @@ class Room:
     def def_img_file(self):
         if self.type == "empty":
             img_file = "assets/Default_room.png"
-            return img_file, pygame.image.load(img_file)
+            return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "elevator":
             img_file = "assets/elevator/close_elevator.png"
-            return img_file, pygame.image.load(img_file)
+            return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "door":
             # нужно нарисовать картинку комнаты с дверью
             img_file = "assets/door_room.png"
-            return img_file, pygame.image.load(img_file)
+            return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "block":
             # нужно нарисовать картинку закрытой комнаты(стены)
             img_file = "assets/block_room.png"
-            return img_file, pygame.image.load(img_file)
+            return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "none":
             img_file = "assets/none.png"
-            return img_file, pygame.image.load(img_file)
+            return img_file, pygame.image.load(img_file).convert_alpha()
 
     def get_img(self):
         return self.img_file
 
     def set_img(self, filename):
         self.img_file = filename
-        self.img_surf = pygame.image.load(self.img_file)
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
     def set_surf(self, surf):
         self.img_surf = surf

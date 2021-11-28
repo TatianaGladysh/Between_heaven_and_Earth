@@ -24,12 +24,13 @@ class MainHero(Hero):
         self.read_cords()
         super().__init__((self.x, self.y, self.z))
         self.img_file = "assets/main_hero.png"
-        self.img_surf = pygame.image.load(self.img_file)
-        self.dt = 1 / self.game.fps
-        self.max_speed = 7
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.max_speed = 4
         self.speed_x = 0
         self.speed_y = 0
         self.speed_z = 0
+        self.fps = self.game.fps
+        self.dt = 1 / self.fps
         self.epsilon = 0.1
         self.inside_elevator = False
         self.move_blocked = False
@@ -50,7 +51,9 @@ class MainHero(Hero):
                 # print("Main hero is not announced")
                 pass
         if key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file)
+            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        if key == "fps":
+            self.dt = 1 / self.fps
 
     def check_task(self):
         pass
@@ -97,10 +100,16 @@ class Character(Hero):
         self.speed_x = 0
         self.max_speed = 100  # потом
         self.epsilon = 0.1
-        self.delta_time = 1 / self.game.fps
+        self.fps = self.game.fps
+        self.dt = 1 / self.fps
         self.image_file = "assets/none.png"
         self.def_img_and_surf()
         self.quest_is_done = False
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "fps":
+            self.dt = 1 / self.fps
 
     def def_img_and_surf(self):
         if self.name == "Roma":
@@ -115,7 +124,7 @@ class Character(Hero):
             self.image_file = "assets/none.png"
         elif self.name == "Kiselev":
             self.image_file = "assets/none.png"
-        self.img_surf = pygame.image.load(self.image_file)
+        self.img_surf = pygame.image.load(self.image_file).convert_alpha()
 
     def move_x_axis(self):
         if self.arrival_x == self.x:
@@ -131,7 +140,7 @@ class Character(Hero):
 
     def update(self):
         self.move_check()
-        self.x += self.speed_x * self.delta_time
+        self.x += self.speed_x * self.dt
 
     def move_check(self):
         if abs(self.x - self.arrival_x) < self.epsilon:
