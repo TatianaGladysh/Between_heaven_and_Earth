@@ -4,6 +4,8 @@ from heroes import Hero
 
 QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
+BeginScreenAnimationTime = 2
+EndScreenAnimationTime = 2
 
 
 class Animator:
@@ -22,6 +24,7 @@ class Animator:
         self.cords_animations = []
         self.later_on_funcs = []
         self.quests_animations = []
+        self.switch_screen_animations = []
         self.fps = _painter.fps
         self.processing = False
 
@@ -46,6 +49,8 @@ class Animator:
             self.cords_animations.append(animation)
         elif isinstance(animation, QuestAnimation):
             self.quests_animations.append(animation)
+        if isinstance(animation, AnimationSwitchScreen):
+            self.switch_screen_animations.append(animation)
 
     def add_later_on_funcs(self, func, delay, args=None):
         """
@@ -146,6 +151,42 @@ class Animator:
                 self.later_on_funcs.remove(func)
             else:
                 func.update()
+
+
+class AnimationSwitchScreen:
+
+    def __init__(self, _game, _start_opacity, _end_opacity, _delay, _switch_time):
+        """
+        init
+        :param _game:
+        :param _start_opacity:
+        :param _end_opacity:
+        :param _delay:
+        :param _switch_time:
+        :return:
+        """
+        self.game = _game
+        self.self_surf = pygame.Surface((self.game.screen_width, self.game.screen_height))
+        self.self_surf.set_alpha(_start_opacity)
+        self.opacity = _start_opacity
+        self.end_opacity = _end_opacity
+        self.time_interval = _switch_time
+        self.time = 0
+        self.delay = _delay
+        self.general_delta = _end_opacity - _start_opacity
+        self.done = False
+
+    def set_new_alpha(self):
+        self.opacity += self.general_delta * ((1 / self.game.fps) / self.time_interval)
+        self.self_surf.set_alpha(self.opacity)
+
+    def update(self):
+        self.time += (1 / self.game.fps)
+        if self.delay <= self.time <= self.delay + self.time_interval:
+            self.set_new_alpha()
+            self.game.game_surf.blit(self.self_surf, (0, 0))
+        elif self.time > self.delay + self.time_interval:
+            self.done = True
 
 
 class QuestAnimation:

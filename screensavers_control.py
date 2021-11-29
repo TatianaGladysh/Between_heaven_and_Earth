@@ -3,6 +3,7 @@ from draw_all import Painter
 import numpy as np
 from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton
 from animations import QuestAnimation
+import animations
 
 pygame.init()
 
@@ -23,18 +24,38 @@ class ScreenSaverController:
         self.start_screen_saver = StartScreenSaver(self.game)
         self.main_screen_saver = MainScreenSaver(self.game)
         self.selected_level = None
+        self.screen_animations = []
+        self.active_screen = "start_screen"
+
+    def add_begin_screen_animation(self):
+        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 255, 0, 0, 1))
+
+    def add_switch_screen_animation(self):
+        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 0, 255, 0, 0.5))
+        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 255, 0, 0.5, 2))
+
+    def update_screen_animations(self):
+        for animation in self.screen_animations:
+            if animation.done:
+                self.screen_animations.remove(animation)
+            else:
+                animation.update()
+
+    def set_active_screen(self, _active_screen):
+        self.active_screen = _active_screen
 
     def update(self):
         """
         Вызывает функции обновления объекта отрисовки игровых объектов и интерфейса
         """
         self.surf.fill("WHITE")
-        if self.game.active_screen == "start_screen":
+        if self.active_screen == "start_screen":
             self.start_screen_saver.update()
-        elif self.game.active_screen == "main_screen":
+        elif self.active_screen == "main_screen":
             self.main_screen_saver.update()
-        elif self.game.active_screen == "level_screen":
+        elif self.active_screen == "level_screen":
             self.level_screen_saver.update()
+        self.update_screen_animations()
         pygame.display.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
@@ -285,14 +306,14 @@ class Quest:
 
 class LevelScreenSaver(GameScreenSaver):
 
-    def __init__(self, _game):
+    def __init__(self, _game, _active_screen="start_screen"):
         self.game = _game
         super().__init__(self.game, "assets/backgrounds/start_background.png")
         self.window_width = self.game.screen_width
         self.window_height = self.game.screen_height
         self.levels_count = LevelsCount
         self.labyrinth_file = self.game.labyrinth_file
-        self.active_screen = self.game.active_screen
+        self.active_screen = _active_screen
         self.level_buttons = self.fill_level_buttons_array()
 
     def fill_level_buttons_array(self):

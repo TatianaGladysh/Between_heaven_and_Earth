@@ -129,9 +129,7 @@ class Character(Hero):
                 self.speed_x = sign(self.max_speed, move_by_length)
 
     def block_check(self, move_by_length):
-        if not self.game.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block":
-            return True
-        return False
+        return not self.game.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block"
 
     def update(self):
         self.move_check()

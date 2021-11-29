@@ -7,6 +7,7 @@ from event_processing import EventProcessor
 from heroes import MainHero, Character
 from labyrinth import Labyrinth
 from screensavers_control import ScreenSaverController
+import animations
 
 pygame.init()
 
@@ -21,19 +22,36 @@ class Game:
         """
         Вся игра со совим лабиринтом, героями
         """
+        self.begin = False
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
         self.game_surf = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
+        self.fps = Fps(self.clock)
         self.labyrinth = None
         self.labyrinth_file = ""
         self.main_hero = None
         self.characters = None
-        self.active_screen = "start_screen"
-        self.fps = Fps(self.clock)
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
-        self.previous_screen = "start_screen"
+        self.screen_controller.add_begin_screen_animation()
+        self.active_screen = "start_screen"
+        self.later_on_func = None
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "active_screen":
+            if self.active_screen == "main_screen":
+                self.later_on_func = animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
+                                                            self.fps, [self.labyrinth_file])
+            else:
+                self.screen_controller.active_screen = self.active_screen
+
+            if self.begin:
+                self.screen_controller.add_switch_screen_animation()
+            else:
+                self.screen_controller.add_begin_screen_animation()
+                self.begin = True
 
     def create_main_hero(self):
         self.main_hero = MainHero(self)
@@ -59,17 +77,16 @@ class Game:
         # потом нужно будет сделать задаваемые координаты из файла с
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
+        self.screen_controller.set_active_screen("main_screen")
 
     def set_active_screen(self, screen_name):
         self.active_screen = screen_name
 
     def main_process(self):
         self.event_processor.update_events_statuses_and_objects_cords()
-        if self.active_screen != self.previous_screen:
-            self.previous_screen = self.active_screen
-            if self.active_screen == "main_screen":
-                self.start_main_part(self.labyrinth_file)
         self.screen_controller.update()
+        if self.later_on_func:
+            self.later_on_func.update()
 
     def update(self):
         """

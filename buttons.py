@@ -55,7 +55,7 @@ class Button:
 
 class StartButton(Button):
 
-    def __init__(self, _game):
+    def __init__(self, _game, _active_screen="start_screen"):
         """
         Кнопка старта на начальном экране игры
         """
@@ -65,7 +65,7 @@ class StartButton(Button):
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
-        self.active_screen = self.game.active_screen
+        self.active_screen = _active_screen
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
 
     def calculate_cords(self):
