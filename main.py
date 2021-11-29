@@ -45,13 +45,18 @@ class Game:
                 self.later_on_func = animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
                                                             self.fps, [self.labyrinth_file])
             else:
-                self.screen_controller.active_screen = self.active_screen
+                self.later_on_func = animations.LaterOnFunc(self.set_active_screen_in_screen_controller,
+                                                            animations.BeginScreenAnimationTime,
+                                                            self.fps, [self.active_screen])
 
             if self.begin:
                 self.screen_controller.add_switch_screen_animation()
             else:
                 self.screen_controller.add_begin_screen_animation()
                 self.begin = True
+
+    def set_active_screen_in_screen_controller(self, screen_name):
+        self.screen_controller.set_active_screen(screen_name)
 
     def create_main_hero(self):
         self.main_hero = MainHero(self)

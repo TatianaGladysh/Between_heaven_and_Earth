@@ -5,6 +5,8 @@ from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton
 from animations import QuestAnimation
 import animations
 
+TimeAnimationCorrection = 0.01
+
 pygame.init()
 
 LevelsCount = 6
@@ -28,11 +30,16 @@ class ScreenSaverController:
         self.active_screen = "start_screen"
 
     def add_begin_screen_animation(self):
-        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 255, 0, 0, 1))
+        self.screen_animations.append(
+            animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.BeginScreenAnimationTime))
 
     def add_switch_screen_animation(self):
-        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 0, 255, 0, 0.5))
-        self.screen_animations.append(animations.AnimationSwitchScreen(self.game, 255, 0, 0.5, 2))
+        self.screen_animations.append(
+            animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BeginScreenAnimationTime))
+        self.screen_animations.append(
+            animations.AnimationSwitchScreen(self.game, 255, 0,
+                                             animations.BeginScreenAnimationTime - TimeAnimationCorrection,
+                                             animations.EndOfScreenAnimationTime))
 
     def update_screen_animations(self):
         for animation in self.screen_animations:
