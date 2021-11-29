@@ -157,7 +157,6 @@ class QuestAnimation:
         self.begin_opacity = _begin_opacity
         self.opacity = 255
         self.fps = _fps
-        self.dt = 1 / self.fps
         self.step_change = (0 - self.opacity) * ((1 / self.fps) / QuestAnimationTime)
         self.time = 0
         self.done = False
@@ -182,19 +181,17 @@ class QuestAnimation:
         self.__dict__[key] = value
         if key == "quest":
             self.img_surf = pygame.image.load(self.quest.img_file).convert_alpha()
-        if key == "fps":
-            self.dt = 1 / self.fps
-            self.step_change = (0 - self.begin_opacity) * ((1 / self.fps) / QuestAnimationTime)
 
     def update_pic(self):
         self.update_image(self.quest.notification_screen.main_screen_saver.game.game_surf, self.img_surf, self.screen_x,
                           self.screen_y, self.opacity, self.scale_k)
 
     def update(self):
-        self.time += self.dt
+        self.time += (1 / self.fps)
         if self.time >= QuestAnimationTime:
             self.done = True
         else:
+            self.step_change = (0 - self.begin_opacity) * ((1 / self.fps) / QuestAnimationTime)
             self.opacity += self.step_change
             self.update_pic()
 
@@ -235,16 +232,13 @@ class ElevatorCorrectionCordsAnimation:
         self.time_interval = _time_interval
         self.time = 0
         self.fps = _fps
-        self.dt = 1 / self.fps
         self.delay = _delay
-        self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (_time_interval / self.dt)
-        self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (_time_interval / self.dt)
+        self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (_time_interval / (1 / self.fps))
+        self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (_time_interval / (1 / self.fps))
         self.done = False
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "fps":
-            self.dt = 1 / self.fps
+    # def __setattr__(self, key, value):
+    #     self.__dict__[key] = value
 
     def change_variables(self):
         """
@@ -268,7 +262,7 @@ class ElevatorCorrectionCordsAnimation:
         вызывает обновление координат
         :return:
         """
-        self.time += self.dt
+        self.time += (1 / self.fps)
         if self.delay <= self.time <= self.delay + self.time_interval and not self.done:
             self.change_variables()
         if self.time > self.delay + self.time_interval:
@@ -291,13 +285,10 @@ class LaterOnFunc:
         self.args = _args
         self.time = 0
         self.fps = _fps
-        self.dt = 1 / self.fps
         self.done = False
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "fps":
-            self.dt = 1 / self.fps
+    # def __setattr__(self, key, value):
+    #     self.__dict__[key] = value
 
     def execute(self):
         """
@@ -319,7 +310,7 @@ class LaterOnFunc:
         обновляет время и вызывает выполнение функции по его прошествии
         :return:
         """
-        self.time += self.dt
+        self.time += (1 / self.fps)
         if self.time_interval <= self.time:
             if not self.done:
                 self.execute()
@@ -347,7 +338,6 @@ class ImageAnimation:
         self.active_surf = self.frame_surfaces[0]
         self.time_interval = _time_interval
         self.fps = _fps
-        self.dt = 1 / self.fps
         self.converting_frame_interval = 0
         self.countdown = self.time_interval / len(self.frames_files)
         self.done = False
@@ -355,10 +345,8 @@ class ImageAnimation:
         self.id = ImageAnimation.id
         self.delay = _delay
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "fps":
-            self.dt = 1 / self.fps
+    # def __setattr__(self, key, value):
+    #     self.__dict__[key] = value
 
     def get_time_of_action(self):
         """
@@ -412,9 +400,9 @@ class ImageAnimation:
         вызывает обновление кадров анимации в нужное время
         """
         if self.delay > 0:
-            self.delay -= self.dt
+            self.delay -= (1 / self.fps)
         else:
-            self.converting_frame_interval += self.dt
+            self.converting_frame_interval += (1 / self.fps)
             if self.converting_frame_interval >= self.countdown:
                 self.update_frame()
 

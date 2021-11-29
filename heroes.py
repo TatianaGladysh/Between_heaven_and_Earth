@@ -25,12 +25,11 @@ class MainHero(Hero):
         super().__init__((self.x, self.y, self.z))
         self.img_file = "assets/main_hero.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-        self.max_speed = 4
+        self.max_speed = 2
         self.speed_x = 0
         self.speed_y = 0
         self.speed_z = 0
         self.fps = self.game.fps
-        self.dt = 1 / self.fps
         self.epsilon = 0.1
         self.inside_elevator = False
         self.move_blocked = False
@@ -52,8 +51,6 @@ class MainHero(Hero):
                 pass
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-        if key == "fps":
-            self.dt = 1 / self.fps
 
     def check_task(self):
         pass
@@ -84,9 +81,9 @@ class MainHero(Hero):
     def update(self):
         self.check_own_and_arrival_pos()
         if not self.move_blocked:
-            self.x += self.speed_x * self.dt
-            self.y += self.speed_y * self.dt
-            self.z += self.speed_z * self.dt
+            self.x += self.speed_x * (1 / self.fps)
+            self.y += self.speed_y * (1 / self.fps)
+            self.z += self.speed_z * (1 / self.fps)
 
 
 class Character(Hero):
@@ -101,15 +98,13 @@ class Character(Hero):
         self.max_speed = 100  # потом
         self.epsilon = 0.1
         self.fps = self.game.fps
-        self.dt = 1 / self.fps
         self.image_file = "assets/none.png"
         self.def_img_and_surf()
         self.quest_is_done = False
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "fps":
-            self.dt = 1 / self.fps
+    # def __setattr__(self, key, value):
+    #     self.__dict__[key] = value
+    #
 
     def def_img_and_surf(self):
         if self.name == "Roma":
@@ -140,7 +135,7 @@ class Character(Hero):
 
     def update(self):
         self.move_check()
-        self.x += self.speed_x * self.dt
+        self.x += self.speed_x * (1 / self.fps)
 
     def move_check(self):
         if abs(self.x - self.arrival_x) < self.epsilon:

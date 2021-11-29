@@ -174,9 +174,11 @@ class NotificationsScreen:
     def recalculate_order_of_quests(self):
         correct_quests_queue = [*self.find_quests_by_stage(self.active_stage)]
         for i in range(self.find_max_stage_of_quest() - self.active_stage):
-            correct_quests_queue.append(*self.find_quests_by_stage(i))
+            for quest in self.find_quests_by_stage(i):
+                correct_quests_queue.append(quest)
         for i in range(self.active_stage):
-            correct_quests_queue.append(*self.find_quests_by_stage(i))
+            for quest in self.find_quests_by_stage(i):
+                correct_quests_queue.append(quest)
         self.quests = correct_quests_queue
         for i in range(len(self.quests)):
             self.quests[i].set_pos_in_order(i)
