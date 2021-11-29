@@ -184,6 +184,7 @@ class AnimationSwitchScreen:
         self.time += (1 / self.game.fps)
         if self.delay <= self.time <= self.delay + self.time_interval:
             self.set_new_alpha()
+            self.game.game_surf.blit(self.self_surf, (0, 0))
         elif self.time > self.delay + self.time_interval:
             self.done = True
 
