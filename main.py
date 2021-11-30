@@ -3,6 +3,7 @@ import time
 
 import pygame
 
+import screensavers_control
 from event_processing import EventProcessor
 from heroes import MainHero, Character
 from labyrinth import Labyrinth
@@ -22,6 +23,7 @@ class Game:
         """
         Вся игра со совим лабиринтом, героями
         """
+        self.later_on_funcs = []
         self.begin = False
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
@@ -34,26 +36,34 @@ class Game:
         self.characters = None
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
-        self.screen_controller.add_begin_screen_animation()
         self.active_screen = "start_screen"
-        self.later_on_func = None
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "active_screen":
             if self.active_screen == "main_screen":
-                self.later_on_func = animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
-                                                            self.fps, [self.labyrinth_file])
-            else:
-                self.later_on_func = animations.LaterOnFunc(self.set_active_screen_in_screen_controller,
-                                                            animations.BeginScreenAnimationTime,
-                                                            self.fps, [self.active_screen])
+                self.screen_controller.add_blackout_screen_animation()
+                self.later_on_funcs.append(
+                    animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
+                                           self.fps, [self.labyrinth_file]))
+                self.later_on_funcs.append(
+                    animations.LaterOnFunc(self.screen_controller.set_active_screen, animations.BeginScreenAnimationTime,
+                                           self.fps, ["main_screen"]))
 
-            if self.begin:
-                self.screen_controller.add_switch_screen_animation()
             else:
-                self.screen_controller.add_begin_screen_animation()
-                self.begin = True
+                if self.begin:
+                    self.screen_controller.add_blackout_screen_animation()
+                    self.later_on_funcs.append(animations.LaterOnFunc(
+                        self.set_active_screen_in_screen_controller,
+                        animations.BeginScreenAnimationTime,
+                        self.fps, [self.active_screen]))
+
+                    self.later_on_funcs.append(
+                        animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
+                                               animations.BeginScreenAnimationTime, self.fps))
+                else:
+                    self.screen_controller.add_lightening_screen_animation()
+                    self.begin = True
 
     def set_active_screen_in_screen_controller(self, screen_name):
         self.screen_controller.set_active_screen(screen_name)
@@ -79,19 +89,24 @@ class Game:
         self.labyrinth = Labyrinth(level_file_name)
         self.create_main_hero()
         self.create_characters()
-        # потом нужно будет сделать задаваемые координаты из файла с
+        self.set_game_params_to_game_modules()
+        self.screen_controller.add_lightening_screen_animation()
+
+    def set_game_params_to_game_modules(self):
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
-        self.screen_controller.set_active_screen("main_screen")
 
     def set_active_screen(self, screen_name):
         self.active_screen = screen_name
 
+    def update_later_on_funcs(self):
+        for func in self.later_on_funcs:
+            func.update()
+
     def main_process(self):
         self.event_processor.update_events_statuses_and_objects_cords()
         self.screen_controller.update()
-        if self.later_on_func:
-            self.later_on_func.update()
+        self.update_later_on_funcs()
 
     def update(self):
         """

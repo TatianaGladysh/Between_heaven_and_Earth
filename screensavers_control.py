@@ -5,9 +5,9 @@ from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton
 from animations import QuestAnimation
 import animations
 
-TimeAnimationCorrection = 0.01
-
 pygame.init()
+
+TimeAnimationCorrection = 0.07
 
 LevelsCount = 6
 
@@ -28,18 +28,26 @@ class ScreenSaverController:
         self.selected_level = None
         self.screen_animations = []
         self.active_screen = "start_screen"
+        self.loading = False
+        self.later_on_funcs = []
 
-    def add_begin_screen_animation(self):
+    def start_loading(self):
+        self.loading = True
+
+    def end_loading(self):
+        self.loading = False
+
+    def add_lightening_screen_animation(self):
+        self.later_on_funcs.append(animations.LaterOnFunc(self.end_loading, TimeAnimationCorrection, self.fps))
         self.screen_animations.append(
-            animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.BeginScreenAnimationTime))
+            animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.EndOfScreenAnimationTime))
 
-    def add_switch_screen_animation(self):
+    def add_blackout_screen_animation(self):
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BeginScreenAnimationTime))
-        self.screen_animations.append(
-            animations.AnimationSwitchScreen(self.game, 255, 0,
-                                             animations.BeginScreenAnimationTime - TimeAnimationCorrection,
-                                             animations.EndOfScreenAnimationTime))
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.start_loading, animations.BeginScreenAnimationTime,
+                                   self.fps))
 
     def update_screen_animations(self):
         for animation in self.screen_animations:
@@ -50,6 +58,17 @@ class ScreenSaverController:
 
     def set_active_screen(self, _active_screen):
         self.active_screen = _active_screen
+
+    def update_loading_screen(self):
+        if self.loading:
+            self.surf.fill("BLACK")
+
+    def update_later_on_funcs(self):
+        for func in self.later_on_funcs:
+            if func.done:
+                self.later_on_funcs.remove(func)
+            else:
+                func.update()
 
     def update(self):
         """
@@ -63,6 +82,8 @@ class ScreenSaverController:
         elif self.active_screen == "level_screen":
             self.level_screen_saver.update()
         self.update_screen_animations()
+        self.update_later_on_funcs()
+        self.update_loading_screen()
         pygame.display.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):

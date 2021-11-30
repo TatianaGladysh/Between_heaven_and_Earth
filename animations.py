@@ -4,8 +4,9 @@ from heroes import Hero
 
 QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
-BeginScreenAnimationTime = 0.7
-EndOfScreenAnimationTime = 0.7
+BeginScreenAnimationTime = 0.5
+EndOfScreenAnimationTime = 0.5
+MinAllowableFps = 60
 
 
 class Animator:
@@ -177,16 +178,20 @@ class AnimationSwitchScreen:
         self.done = False
 
     def set_new_alpha(self):
-        self.opacity += self.general_delta * ((1 / self.game.fps) / self.time_interval)
+        self.opacity += self.general_delta * ((1 / max(self.game.fps.value, MinAllowableFps)) / self.time_interval)
+        if self.opacity > 255:
+            self.opacity = 255
+        if self.opacity < 0:
+            self.opacity = 0
         self.self_surf.set_alpha(self.opacity)
 
     def update(self):
-        self.time += (1 / self.game.fps)
         if self.delay <= self.time <= self.delay + self.time_interval:
             self.set_new_alpha()
             self.game.game_surf.blit(self.self_surf, (0, 0))
         elif self.time > self.delay + self.time_interval:
             self.done = True
+        self.time += (1 / max(self.game.fps.value, MinAllowableFps))
 
 
 class QuestAnimation:
@@ -351,7 +356,7 @@ class LaterOnFunc:
         обновляет время и вызывает выполнение функции по его прошествии
         :return:
         """
-        self.time += (1 / self.fps)
+        self.time += (1 / max(self.fps.value, MinAllowableFps))
         if self.time_interval <= self.time:
             if not self.done:
                 self.execute()
