@@ -6,7 +6,7 @@ QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
 BeginScreenAnimationTime = 0.5
 EndOfScreenAnimationTime = 0.5
-MinAllowableFps = 60
+MinAllowableFps = 30
 
 
 class Animator:
