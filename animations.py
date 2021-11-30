@@ -203,7 +203,7 @@ class QuestAnimation:
         self.begin_opacity = _begin_opacity
         self.opacity = 255
         self.fps = _fps
-        self.step_change = (0 - self.opacity) * ((1 / self.fps) / QuestAnimationTime)
+        self.step_change = (0 - self.opacity) * ((1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
         self.time = 0
         self.done = False
         self.pos_in_order = _pos_in_order
@@ -233,11 +233,12 @@ class QuestAnimation:
                           self.screen_y, self.opacity, self.scale_k)
 
     def update(self):
-        self.time += (1 / self.fps)
+        self.time += (1 / max(self.fps.value, MinAllowableFps))
         if self.time >= QuestAnimationTime:
             self.done = True
         else:
-            self.step_change = (0 - self.begin_opacity) * ((1 / self.fps) / QuestAnimationTime)
+            self.step_change = (0 - self.begin_opacity) * (
+                        (1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
             self.opacity += self.step_change
             self.update_pic()
 
@@ -279,8 +280,10 @@ class ElevatorCorrectionCordsAnimation:
         self.time = 0
         self.fps = _fps
         self.delay = _delay
-        self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (_time_interval / (1 / self.fps))
-        self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (_time_interval / (1 / self.fps))
+        self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (
+                    _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
+        self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (
+                    _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
         self.done = False
 
     # def __setattr__(self, key, value):
@@ -308,7 +311,7 @@ class ElevatorCorrectionCordsAnimation:
         вызывает обновление координат
         :return:
         """
-        self.time += (1 / self.fps)
+        self.time += (1 / max(self.fps.value, MinAllowableFps))
         if self.delay <= self.time <= self.delay + self.time_interval and not self.done:
             self.change_variables()
         if self.time > self.delay + self.time_interval:
@@ -446,9 +449,9 @@ class ImageAnimation:
         вызывает обновление кадров анимации в нужное время
         """
         if self.delay > 0:
-            self.delay -= (1 / self.fps)
+            self.delay -= (1 / max(self.fps.value, MinAllowableFps))
         else:
-            self.converting_frame_interval += (1 / self.fps)
+            self.converting_frame_interval += (1 / max(self.fps.value, MinAllowableFps))
             if self.converting_frame_interval >= self.countdown:
                 self.update_frame()
 
