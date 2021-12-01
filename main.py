@@ -3,7 +3,6 @@ import time
 
 import pygame
 
-import screensavers_control
 from event_processing import EventProcessor
 from heroes import MainHero, Character
 from labyrinth import Labyrinth
