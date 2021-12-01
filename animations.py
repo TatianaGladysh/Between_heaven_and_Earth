@@ -59,7 +59,7 @@ class Animator:
 
     def add_walking_animation(self, obj):
         if isinstance(obj, MainHero):
-            self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, obj, WalkingTimeInterval))
+            self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, WalkingTimeInterval))
 
     def add_later_on_funcs(self, func, delay, args=None):
         """
@@ -442,8 +442,13 @@ class ImageAnimation:
             self.finish()
             return
         self.active_surf = self.frame_surfaces[self.active_surf_number]
-        if isinstance(self.obj, Room) or isinstance(self.obj, Hero):
+        if isinstance(self.obj, Room):
             self.obj.set_surf(self.active_surf)
+        if isinstance(self.obj, MainHero):
+            if self.obj.walking_direction == "left":
+                self.obj.set_surf(pygame.transform.flip(self.active_surf, True, False))
+            else:
+                self.obj.set_surf(self.active_surf)
         if self.nature_of_frames_change == "linear":
             pass
         # при нелинейной анимации можно будет изменять время cool_count
@@ -547,19 +552,28 @@ class ElevatorClosingAnimation(ImageAnimation):
 
 
 class WalkingAnimation(ImageAnimation):
-    def __init__(self, _obj, _fps, _main_hero, _time_interval, _delay=0):
+    def __init__(self, _hero, _fps, _time_interval, _delay=0):
         """
         описывает ходьбу человека
-        :param _obj: комната с лифтом
         :param _fps: фпс
         :param _main_hero: главный герой
         :param _time_interval: время анимации
         :param _delay: задержка
         """
+        self.hero = _hero
         self.frames_files = ["assets/mainhero/step1.png", "assets/mainhero/step2.png", "assets/mainhero/step3.png",
                              "assets/mainhero/step4.png", "assets/mainhero/step5.png", "assets/mainhero/step6.png",
                              "assets/mainhero/step7.png", "assets/mainhero/step8.png", "assets/mainhero/step9.png"]
-        super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
+        super().__init__(_hero, self.frames_files, _time_interval, _fps, _delay)
+
+    def update_frame(self):
+        super().update_frame()
+
+    def emergency_finish(self):
+        super().emergency_finish()
+        self.hero.img_surf = pygame.image.load("assets/mainhero/stay.png")
+        if self.hero.walking_direction == "left":
+            self.hero.img_surf = pygame.transform.flip(self.hero.img_surf, True, False)
 
     def update(self):
         """

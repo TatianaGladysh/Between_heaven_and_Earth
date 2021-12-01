@@ -21,9 +21,10 @@ class MainHero(Hero):
 
     def __init__(self, _game):
         self.game = _game
+        self.walking_direction = "right"
         self.read_cords()
         super().__init__((self.x, self.y, self.z))
-        self.img_file = "assets/mainhero/step1.png"
+        self.img_file = "assets/mainhero/stay.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.max_speed = 1
         self.speed_x = 0
@@ -33,7 +34,6 @@ class MainHero(Hero):
         self.epsilon = 0.1
         self.inside_elevator = False
         self.move_blocked = False
-        self.walking_direction = "right"
 
     def read_cords(self):
         with open(self.game.labyrinth_file, "r") as file:
@@ -48,8 +48,7 @@ class MainHero(Hero):
             try:
                 self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
             except AttributeError:
-                # print("Main hero is not announced")
-                pass
+                print("Main hero is not announced")
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
@@ -59,6 +58,10 @@ class MainHero(Hero):
     def move_x_axis(self, move_by_length):
         self.arrival_x = round(self.x + move_by_length)
         self.speed_x = sign(self.max_speed, move_by_length)
+        if self.speed_x > 0:
+            self.walking_direction = "right"
+        elif self.speed_x < 0:
+            self.walking_direction = "left"
 
     def move_y_axis(self, move_by_length):
         self.arrival_y = round(self.y + move_by_length)
