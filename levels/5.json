@@ -1,36 +1,43 @@
 {
   "layers": {
     "layer_1": [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "0 0 x 0 0",
+      "x x x x x",
+      "x d x d x",
+      "x x x x x",
+      "0 0 x 0 0"
     ],
     "layer_2" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "x x x x x",
+      "x e e d x",
+      "x e e d x",
+      "x e d d x",
+      "x x x x x"
     ],
     "layer_3" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "x x x x x",
+      "x 0 0 e x",
+      "x 0 0 e x",
+      "x d e e x",
+      "x d e e x"
     ],
     "layer_4" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "0 0 x 0 0",
+      "x x x x x",
+      "x d x d x",
+      "x x x x x",
+      "d d x d d"
+    ],
+    "layer_5" : [
+      "x x 0 x x",
+      "x 0 x 0 x",
+      "x 0 e 0 x",
+      "0 x e x e",
+      "0 0 x 0 e"
     ]
   },
   "main_hero": {
-    "start_cords": [0, 0, 0]
+    "start_cords": [1, 2, 0]
   },
   "characters": [
     {
