@@ -7,7 +7,7 @@ import animations
 
 pygame.init()
 
-TimeAnimationCorrection = 0.07
+TimeScreenSwitchAnimationCorrection = 0.07
 
 LevelsCount = 6
 
@@ -38,7 +38,7 @@ class ScreenSaverController:
         self.loading = False
 
     def add_lightening_screen_animation(self):
-        self.later_on_funcs.append(animations.LaterOnFunc(self.end_loading, TimeAnimationCorrection, self.fps))
+        self.later_on_funcs.append(animations.LaterOnFunc(self.end_loading, TimeScreenSwitchAnimationCorrection, self.fps))
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.EndOfScreenAnimationTime))
 

@@ -23,9 +23,9 @@ class MainHero(Hero):
         self.game = _game
         self.read_cords()
         super().__init__((self.x, self.y, self.z))
-        self.img_file = "assets/main_hero.png"
+        self.img_file = "assets/mainhero/step1.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-        self.max_speed = 2
+        self.max_speed = 1
         self.speed_x = 0
         self.speed_y = 0
         self.speed_z = 0
@@ -33,6 +33,7 @@ class MainHero(Hero):
         self.epsilon = 0.1
         self.inside_elevator = False
         self.move_blocked = False
+        self.walking_direction = "right"
 
     def read_cords(self):
         with open(self.game.labyrinth_file, "r") as file:
@@ -71,6 +72,7 @@ class MainHero(Hero):
         if abs(self.x - self.arrival_x) < self.epsilon:
             self.speed_x = 0
             self.x = round(self.x)
+            self.game.screen_controller.main_screen_saver.painter.animator.end_walking_animations(self)
         if abs(self.y - self.arrival_y) < 3 * self.epsilon:
             self.speed_y = 0
             self.y = round(self.y)
@@ -78,8 +80,14 @@ class MainHero(Hero):
             self.speed_z = 0
             self.z = round(self.z)
 
+    def walking_animation_check(self):
+        if (self.game.screen_controller.main_screen_saver.painter.animator.main_hero_walking_animations == []) and \
+                self.speed_x != 0:
+            self.game.screen_controller.main_screen_saver.painter.animator.add_walking_animation(self)
+
     def update(self):
         self.check_own_and_arrival_pos()
+        self.walking_animation_check()
         if not self.move_blocked:
             self.x += self.speed_x * (1 / self.fps)
             self.y += self.speed_y * (1 / self.fps)

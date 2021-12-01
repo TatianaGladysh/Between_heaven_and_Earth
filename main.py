@@ -13,7 +13,7 @@ import animations
 pygame.init()
 
 FPS = 200
-WIDTH = 1000
+WIDTH = 1200
 HEIGHT = 600
 
 

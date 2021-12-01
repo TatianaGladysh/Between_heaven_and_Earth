@@ -1,12 +1,13 @@
 import pygame
 from labyrinth import Room
-from heroes import Hero
+from heroes import Hero, MainHero
 
 QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
-BeginScreenAnimationTime = 0.5
-EndOfScreenAnimationTime = 0.5
-MinAllowableFps = 30
+BeginScreenAnimationTime = 0.35
+EndOfScreenAnimationTime = 0.35
+MinAllowableFps = 35
+WalkingTimeInterval = 1
 
 
 class Animator:
@@ -26,6 +27,7 @@ class Animator:
         self.later_on_funcs = []
         self.quests_animations = []
         self.switch_screen_animations = []
+        self.main_hero_walking_animations = []
         self.fps = _painter.fps
         self.processing = False
 
@@ -50,8 +52,14 @@ class Animator:
             self.cords_animations.append(animation)
         elif isinstance(animation, QuestAnimation):
             self.quests_animations.append(animation)
-        if isinstance(animation, AnimationSwitchScreen):
+        elif isinstance(animation, AnimationSwitchScreen):
             self.switch_screen_animations.append(animation)
+        elif isinstance(animation, WalkingAnimation):
+            self.main_hero_walking_animations.append(animation)
+
+    def add_walking_animation(self, obj):
+        if isinstance(obj, MainHero):
+            self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, obj, WalkingTimeInterval))
 
     def add_later_on_funcs(self, func, delay, args=None):
         """
@@ -72,6 +80,12 @@ class Animator:
             self.painter.draw_main_hero_in_the_elevator = not self.painter.draw_main_hero_in_the_elevator
         else:
             self.painter.draw_main_hero_in_the_elevator = value
+
+    def end_walking_animations(self, hero):
+        if isinstance(hero, MainHero):
+            for animation in self.main_hero_walking_animations:
+                animation.emergency_finish()
+                self.main_hero_walking_animations = []
 
     def emergency_finish_elevator_animations(self):
         """
@@ -152,6 +166,11 @@ class Animator:
                 self.later_on_funcs.remove(func)
             else:
                 func.update()
+        for animation in self.main_hero_walking_animations:
+            if animation.done:
+                self.main_hero_walking_animations.remove(animation)
+            else:
+                animation.update()
 
 
 class AnimationSwitchScreen:
@@ -238,7 +257,7 @@ class QuestAnimation:
             self.done = True
         else:
             self.step_change = (0 - self.begin_opacity) * (
-                        (1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
+                    (1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
             self.opacity += self.step_change
             self.update_pic()
 
@@ -281,9 +300,9 @@ class ElevatorCorrectionCordsAnimation:
         self.fps = _fps
         self.delay = _delay
         self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (
-                    _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
+                _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
         self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (
-                    _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
+                _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
         self.done = False
 
     # def __setattr__(self, key, value):
@@ -525,3 +544,25 @@ class ElevatorClosingAnimation(ImageAnimation):
             self.main_hero.move_blocked = True
         else:
             self.main_hero.move_blocked = False
+
+
+class WalkingAnimation(ImageAnimation):
+    def __init__(self, _obj, _fps, _main_hero, _time_interval, _delay=0):
+        """
+        описывает ходьбу человека
+        :param _obj: комната с лифтом
+        :param _fps: фпс
+        :param _main_hero: главный герой
+        :param _time_interval: время анимации
+        :param _delay: задержка
+        """
+        self.frames_files = ["assets/mainhero/step1.png", "assets/mainhero/step2.png", "assets/mainhero/step3.png",
+                             "assets/mainhero/step4.png", "assets/mainhero/step5.png", "assets/mainhero/step6.png",
+                             "assets/mainhero/step7.png", "assets/mainhero/step8.png", "assets/mainhero/step9.png"]
+        super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
+
+    def update(self):
+        """
+        обновляет параметры анимации и параметр героя, отвечающий за блокировку его движений при выполнении анимации
+        """
+        super(WalkingAnimation, self).update()
