@@ -158,10 +158,11 @@ class Painter:
             self.update_elevator_inside()
             self.update_main_hero_pic()
             self.update_rooms_pics()
-            self.update_character(self.game.screen_controller.main_screen_saver.notifications_screen.active_stage)
+            self.update_character(self.game.screen_controller.main_screen_saver.notification_screen.active_stage)
             self.update_grid_img()
         else:
-            self.update_elevator_inside()
+            if self.labyrinth.get_room(*self.main_hero.get_cords()).type == "elevator":
+                self.update_elevator_inside()
             self.update_rooms_pics()
             self.update_character(self.game.screen_controller.main_screen_saver.notification_screen.active_stage)
             self.update_main_hero_pic()

@@ -35,6 +35,9 @@ class MainHero(Hero):
         self.inside_elevator = False
         self.move_blocked = False
 
+    def is_moves(self):
+        return self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
+
     def read_cords(self):
         with open(self.game.labyrinth_file, "r") as file:
             main_hero_cords = json.load(file)["main_hero"]["start_cords"]
@@ -65,7 +68,7 @@ class MainHero(Hero):
 
     def move_y_axis(self, move_by_length):
         self.arrival_y = round(self.y + move_by_length)
-        self.speed_y = sign(20 * self.max_speed, move_by_length)
+        self.speed_y = sign(10 * self.max_speed, move_by_length)
 
     def move_z_axis(self, move_by_length):
         self.arrival_z = round(self.z + move_by_length)
@@ -115,17 +118,17 @@ class Character(Hero):
 
     def def_img_and_surf(self):
         if self.name == "Roma":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Karas/stay.png"
         elif self.name == "Leonid":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Leonid/Leonid.png"
         elif self.name == "Hiryanov":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Khiryanov/stay.png"
         elif self.name == "Kozheva":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Kozhevnikov/stay.png"
         elif self.name == "Klemeshov":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Klemeshov/stay.png"
         elif self.name == "Kiselev":
-            self.image_file = "assets/none.png"
+            self.image_file = "assets/Heroes/Kisel/stay.png"
         self.img_surf = pygame.image.load(self.image_file).convert_alpha()
 
     def move_x_axis(self):

@@ -281,7 +281,7 @@ class Quest:
         self.indent = 20
         self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
         self.screen_y = 0
-        self.img_file = "assets/none.png"
+        self.img_file = "assets/tasks/0-active.png"
         self.unit_width = 0
         self.unit_height = 0
         self.scale_k = 0
@@ -304,7 +304,7 @@ class Quest:
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
         self.screen_y = (self.indent + self.unit_height) * self.pos_in_quests_order + \
-            self.indent + self.unit_height // 2
+                        self.indent + self.unit_height // 2
 
     def set_pos_in_order(self, number):
         self.pos_in_quests_order = number
