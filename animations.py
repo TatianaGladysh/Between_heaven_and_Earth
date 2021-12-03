@@ -555,7 +555,7 @@ class WalkingAnimation(ImageAnimation):
     def __init__(self, _hero, _fps, _time_interval, _delay=0):
         """
         описывает ходьбу человека
-        :param _fps: фпс
+        :param _fps: фпсd
         :param _time_interval: время анимации
         :param _delay: задержка
         """
