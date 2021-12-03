@@ -182,7 +182,8 @@ class Painter:
         вызывает функцию обновления изображения главного героя
         """
         main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + self.elevator_correction_x
-        main_hero_screen_y = (self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y) - \
+        main_hero_screen_y = (
+                                         self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y) - \
                              (self.main_hero.z - floor(self.main_hero.z)) * self.unit_depth
         self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
                           self.img_scale_k)

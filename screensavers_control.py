@@ -207,7 +207,6 @@ class NotificationsScreen:
     def __init__(self, _main_screen_saver):
         self.quests = []
         self.main_screen_saver = _main_screen_saver
-        self.finish = False
         self.active = False
         self.background_surf = pygame.Surface(
             (self.main_screen_saver.game.screen_width, self.main_screen_saver.game.screen_height))
@@ -304,7 +303,7 @@ class Quest:
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
         self.screen_y = (self.indent + self.unit_height) * self.pos_in_quests_order + \
-                        self.indent + self.unit_height // 2
+                         self.indent + self.unit_height // 2
 
     def set_pos_in_order(self, number):
         self.pos_in_quests_order = number

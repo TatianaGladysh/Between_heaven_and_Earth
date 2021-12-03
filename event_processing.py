@@ -72,11 +72,11 @@ class EventProcessor:
                 self.main_hero.move_y_axis(-1)
                 self.game.sounds_controller.play_sound("elevator_moving")
         # механизм входа в комнату
-        elif event.key == pygame.K_w and self.main_hero.is_moves():
-            if self.main_hero.z != self.labyrinth.depth - 1 and self.have_a_door(
-                    "behind") and not self.main_hero.inside_elevator:
-                self.main_hero.move_z_axis(1)
-                self.game.sounds_controller.play_sound("door_open")
+        elif event.key == pygame.K_w and self.main_hero.is_moves() and \
+                self.main_hero.z != self.labyrinth.depth - 1 and \
+                self.have_a_door("behind") and not self.main_hero.inside_elevator:
+            self.main_hero.move_z_axis(1)
+            self.game.sounds_controller.play_sound("door_open")
         elif event.key == pygame.K_s and self.main_hero.is_moves():
             if self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(-1)

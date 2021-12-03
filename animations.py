@@ -1,6 +1,7 @@
 import pygame
 from labyrinth import Room
 from heroes import MainHero
+import animations_preset
 
 QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
@@ -387,34 +388,29 @@ class LaterOnFunc:
 class ImageAnimation:
     id = 0
 
-    def __init__(self, _obj, _frames_files, _time_interval, _fps, _delay, _nature_of_frames_change="linear"):
+    def __init__(self, _obj, _frames_surfs, _time_interval, _fps, _delay, _nature_of_frames_change="linear"):
         """
         объект класса может описывать анимацию, связанную с изменением изображений с течением времени, пока только
         линейным
         :param _obj: объект, у которого следует изменять изображение
-        :param _frames_files: файлы изображений в анимации
         :param _time_interval: общее время выполнения анимации
         :param _fps: фпс
         :param _delay: задержка перед началом выполнения функции
         :param _nature_of_frames_change: характер изменения изображений во времени, пока осуществим только линейный
         """
         self.obj = _obj
-        self.frames_files = _frames_files
-        self.frames_count = len(self.frames_files)
-        self.frame_surfaces = self.fill_the_array_of_surfaces()
+        self.frames_surfs = _frames_surfs
+        self.frames_count = len(self.frames_surfs)
         self.active_surf_number = 0
-        self.active_surf = self.frame_surfaces[0]
+        self.active_surf = self.frames_surfs[0]
         self.time_interval = _time_interval
         self.fps = _fps
         self.converting_frame_interval = 0
-        self.countdown = self.time_interval / len(self.frames_files)
+        self.countdown = self.time_interval / len(self.frames_surfs)
         self.done = False
         self.nature_of_frames_change = _nature_of_frames_change
         self.id = ImageAnimation.id
         self.delay = _delay
-
-    # def __setattr__(self, key, value):
-    #     self.__dict__[key] = value
 
     def get_time_of_action(self):
         """
@@ -422,15 +418,6 @@ class ImageAnimation:
         :return:
         """
         return self.time_interval
-
-    def fill_the_array_of_surfaces(self):
-        """
-        заполняет массив surface 'ов исходя из поданных файлов изображений
-        """
-        frames_surfaces = []
-        for i in range(len(self.frames_files)):
-            frames_surfaces.append(pygame.image.load(self.frames_files[i]).convert_alpha())
-        return frames_surfaces
 
     def update_frame(self):
         """
@@ -441,7 +428,7 @@ class ImageAnimation:
         if self.active_surf_number >= self.frames_count:
             self.finish()
             return
-        self.active_surf = self.frame_surfaces[self.active_surf_number]
+        self.active_surf = self.frames_surfs[self.active_surf_number]
         if isinstance(self.obj, Room):
             self.obj.set_surf(self.active_surf)
         if isinstance(self.obj, MainHero):
@@ -458,7 +445,7 @@ class ImageAnimation:
         вызывает быстрое завершение анимации
         """
         self.active_surf_number = self.frames_count
-        self.active_surf = self.frame_surfaces[-1]
+        self.active_surf = self.frames_surfs[-1]
         self.finish()
 
     def finish(self):
@@ -492,18 +479,8 @@ class ElevatorOpeningAnimation(ImageAnimation):
         :param _delay: задержка
         """
         self.main_hero = _main_hero
-        self.frames_files = ["assets/elevator/close_elevator.png", "assets/elevator/closing_elevator_18.png",
-                             "assets/elevator/closing_elevator_17.png", "assets/elevator/closing_elevator_16.png",
-                             "assets/elevator/closing_elevator_15.png", "assets/elevator/closing_elevator_14.png",
-                             "assets/elevator/closing_elevator_13.png", "assets/elevator/closing_elevator_12.png",
-                             "assets/elevator/closing_elevator_11.png", "assets/elevator/closing_elevator_10.png",
-                             "assets/elevator/closing_elevator_9.png", "assets/elevator/closing_elevator_8.png",
-                             "assets/elevator/closing_elevator_7.png", "assets/elevator/closing_elevator_6.png",
-                             "assets/elevator/closing_elevator_5.png", "assets/elevator/closing_elevator_4.png",
-                             "assets/elevator/closing_elevator_3.png", "assets/elevator/closing_elevator_2.png",
-                             "assets/elevator/closing_elevator_1.png", "assets/elevator/open_elevator.png"]
-        self.main_hero = _main_hero
-        super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
+        self.frames_surfs = animations_preset.ElevatorOpeningSurfs
+        super().__init__(_obj, self.frames_surfs, _time_interval, _fps, _delay)
 
     def update(self):
         """
@@ -527,18 +504,9 @@ class ElevatorClosingAnimation(ImageAnimation):
         :param _time_interval: время анимации
         :param _delay: задержка
         """
-        self.frames_files = ["assets/elevator/open_elevator.png", "assets/elevator/closing_elevator_1.png",
-                             "assets/elevator/closing_elevator_2.png", "assets/elevator/closing_elevator_3.png",
-                             "assets/elevator/closing_elevator_4.png", "assets/elevator/closing_elevator_5.png",
-                             "assets/elevator/closing_elevator_6.png", "assets/elevator/closing_elevator_7.png",
-                             "assets/elevator/closing_elevator_8.png", "assets/elevator/closing_elevator_9.png",
-                             "assets/elevator/closing_elevator_10.png", "assets/elevator/closing_elevator_11.png",
-                             "assets/elevator/closing_elevator_12.png", "assets/elevator/closing_elevator_13.png",
-                             "assets/elevator/closing_elevator_14.png", "assets/elevator/closing_elevator_15.png",
-                             "assets/elevator/closing_elevator_16.png", "assets/elevator/closing_elevator_17.png",
-                             "assets/elevator/closing_elevator_18.png", "assets/elevator/close_elevator.png"]
+        self.frames_surfs = animations_preset.ElevatorClosingSurfs
         self.main_hero = _main_hero
-        super().__init__(_obj, self.frames_files, _time_interval, _fps, _delay)
+        super().__init__(_obj, self.frames_surfs, _time_interval, _fps, _delay)
 
     def update(self):
         """
@@ -560,17 +528,15 @@ class WalkingAnimation(ImageAnimation):
         :param _delay: задержка
         """
         self.hero = _hero
-        self.frames_files = ["assets/main_hero/step1.png", "assets/main_hero/step2.png", "assets/main_hero/step3.png",
-                             "assets/main_hero/step4.png", "assets/main_hero/step5.png", "assets/main_hero/step6.png",
-                             "assets/main_hero/step7.png", "assets/main_hero/step8.png", "assets/main_hero/step9.png"]
-        super().__init__(_hero, self.frames_files, _time_interval, _fps, _delay)
+        self.frames_surfaces = animations_preset.WalkingAnimationsSurfs
+        super().__init__(_hero, self.frames_surfaces, _time_interval, _fps, _delay)
 
     def update_frame(self):
         super().update_frame()
 
     def emergency_finish(self):
         super().emergency_finish()
-        self.hero.img_surf = pygame.image.load("assets/main_hero/stay.png")
+        self.hero.img_surf = animations_preset.StayMainPersonSurf
         if self.hero.walking_direction == "left":
             self.hero.img_surf = pygame.transform.flip(self.hero.img_surf, True, False)
 
