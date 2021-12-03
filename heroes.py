@@ -113,10 +113,6 @@ class Character(Hero):
         self.def_img_and_surf()
         self.quest_is_done = False
 
-    # def __setattr__(self, key, value):
-    #     self.__dict__[key] = value
-    #
-
     def def_img_and_surf(self):
         if self.name == "Roma":
             self.image_file = "assets/none.png"

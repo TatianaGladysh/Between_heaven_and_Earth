@@ -1,6 +1,6 @@
 import pygame
 from labyrinth import Room
-from heroes import Hero, MainHero
+from heroes import MainHero
 
 QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
@@ -556,7 +556,6 @@ class WalkingAnimation(ImageAnimation):
         """
         описывает ходьбу человека
         :param _fps: фпс
-        :param _main_hero: главный герой
         :param _time_interval: время анимации
         :param _delay: задержка
         """
