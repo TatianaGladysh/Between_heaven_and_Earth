@@ -24,7 +24,7 @@ class MainHero(Hero):
         self.walking_direction = "right"
         self.read_cords()
         super().__init__((self.x, self.y, self.z))
-        self.img_file = "assets/mainhero/stay.png"
+        self.img_file = "assets/main_hero/stay.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.max_speed = 1
         self.speed_x = 0

@@ -8,12 +8,15 @@ from heroes import MainHero, Character
 from labyrinth import Labyrinth
 from screensavers_control import ScreenSaverController
 import animations
+import sound_control
+import ctypes
 
 pygame.init()
 
 FPS = 200
-WIDTH = 1200
-HEIGHT = 600
+
+user = ctypes.windll.user32
+WIDTH, HEIGHT = user.GetSystemMetrics(0), user.GetSystemMetrics(1)
 
 
 class Game:
@@ -26,7 +29,7 @@ class Game:
         self.begin = False
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
-        self.game_surf = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.game_surf = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.fps = Fps(self.clock)
         self.labyrinth = None
@@ -35,6 +38,7 @@ class Game:
         self.characters = None
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
+        self.sounds_controller = sound_control.SoundController(self)
         self.active_screen = "start_screen"
 
     def __setattr__(self, key, value):
@@ -46,7 +50,8 @@ class Game:
                     animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
                                            self.fps, [self.labyrinth_file]))
                 self.later_on_funcs.append(
-                    animations.LaterOnFunc(self.screen_controller.set_active_screen, animations.BeginScreenAnimationTime,
+                    animations.LaterOnFunc(self.screen_controller.set_active_screen,
+                                           animations.BeginScreenAnimationTime,
                                            self.fps, ["main_screen"]))
 
             else:
@@ -103,6 +108,7 @@ class Game:
             func.update()
 
     def main_process(self):
+        self.sounds_controller.update()
         self.event_processor.update_events_statuses_and_objects_cords()
         self.screen_controller.update()
         self.update_later_on_funcs()

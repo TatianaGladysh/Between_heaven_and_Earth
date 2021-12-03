@@ -37,7 +37,7 @@ class Animator:
         длин в painter 'е
         """
         self.max_elevator_correction_y = - 0.09166 * self.painter.unit_height
-        self.max_elevator_correction_x = - 0.0083 * self.painter.unit_width
+        self.max_elevator_correction_x = - 0.015 * self.painter.unit_width
         self.elevator_correction_x, self.elevator_correction_y = \
             self.painter.elevator_correction_x, self.painter.elevator_correction_y
 
@@ -561,9 +561,9 @@ class WalkingAnimation(ImageAnimation):
         :param _delay: задержка
         """
         self.hero = _hero
-        self.frames_files = ["assets/mainhero/step1.png", "assets/mainhero/step2.png", "assets/mainhero/step3.png",
-                             "assets/mainhero/step4.png", "assets/mainhero/step5.png", "assets/mainhero/step6.png",
-                             "assets/mainhero/step7.png", "assets/mainhero/step8.png", "assets/mainhero/step9.png"]
+        self.frames_files = ["assets/main_hero/step1.png", "assets/main_hero/step2.png", "assets/main_hero/step3.png",
+                             "assets/main_hero/step4.png", "assets/main_hero/step5.png", "assets/main_hero/step6.png",
+                             "assets/main_hero/step7.png", "assets/main_hero/step8.png", "assets/main_hero/step9.png"]
         super().__init__(_hero, self.frames_files, _time_interval, _fps, _delay)
 
     def update_frame(self):
@@ -571,7 +571,7 @@ class WalkingAnimation(ImageAnimation):
 
     def emergency_finish(self):
         super().emergency_finish()
-        self.hero.img_surf = pygame.image.load("assets/mainhero/stay.png")
+        self.hero.img_surf = pygame.image.load("assets/main_hero/stay.png")
         if self.hero.walking_direction == "left":
             self.hero.img_surf = pygame.transform.flip(self.hero.img_surf, True, False)
 
