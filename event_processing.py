@@ -84,11 +84,12 @@ class EventProcessor:
 
     def screen_buttons_check(self, event, button):
         if event.type == pygame.MOUSEBUTTONUP:
-            if self.check_button_click(button) and button.pressed:
+            if button.pressed and self.check_button_click(button):
                 button.click()
                 button.pressed = False
                 self.game.sounds_controller.play_sound("button_click")
 
+        #FIXME зачем эта проверка?
         if event.type == pygame.MOUSEMOTION:
             if not self.check_button_click(button):
                 button.pressed = False

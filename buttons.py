@@ -106,6 +106,7 @@ class StartButton(Button):
         self.pressed = False
         self.game.active_screen = "level_screen"
 
+
 class ExitButton(Button):
 
     def __init__(self, _game, _active_screen="start_screen"):
@@ -129,7 +130,7 @@ class ExitButton(Button):
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
-        unit_width = self.window_width // 3
+        unit_width = self.window_width // 6
         k = unit_width / img_width
         unit_height = k * img_height
         x = self.window_width // 2
