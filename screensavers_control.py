@@ -1,7 +1,7 @@
 import pygame
 from draw_all import Painter
 import numpy as np
-from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton
+from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton, ExitButton
 from animations import QuestAnimation
 import animations
 
@@ -133,6 +133,7 @@ class StartScreenSaver(GameScreenSaver):
         self.game = _game
         super(StartScreenSaver, self).__init__(self.game, "assets/backgrounds/start_background.png")
         self.start_button = StartButton(self.game)
+        self.exit_button = ExitButton(self.game)
         self.window_height = self.game.screen_height
         self.window_width = self.game.screen_width
         self.background_img = "assets/backgrounds/start_background.png"
@@ -152,6 +153,7 @@ class StartScreenSaver(GameScreenSaver):
         """
         self.update_background()
         self.start_button.update()
+        self.exit_button.update()
 
 
 class MainScreenSaver(GameScreenSaver):
