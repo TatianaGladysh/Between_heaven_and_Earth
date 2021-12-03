@@ -3,6 +3,7 @@ import pygame
 import labyrinth
 import heroes
 from animations import Animator
+from math import floor, ceil
 
 indent = 40
 
@@ -108,7 +109,7 @@ class Painter:
         game_obj_x, game_obj_y, game_obj_z = obj.get_cords()
         screen_x = self.zero_screen_cord_x + game_obj_x * self.unit_width
         screen_y = self.zero_screen_cord_y + game_obj_y * self.unit_height
-        screen_z = self.unit_depth * (game_obj_z - game_hero_z)
+        screen_z = self.unit_depth * (ceil(game_obj_z - game_hero_z))
         screen_y -= screen_z
         return screen_x, screen_y
 
@@ -181,15 +182,17 @@ class Painter:
         вызывает функцию обновления изображения главного героя
         """
         main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + self.elevator_correction_x
-        main_hero_screen_y = self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y
+        main_hero_screen_y = (self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y) - \
+                             (self.main_hero.z - floor(self.main_hero.z)) * self.unit_depth
         self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
                           self.img_scale_k)
 
     def update_character(self, active_game_stage):
         hero = self.characters[active_game_stage]
-        hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width + self.elevator_correction_x
-        hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height + self.elevator_correction_y
-        self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)
+        if 1 > self.main_hero.z - hero.z >= 0:
+            hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width
+            hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height
+            self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)
 
     @staticmethod
     def update_image(surf, obj_surf, x, y, opacity, scale_k=1):

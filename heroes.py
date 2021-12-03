@@ -59,19 +59,20 @@ class MainHero(Hero):
         pass
 
     def move_x_axis(self, move_by_length):
-        self.arrival_x = round(self.x + move_by_length)
-        self.speed_x = sign(self.max_speed, move_by_length)
-        if self.speed_x > 0:
-            self.walking_direction = "right"
-        elif self.speed_x < 0:
-            self.walking_direction = "left"
+        if self.game.labyrinth.get_x_width() > self.arrival_x + move_by_length >= 0 and abs(self.arrival_x - self.x) < 1:
+            self.arrival_x += move_by_length
+            self.speed_x = sign(self.max_speed, move_by_length)
+            if self.speed_x > 0:
+                self.walking_direction = "right"
+            elif self.speed_x < 0:
+                self.walking_direction = "left"
 
     def move_y_axis(self, move_by_length):
-        self.arrival_y = round(self.y + move_by_length)
+        self.arrival_y += move_by_length
         self.speed_y = sign(10 * self.max_speed, move_by_length)
 
     def move_z_axis(self, move_by_length):
-        self.arrival_z = round(self.z + move_by_length)
+        self.arrival_z += move_by_length
         self.speed_z = sign(self.max_speed, move_by_length)
 
     def check_own_and_arrival_pos(self):

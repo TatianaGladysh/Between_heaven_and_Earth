@@ -34,15 +34,19 @@ class EventProcessor:
                 self.screen_buttons_check(event, self.exit_button)
 
     def move_main_hero(self, event):
-        if event.key == pygame.K_a and self.main_hero.arrival_x != 0 and not self.main_hero.inside_elevator:
-            if not self.labyrinth.get_room(self.main_hero.x - 1, self.main_hero.y, self.main_hero.z).type == "block":
+        if not self.main_hero.inside_elevator and self.main_hero.speed_z == 0:
+
+            if event.key == pygame.K_a and \
+                    self.labyrinth.get_room(self.main_hero.arrival_x - 1, self.main_hero.y,
+                                            self.main_hero.z).type != "block":
                 self.main_hero.move_x_axis(-1)
-        elif event.key == pygame.K_d and self.main_hero.arrival_x != self.labyrinth.width - 1 and \
-                not self.main_hero.inside_elevator:
-            if not self.labyrinth.get_room(self.main_hero.x + 1, self.main_hero.y, self.main_hero.z).type == "block":
+
+            elif event.key == pygame.K_d and \
+                    self.labyrinth.get_room(self.main_hero.arrival_x + 1, self.main_hero.y,
+                                            self.main_hero.z).type != "block":
                 self.main_hero.move_x_axis(1)
         # лифт
-        elif event.key == pygame.K_f and self.main_hero.is_moves():
+        if event.key == pygame.K_f and self.main_hero.is_moves():
             if self.main_hero.inside_elevator:
                 # механизм запускающий отрисовку выхождения из лифта
                 # (например отдельный параметр True or False)
@@ -126,7 +130,7 @@ class EventProcessor:
         button_height = button.get_height()
         mouse_x, mouse_y = pygame.mouse.get_pos()
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
         self.game.active_screen = screen_name
