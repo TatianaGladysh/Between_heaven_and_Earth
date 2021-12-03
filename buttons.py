@@ -114,7 +114,7 @@ class ExitButton(Button):
         """
         self.game = _game
         super().__init__(self.game, self.start)
-        self.img_file = "assets/buttons/start_button.png"
+        self.img_file = "assets/buttons/exit_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
@@ -129,11 +129,11 @@ class ExitButton(Button):
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
-        unit_width = self.window_width // 8
+        unit_width = self.window_width // 3
         k = unit_width / img_width
         unit_height = k * img_height
-        x = self.window_width // 10
-        y = self.window_height // 10
+        x = self.window_width // 2
+        y = self.window_height * 19 // 30
         return x, y, k, unit_width, unit_height
 
     def update(self):
@@ -141,9 +141,9 @@ class ExitButton(Button):
         обновляет изображение, которое должно быть у кнопки
         """
         if self.pressed:
-            self.img_file = "assets/buttons/pressed_start_button.png"
+            self.img_file = "assets/buttons/pressed_exit_button.png"
         else:
-            self.img_file = "assets/buttons/start_button.png"
+            self.img_file = "assets/buttons/exit_button.png"
 
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
