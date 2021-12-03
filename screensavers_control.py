@@ -38,7 +38,8 @@ class ScreenSaverController:
         self.loading = False
 
     def add_lightening_screen_animation(self):
-        self.later_on_funcs.append(animations.LaterOnFunc(self.end_loading, TimeScreenSwitchAnimationCorrection, self.fps))
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.end_loading, TimeScreenSwitchAnimationCorrection, self.fps))
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.EndOfScreenAnimationTime))
 
@@ -107,6 +108,9 @@ class GameScreenSaver:
         self.background_img = _background_img
         self.background_surf = pygame.image.load(self.background_img).convert_alpha()
         self.background_scale_k = self.calculate_background_scale_k()
+        self.img_surf = pygame.transform.scale(self.background_surf, (
+            int(self.background_surf.get_width() * self.background_scale_k),
+            int(self.background_surf.get_height() * self.background_scale_k)))
 
     def calculate_background_scale_k(self):
         """
@@ -120,11 +124,7 @@ class GameScreenSaver:
         """
         Обновление картинки заднего плана
         """
-        img_surf = pygame.transform.scale(self.background_surf, (
-            int(self.background_surf.get_width() * self.background_scale_k),
-            int(self.background_surf.get_height() * self.background_scale_k)))
-        img_rect = img_surf.get_rect()
-        self.surf.blit(img_surf, img_rect)
+        self.surf.blit(self.img_surf, (0, 0))
 
 
 class StartScreenSaver(GameScreenSaver):
@@ -186,9 +186,9 @@ class MainScreenSaver(GameScreenSaver):
         """
         self.main_hero.update()
         self.draw_game_space()
+        self.notification_screen.update()
         self.back_to_levels_button.update()
         self.task_button.update()
-        self.notification_screen.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
         self.labyrinth = _labyrinth
@@ -288,6 +288,7 @@ class Quest:
         self.attached_character = _character
         self.finish = False
         self.stage = self.attached_character.appearance_stage
+        self.active_stage = 0
         self.screen_position = 0
 
     def calculate_screen_params(self):
@@ -379,15 +380,3 @@ class LevelScreenSaver(GameScreenSaver):
         self.update_background()
         for button in self.level_buttons:
             button.update()
-
-
-class Notification:
-
-    def __init__(self):
-        """
-        Уведомления
-        """
-        pass
-
-    def update(self):
-        pass
