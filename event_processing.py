@@ -6,6 +6,7 @@ class EventProcessor:
     def __init__(self, _game):
         self.game = _game
         self.start_button = self.game.screen_controller.start_screen_saver.start_button
+        self.exit_button = self.game.screen_controller.start_screen_saver.exit_button
         self.back_to_levels_button = self.game.screen_controller.main_screen_saver.back_to_levels_button
         self.task_button = self.game.screen_controller.main_screen_saver.task_button
         self.level_buttons = self.game.screen_controller.level_screen_saver.level_buttons
@@ -30,6 +31,7 @@ class EventProcessor:
                     self.screen_buttons_check(event, button)
             elif self.game.active_screen == "start_screen":
                 self.screen_buttons_check(event, self.start_button)
+                self.screen_buttons_check(event, self.exit_button)
 
     def move_main_hero(self, event):
         if event.key == pygame.K_a and self.main_hero.arrival_x != 0 and not self.main_hero.inside_elevator:

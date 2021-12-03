@@ -106,6 +106,60 @@ class StartButton(Button):
         self.pressed = False
         self.game.active_screen = "level_screen"
 
+class ExitButton(Button):
+
+    def __init__(self, _game, _active_screen="start_screen"):
+        """
+        Кнопка выхода из игры на начальном экране игры
+        """
+        self.game = _game
+        super().__init__(self.game, self.start)
+        self.img_file = "assets/buttons/start_button.png"
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_height = self.img_surf.get_height()
+        self.img_width = self.img_surf.get_width()
+        self.active_screen = _active_screen
+        self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
+
+    def calculate_cords(self):
+        """
+        Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки старта
+        :return: координаты, коэффициент размера, длину и высоту
+        """
+        img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
+        img_width = img_rect.width
+        img_height = img_rect.height
+        unit_width = self.window_width // 8
+        k = unit_width / img_width
+        unit_height = k * img_height
+        x = self.window_width // 10
+        y = self.window_height // 10
+        return x, y, k, unit_width, unit_height
+
+    def update(self):
+        """
+        обновляет изображение, которое должно быть у кнопки
+        """
+        if self.pressed:
+            self.img_file = "assets/buttons/pressed_start_button.png"
+        else:
+            self.img_file = "assets/buttons/start_button.png"
+
+        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
+        self.update_pic()
+
+    def update_pic(self):
+        """
+        обновляет картинку кнопки
+        """
+        self.update_image(255)
+
+    def start(self):
+        self.pressed = False
+        self.game.active_screen = "level_screen"
+        self.game.event_processor.quit = True
+
 
 class LevelButton(Button):
 

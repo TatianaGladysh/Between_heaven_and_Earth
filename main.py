@@ -2,6 +2,7 @@ import json
 import time
 
 import pygame
+import ctypes
 
 from event_processing import EventProcessor
 from heroes import MainHero, Character
@@ -9,7 +10,6 @@ from labyrinth import Labyrinth
 from screensavers_control import ScreenSaverController
 import animations
 import sound_control
-import ctypes
 
 pygame.init()
 
