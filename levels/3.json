@@ -1,52 +1,56 @@
 {
   "layers": {
     "layer_1": [
-      "0 0 x d 0 x x x",
-      "x x x e d x x x",
-      "x x x e d x x x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x"
-    ],
-    "layer_2" : [
-      "x x x d 0 x x x",
-      "x x x e d x x x",
-      "x x x e d x x x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x"
-    ],
-    "layer_3" : [
-      "x x x d 0 x x x",
-      "x x x e d x x x",
-      "x x x e d x x x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x"
-    ],
-    "layer_4" : [
-      "x x x d 0 x x x",
-      "x x x e d x x x",
-      "x x x e d x x x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x",
-      "x 0 0 0 0 0 0 x"
+      "x x x x d 0",
+      "x 0 0 x d 0",
+      "x d x d 0 d",
+      "0 0 0 0 0 d"
+      ],
+    "layer_2": [
+      "e 0 d x d x",
+      "e x x 0 d x",
+      "e d 0 d x d",
+      "x x x x x d"
+      ],
+    "layer_3": [
+      "0 x d x d 0",
+      "x x x x d 0",
+      "d d x d x 0",
+      "d 0 x 0 d d"
+      ],
+    "layer_4": [
+      "x 0 d x d x",
+      "e x x 0 d x",
+      "e d x d x x",
+      "e x d x 0 d"
+      ],
+    "layer_5": [
+      "x x d x d e",
+      "x d d x d e",
+      "0 d x d x d",
+      "x d 0 d x d"
+      ],
+    "layer_6": [
+      "d x d x d d",
+      "0 d 0 0 d x",
+      "x d x 0 0 d",
+      "0 0 x 0 d 0"
+      ],
+    "layer_7": [
+      "d x d x d d",
+      "x d x x d x",
+      "x d x x x d",
+      "x x x x d x"
+      ],
+    "layer_8": [
+      "e x 0 0 0 0",
+      "e 0 x 0 0 0",
+      "0 e 0 0 0 e",
+      "x e 0 x 0 e"
     ]
   },
   "main_hero": {
-    "start_cords": [0, 0, 0]
+    "start_cords": [5, 0, 0]
   },
   "characters": [
     {
