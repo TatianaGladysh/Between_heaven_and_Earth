@@ -185,8 +185,10 @@ class MainScreenSaver(GameScreenSaver):
         будет обрабатывать действия с уведомлениями
         """
         self.main_hero.update()
+        self.characters[self.notification_screen.active_stage].update()
         self.draw_game_space()
-        self.notification_screen.update()
+        if self.notification_screen.active:
+            self.notification_screen.update()
         self.back_to_levels_button.update()
         self.task_button.update()
 
@@ -300,7 +302,7 @@ class Quest:
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
         self.screen_y = (self.indent + self.unit_height) * self.pos_in_quests_order + \
-                        self.indent + self.unit_height // 2
+            self.indent + self.unit_height // 2
 
     def set_pos_in_order(self, number):
         self.pos_in_quests_order = number

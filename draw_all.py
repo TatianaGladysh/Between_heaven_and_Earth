@@ -158,10 +158,12 @@ class Painter:
             self.update_elevator_inside()
             self.update_main_hero_pic()
             self.update_rooms_pics()
+            self.update_character(self.game.screen_controller.main_screen_saver.notifications_screen.active_stage)
             self.update_grid_img()
         else:
             self.update_elevator_inside()
             self.update_rooms_pics()
+            self.update_character(self.game.screen_controller.main_screen_saver.notification_screen.active_stage)
             self.update_main_hero_pic()
             self.update_grid_img()
 
@@ -182,8 +184,11 @@ class Painter:
         self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
                           self.img_scale_k)
 
-    def update_characters(self):
-        pass
+    def update_character(self, active_game_stage):
+        hero = self.characters[active_game_stage]
+        hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width + self.elevator_correction_x
+        hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height + self.elevator_correction_y
+        self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)
 
     @staticmethod
     def update_image(surf, obj_surf, x, y, opacity, scale_k=1):
