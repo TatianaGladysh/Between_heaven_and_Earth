@@ -3,17 +3,18 @@ import pygame
 
 class Button:
 
-    def __init__(self, game, _command, _args=None):
+    def __init__(self, _game, _command, _args=None):
         """
         Кнопка на начальном экране игры
         """
+        self.game = _game
         if _args is None:
             _args = []
         self.args = _args
-        self.window_height = game.screen_height
-        self.window_width = game.screen_width
+        self.window_height = _game.screen_height
+        self.window_width = _game.screen_width
         self.command = _command
-        self.surf = game.game_surf
+        self.surf = _game.game_surf
         self.pressed = False
         self.img_file = "assets/none.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
@@ -59,8 +60,7 @@ class StartButton(Button):
         """
         Кнопка старта на начальном экране игры
         """
-        self.game = _game
-        super().__init__(self.game, self.start)
+        super().__init__(_game, self.start)
         self.img_file = "assets/buttons/start_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
@@ -109,17 +109,15 @@ class StartButton(Button):
 
 class ExitButton(Button):
 
-    def __init__(self, _game, _active_screen="start_screen"):
+    def __init__(self, _game):
         """
         Кнопка выхода из игры на начальном экране игры
         """
-        self.game = _game
-        super().__init__(self.game, self.start)
+        super().__init__(_game, self.start)
         self.img_file = "assets/buttons/exit_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
-        self.active_screen = _active_screen
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
 
     def calculate_cords(self):
@@ -158,16 +156,17 @@ class ExitButton(Button):
 
     def start(self):
         self.pressed = False
-        self.game.active_screen = "level_screen"
-        self.game.event_processor.quit = True
+        if self.game.active_screen == "start_screen":
+            self.game.event_processor.quit = True
+        elif self.game.active_screen == "level_screen":
+            self.game.active_screen = "start_screen"
 
 
 class LevelButton(Button):
 
     def __init__(self, _x, _y, _id, _game):
-        self.game = _game
         self.id = _id
-        super(LevelButton, self).__init__(self.game, self.launch_lvl)
+        super(LevelButton, self).__init__(_game, self.launch_lvl)
         self.x = _x
         self.y = _y
         self.block = self.adopted_from_file()
@@ -237,8 +236,7 @@ class BackToLevelsButton(Button):
         """
         Кнопка возвращения на экран с уровнями на экране игры
         """
-        self.game = _game
-        super().__init__(self.game, self.start)
+        super().__init__(_game, self.start)
         self.img_file = "assets/buttons/start_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
@@ -289,8 +287,7 @@ class TaskButton(Button):
         """
         Кнопка открывает список заданий на экране игры
         """
-        self.game = _game
-        super().__init__(self.game, self.start)
+        super().__init__(_game, self.start)
         self.img_file = "assets/buttons/start_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
