@@ -5,11 +5,11 @@ import pygame
 import ctypes
 
 from event_processing import EventProcessor
+from screensavers_control import ScreenSaverController
+from sound_control import SoundController
+import animations
 from heroes import MainHero, Character
 from labyrinth import Labyrinth
-from screensavers_control import ScreenSaverController
-import animations
-import sound_control
 
 pygame.init()
 
@@ -38,7 +38,7 @@ class Game:
         self.characters = None
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
-        self.sounds_controller = sound_control.SoundController(self)
+        self.sounds_controller = SoundController(self)
         self.active_screen = "start_screen"
 
     def __setattr__(self, key, value):

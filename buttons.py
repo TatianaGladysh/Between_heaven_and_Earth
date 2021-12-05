@@ -156,10 +156,7 @@ class ExitButton(Button):
 
     def start(self):
         self.pressed = False
-        if self.game.active_screen == "start_screen":
-            self.game.event_processor.quit = True
-        elif self.game.active_screen == "level_screen":
-            self.game.active_screen = "start_screen"
+        self.game.event_processor.quit = True
 
 
 class LevelButton(Button):
@@ -231,13 +228,13 @@ class LevelButton(Button):
         return self.unit_height
 
 
-class BackToLevelsButton(Button):
+class BackButton(Button):
     def __init__(self, _game):
         """
         Кнопка возвращения на экран с уровнями на экране игры
         """
         super().__init__(_game, self.start)
-        self.img_file = "assets/buttons/start_button.png"
+        self.img_file = "assets/buttons/exit_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
@@ -263,9 +260,10 @@ class BackToLevelsButton(Button):
         обновляет изображение, которое должно быть у кнопки
         """
         if self.pressed:
-            self.img_file = "assets/buttons/pressed_start_button.png"
+            self.img_file = "assets/buttons/pressed_exit_button.png"
+            print(1)
         else:
-            self.img_file = "assets/buttons/start_button.png"
+            self.img_file = "assets/buttons/exit_button.png"
 
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
@@ -279,7 +277,10 @@ class BackToLevelsButton(Button):
 
     def start(self):
         self.pressed = False
-        self.game.active_screen = "level_screen"
+        if self.game.active_screen == "level_screen":
+            self.game.active_screen = "start_screen"
+        else:
+            self.game.active_screen = "level_screen"
 
 
 class TaskButton(Button):

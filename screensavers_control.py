@@ -1,7 +1,7 @@
 import pygame
 from draw_all import Painter
 import numpy as np
-from buttons import LevelButton, StartButton, BackToLevelsButton, TaskButton, ExitButton
+from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton
 from animations import QuestAnimation
 import animations
 
@@ -171,7 +171,7 @@ class MainScreenSaver(GameScreenSaver):
         self.characters = self.game.characters
         self.painter = Painter(self.game, self.game.screen_width, self.game.screen_height)
         self.notifications = []
-        self.back_to_levels_button = BackToLevelsButton(self.game)
+        self.back_button = BackButton(self.game)
         self.task_button = TaskButton(self.game)
         self.notification_screen = NotificationsScreen(self)
 
@@ -191,7 +191,7 @@ class MainScreenSaver(GameScreenSaver):
         self.draw_game_space()
         if self.notification_screen.active:
             self.notification_screen.update()
-        self.back_to_levels_button.update()
+        self.back_button.update()
         self.task_button.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
@@ -347,6 +347,7 @@ class LevelScreenSaver(GameScreenSaver):
         self.labyrinth_file = self.game.labyrinth_file
         self.active_screen = _active_screen
         self.level_buttons = self.fill_level_buttons_array()
+        self.back_button = BackButton(self.game)
 
     def fill_level_buttons_array(self):
         buttons_array = np.zeros(self.levels_count, dtype=LevelButton)
@@ -383,3 +384,4 @@ class LevelScreenSaver(GameScreenSaver):
         self.update_background()
         for button in self.level_buttons:
             button.update()
+        self.back_button.update()
