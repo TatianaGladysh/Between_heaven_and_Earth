@@ -85,18 +85,17 @@ class EventProcessor:
 
     def screen_buttons_check(self, event, button):
         if event.type == pygame.MOUSEBUTTONUP:
-            if button.pressed and self.check_button_click(button):
+            if button.pressed and button.check_button_click(pygame.mouse.get_pos()):
                 button.click()
                 button.pressed = False
                 self.game.sounds_controller.play_sound("button_click")
 
-        #FIXME зачем эта проверка?
         if event.type == pygame.MOUSEMOTION:
-            if not self.check_button_click(button):
+            if not button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.check_button_click(button):
+            if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = True
 
     def have_a_door(self, direction):
@@ -121,18 +120,6 @@ class EventProcessor:
         elif direction == "here":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y,
                                            self.main_hero.z).type == "elevator"
-
-    @staticmethod
-    def check_button_click(button):
-        """
-        Проверяет нажатие мыши по кнопкам на экране
-        """
-        button_x, button_y = button.get_cords()
-        button_width = button.get_width()
-        button_height = button.get_height()
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def set_active_screen(self, screen_name: str):
         self.game.active_screen = screen_name

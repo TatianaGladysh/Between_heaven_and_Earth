@@ -53,6 +53,17 @@ class Button:
         img_rect = self.img_surf.get_rect(center=(self.x, self.y))
         self.surf.blit(self.img_surf, img_rect)
 
+    def check_button_click(self, mouse_position):
+        """
+        Проверяет нажатие мыши по кнопкам на экране
+        """
+        button_x, button_y = self.get_cords()
+        button_width = self.get_width()
+        button_height = self.get_height()
+        mouse_x, mouse_y = mouse_position
+        return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
+               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+
 
 class StartButton(Button):
 
