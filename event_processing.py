@@ -2,8 +2,14 @@ import pygame
 
 
 class EventProcessor:
-
+    """
+    Класс обработчика событий
+    """
     def __init__(self, _game):
+        """
+        Конструктор класса обработки событий
+        :param _game: объект класса Game
+        """
         self.game = _game
         self.start_button = self.game.screen_controller.start_screen_saver.start_button
         self.exit_button = self.game.screen_controller.start_screen_saver.exit_button
@@ -16,6 +22,10 @@ class EventProcessor:
         self.characters = self.game.characters
 
     def global_event_process(self):
+        """
+
+        :return:
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit = True
