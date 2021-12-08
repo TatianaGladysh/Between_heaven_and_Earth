@@ -201,9 +201,9 @@ class Quest:
         unit_width = (3 / 5) * self.character.game.screen_width
         k = unit_width / img_width
         self.unit_height = img_height * k
-        self.active_surf = pygame.transform.scale(self.active_surf, (img_width * k, img_height * k))
-        self.done_surf = pygame.transform.scale(self.done_surf, (img_width * k, img_height * k))
-        self.coming_surf = pygame.transform.scale(self.coming_surf, (img_width * k, img_height * k))
+        self.active_surf = pygame.transform.scale(self.active_surf, (int(img_width * k), int(img_height * k)))
+        self.done_surf = pygame.transform.scale(self.done_surf, (int(img_width * k), int(img_height * k)))
+        self.coming_surf = pygame.transform.scale(self.coming_surf, (int(img_width * k), int(img_height * k)))
 
     def define_img_file(self):
         if self.character.name == "Leonid":
