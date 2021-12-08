@@ -64,6 +64,23 @@ class Button:
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
                button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
+    def update(self):
+        """
+        обновляет изображение, которое должно быть у кнопки
+        """
+        if self.pressed:
+            self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
+        else:
+            self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
+        self.update_pic()
+
+    def update_pic(self):
+        """
+        обновляет картинку кнопки
+        """
+        self.update_image(255)
+
 
 class StartButton(Button):
 
@@ -72,7 +89,7 @@ class StartButton(Button):
         Кнопка старта на начальном экране игры
         """
         super().__init__(_game, self.start)
-        self.img_file_release = "assets/buttons/start_button.png"
+        self.img_file_released = "assets/buttons/start_button.png"
         self.img_file_pressed = "assets/buttons/pressed_start_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
@@ -95,23 +112,6 @@ class StartButton(Button):
         y = self.window_height // 2
         return x, y, k, unit_width, unit_height
 
-    def update(self):
-        """
-        обновляет изображение, которое должно быть у кнопки
-        """
-        if self.pressed:
-            self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
-        else:
-            self.img_surf = pygame.image.load(self.img_file_release).convert_alpha()
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.update_pic()
-
-    def update_pic(self):
-        """
-        обновляет картинку кнопки
-        """
-        self.update_image(255)
-
     def start(self):
         self.pressed = False
         self.game.active_screen = "level_screen"
@@ -125,7 +125,7 @@ class ExitButton(Button):
         """
         super().__init__(_game, self.start)
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
-        self.img_file_release = "assets/buttons/exit_button.png"
+        self.img_file_released = "assets/buttons/exit_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
@@ -146,23 +146,6 @@ class ExitButton(Button):
         y = self.window_height * 19 // 30
         return x, y, k, unit_width, unit_height
 
-    def update(self):
-        """
-        обновляет изображение, которое должно быть у кнопки
-        """
-        if self.pressed:
-            self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
-        else:
-            self.img_surf = pygame.image.load(self.img_file_release).convert_alpha()
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.update_pic()
-
-    def update_pic(self):
-        """
-        обновляет картинку кнопки
-        """
-        self.update_image(255)
-
     def start(self):
         self.pressed = False
         self.game.event_processor.quit = True
@@ -176,21 +159,19 @@ class LevelButton(Button):
         self.x = _x
         self.y = _y
         self.block = self.adopted_from_file()
-        self.img_file = self.read_img_file()
+        # self.img_file = self.read_img_file()
+        self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
+        self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
         self.pressed = False
         self.width, self.height = self.calculate_dimensions()
         self.unit_width, self.unit_height = self.width, self.height
+    #
+    # def __setattr__(self, key, value):
+    #     self.__dict__[key] = value
+    #     if key == "img_file":
+    #         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-        elif key == "pressed":
-            if self.pressed:
-                self.img_file = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
-            else:
-                self.img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
-    #FIXME когда вызывается этот метод? Нуно здесь тоже убрать множественную загрузку картинки
+    # FIXME когда вызывается этот метод? Нуно здесь тоже убрать множественную загрузку картинки
 
     @staticmethod
     def calculate_dimensions():
@@ -216,15 +197,6 @@ class LevelButton(Button):
         self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
         self.game.active_screen = "main_screen"
 
-    def update_pic(self, opacity=255):
-        img_surf = self.img_surf
-        img_surf.set_alpha(opacity)
-        img_rect = img_surf.get_rect(center=(self.x, self.y))
-        self.surf.blit(img_surf, img_rect)
-
-    def update(self):
-        self.update_pic()
-
 
 class BackButton(Button):
     def __init__(self, _game):
@@ -232,9 +204,9 @@ class BackButton(Button):
         Кнопка возвращения на экран с уровнями на экране игры
         """
         super().__init__(_game, self.start)
-        self.img_file_release = "assets/buttons/exit_button.png"
+        self.img_file_released = "assets/buttons/exit_button.png"
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
-        self.img_surf = pygame.image.load(self.img_file_release).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -254,23 +226,6 @@ class BackButton(Button):
         y = self.window_height // 10
         return x, y, k, unit_width, unit_height
 
-    def update(self):
-        """
-        обновляет изображение, которое должно быть у кнопки
-        """
-        if self.pressed:
-            self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
-        else:
-            self.img_surf = pygame.image.load(self.img_file_release).convert_alpha()
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.update_pic()
-
-    def update_pic(self):
-        """
-        обновляет картинку кнопки
-        """
-        self.update_image(255)
-
     def start(self):
         self.pressed = False
         if self.game.active_screen == "level_screen":
@@ -285,7 +240,7 @@ class TaskButton(Button):
         Кнопка открывает список заданий на экране игры
         """
         super().__init__(_game, self.start)
-        self.img_file_release = "assets/buttons/tasks_button.png"
+        self.img_file_released = "assets/buttons/tasks_button.png"
         self.img_file_pressed = "assets/buttons/tasks_button_pressed.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.img_height = self.img_surf.get_height()
@@ -307,25 +262,41 @@ class TaskButton(Button):
         y = self.window_height // 5
         return x, y, k, unit_width, unit_height
 
-    def update(self):
-        """
-        обновляет изображение, которое должно быть у кнопки
-        """
-        if self.pressed:
-            self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
-        else:
-            self.img_surf = pygame.image.load(self.img_file_release).convert_alpha()
-        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.update_pic()
-
-    def update_pic(self):
-        """
-        обновляет картинку кнопки
-        """
-        self.update_image(255)
-
     def start(self):
         self.pressed = False
         self.game.main_hero.move_blocked = not self.game.main_hero.move_blocked
         self.game.screen_controller.main_screen_saver.notification_screen.active = \
             not self.game.screen_controller.main_screen_saver.notification_screen.active
+
+
+class SoundButton(Button):
+    def __init__(self, _game):
+        """
+        Кнопка возвращения на экран с уровнями на экране игры
+        """
+        super().__init__(_game, self.start)
+        self.img_file_released = "assets/buttons/sound_on.png"
+        self.img_file_pressed = "assets/buttons/sound_off.png"
+        self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
+        self.img_height = self.img_surf.get_height()
+        self.img_width = self.img_surf.get_width()
+        self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
+
+    def calculate_cords(self):
+        """
+        Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
+        :return: координаты, коэффициент размера, длину и высоту
+        """
+        img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
+        img_width = img_rect.width
+        img_height = img_rect.height
+        unit_width = self.window_width // 10
+        k = unit_width / img_width
+        unit_height = k * img_height
+        x = self.window_width // 10
+        y = self.window_height // 10
+        return x, y, k, unit_width, unit_height
+
+    def start(self):
+        self.pressed = False
+        self.game.sounds_controller.sounds_on_off()
