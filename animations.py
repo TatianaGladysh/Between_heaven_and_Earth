@@ -220,7 +220,7 @@ class AnimationSwitchScreen:
 class QuestAnimation:
 
     def __init__(self, _quest, _fps, _pos_in_order, _begin_opacity=255):
-        self.indent = 20
+        self.indent = 10
         self.quest = _quest
         self.img_surf = self.quest.active_surf
         self.begin_opacity = _begin_opacity
@@ -245,7 +245,7 @@ class QuestAnimation:
         self.scale_k = self.unit_width / img_width
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.indent + self.unit_width // 2
-        self.screen_y = self.indent + self.unit_height // 2 + self.pos_in_order * (self.indent + self.pos_in_order)
+        self.screen_y = self.indent + self.unit_height // 2 + self.pos_in_order * (self.indent + self.unit_height)
         self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
         self.img_rect = self.img_surf.get_rect(center=(self.screen_x, self.screen_y))
 
@@ -335,9 +335,6 @@ class LaterOnFunc:
         self.time = 0
         self.fps = _fps
         self.done = False
-
-    # def __setattr__(self, key, value):
-    #     self.__dict__[key] = value
 
     def execute(self):
         """
@@ -503,7 +500,7 @@ class WalkingAnimation(ImageAnimation):
     def __init__(self, _hero, _fps, _time_interval, _delay=0):
         """
         описывает ходьбу человека
-        :param _fps: фпсd
+        :param _fps: фпс
         :param _time_interval: время анимации
         :param _delay: задержка
         """

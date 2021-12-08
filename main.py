@@ -1,9 +1,7 @@
 import json
 import time
-from pprint import pprint
 
 import pygame
-import ctypes
 
 from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
@@ -17,8 +15,7 @@ pygame.init()
 
 FPS = 200
 
-user = ctypes.windll.user32
-WIDTH, HEIGHT = user.GetSystemMetrics(0), user.GetSystemMetrics(1)
+WIDTH, HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
 
 
 class Game:
