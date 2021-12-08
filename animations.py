@@ -246,7 +246,7 @@ class QuestAnimation:
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.indent + self.unit_width // 2
         self.screen_y = self.indent + self.unit_height // 2 + self.pos_in_order * (self.indent + self.unit_height)
-        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
+        self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.img_rect = self.img_surf.get_rect(center=(self.screen_x, self.screen_y))
 
     def update_pic(self):
