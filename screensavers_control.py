@@ -1,7 +1,7 @@
 import pygame
 from draw_all import Painter
 import numpy as np
-from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton
+from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton, SoundButton
 import animations
 
 pygame.init()
@@ -30,6 +30,7 @@ class ScreenSaverController:
         self.active_screen = "start_screen"
         self.loading = False
         self.later_on_funcs = []
+        self.sound_button = SoundButton(self.game)
 
     def start_loading(self):
         self.loading = True
@@ -85,6 +86,7 @@ class ScreenSaverController:
         self.update_screen_animations()
         self.update_later_on_funcs()
         self.update_loading_screen()
+        self.sound_button.update()
         pygame.display.update()
 
     def set_game_params(self, _labyrinth, _main_hero, _active_characters):

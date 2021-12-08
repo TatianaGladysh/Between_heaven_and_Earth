@@ -282,16 +282,16 @@ class SoundButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
         :return: координаты, коэффициент размера, длину и высоту
         """
-        img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
+        img_rect = pygame.image.load("assets/buttons/sound_on.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
-        unit_width = self.window_width // 10
+        unit_width = self.window_width // 15
         k = unit_width / img_width
         unit_height = k * img_height
-        x = self.window_width // 10
-        y = self.window_height // 10
+        x = self.window_width // 20
+        y = self.window_height // 10 * 9
         return x, y, k, unit_width, unit_height
 
     def command(self):
-        self.pressed = False
-        self.game.sounds_controller.sounds_on_off()
+        self.game.sounds_controller.music_on_off()
+        self.game.sounds_controller.update()
