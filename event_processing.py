@@ -16,6 +16,7 @@ class EventProcessor:
         self.back_to_levels_button = self.game.screen_controller.main_screen_saver.back_button
         self.task_button = self.game.screen_controller.main_screen_saver.task_button
         self.level_buttons = self.game.screen_controller.level_screen_saver.level_buttons
+        self.back_button = self.game.screen_controller.level_screen_saver.back_button
         self.quit = False
         self.main_hero = self.game.main_hero
         self.labyrinth = self.game.labyrinth
@@ -42,7 +43,7 @@ class EventProcessor:
             elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)
-                self.screen_buttons_check(event, self.back_to_levels_button)
+                self.screen_buttons_check(event, self.back_button)
             elif self.game.active_screen == "start_screen":
                 self.screen_buttons_check(event, self.start_button)
                 self.screen_buttons_check(event, self.exit_button)
