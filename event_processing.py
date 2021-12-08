@@ -16,6 +16,8 @@ class EventProcessor:
         self.back_to_levels_button = self.game.screen_controller.main_screen_saver.back_button
         self.task_button = self.game.screen_controller.main_screen_saver.task_button
         self.level_buttons = self.game.screen_controller.level_screen_saver.level_buttons
+        self.back_button = self.game.screen_controller.level_screen_saver.back_button
+        self.sound_button = self.game.screen_controller.sound_button
         self.quit = False
         self.main_hero = self.game.main_hero
         self.labyrinth = self.game.labyrinth
@@ -30,6 +32,7 @@ class EventProcessor:
             if event.type == pygame.QUIT:
                 self.quit = True
                 continue
+            self.screen_buttons_check_click(event, self.sound_button)
             if self.game.active_screen == "main_screen":
                 try:
                     if event.type == pygame.KEYDOWN and not self.game.main_hero.move_blocked:
@@ -42,7 +45,7 @@ class EventProcessor:
             elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)
-                self.screen_buttons_check(event, self.back_to_levels_button)
+                self.screen_buttons_check(event, self.back_button)
             elif self.game.active_screen == "start_screen":
                 self.screen_buttons_check(event, self.start_button)
                 self.screen_buttons_check(event, self.exit_button)
@@ -110,6 +113,13 @@ class EventProcessor:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = True
+
+    def screen_buttons_check_click(self, event, button):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button.check_button_click(pygame.mouse.get_pos()):
+                button.pressed = not button.pressed
+                button.click()
+            self.game.sounds_controller.play_sound("button_click")
 
     def have_a_door(self, direction):
         """

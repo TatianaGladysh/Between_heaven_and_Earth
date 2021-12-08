@@ -3,9 +3,12 @@ import pygame
 
 class Button:
 
-    def __init__(self, _game, _command, _args=None):
+    def __init__(self, _game, _args=None):
         """
-        Кнопка на начальном экране игры
+        Класс кнопок на разных экранах
+
+        :param _game: объект класса Game
+        :param _args: параметры команды
         """
         self.game = _game
         if _args is None:
@@ -13,7 +16,6 @@ class Button:
         self.args = _args
         self.window_height = _game.screen_height
         self.window_width = _game.screen_width
-        self.command = _command
         self.surf = _game.game_surf
         self.pressed = False
         self.img_file = "assets/none.png"
@@ -88,7 +90,7 @@ class StartButton(Button):
         """
         Кнопка старта на начальном экране игры
         """
-        super().__init__(_game, self.start)
+        super().__init__(_game)
         self.img_file_released = "assets/buttons/start_button.png"
         self.img_file_pressed = "assets/buttons/pressed_start_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
@@ -112,7 +114,7 @@ class StartButton(Button):
         y = self.window_height // 2
         return x, y, k, unit_width, unit_height
 
-    def start(self):
+    def command(self):
         self.pressed = False
         self.game.active_screen = "level_screen"
 
@@ -123,7 +125,7 @@ class ExitButton(Button):
         """
         Кнопка выхода из игры на начальном экране игры
         """
-        super().__init__(_game, self.start)
+        super().__init__(_game)
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
         self.img_file_released = "assets/buttons/exit_button.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
@@ -146,7 +148,7 @@ class ExitButton(Button):
         y = self.window_height * 19 // 30
         return x, y, k, unit_width, unit_height
 
-    def start(self):
+    def command(self):
         self.pressed = False
         self.game.event_processor.quit = True
 
@@ -155,7 +157,7 @@ class LevelButton(Button):
 
     def __init__(self, _x, _y, _id, _game):
         self.id = _id
-        super(LevelButton, self).__init__(_game, self.launch_lvl)
+        super(LevelButton, self).__init__(_game)
         self.x = _x
         self.y = _y
         self.block = self.adopted_from_file()
@@ -165,13 +167,6 @@ class LevelButton(Button):
         self.pressed = False
         self.width, self.height = self.calculate_dimensions()
         self.unit_width, self.unit_height = self.width, self.height
-    #
-    # def __setattr__(self, key, value):
-    #     self.__dict__[key] = value
-    #     if key == "img_file":
-    #         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-
-    # FIXME когда вызывается этот метод? Нуно здесь тоже убрать множественную загрузку картинки
 
     @staticmethod
     def calculate_dimensions():
@@ -193,7 +188,7 @@ class LevelButton(Button):
                 block = True
             return block
 
-    def launch_lvl(self):
+    def command(self):
         self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
         self.game.active_screen = "main_screen"
 
@@ -203,7 +198,7 @@ class BackButton(Button):
         """
         Кнопка возвращения на экран с уровнями на экране игры
         """
-        super().__init__(_game, self.start)
+        super().__init__(_game)
         self.img_file_released = "assets/buttons/exit_button.png"
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
         self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
@@ -226,7 +221,7 @@ class BackButton(Button):
         y = self.window_height // 10
         return x, y, k, unit_width, unit_height
 
-    def start(self):
+    def command(self):
         self.pressed = False
         if self.game.active_screen == "level_screen":
             self.game.active_screen = "start_screen"
@@ -239,7 +234,7 @@ class TaskButton(Button):
         """
         Кнопка открывает список заданий на экране игры
         """
-        super().__init__(_game, self.start)
+        super().__init__(_game)
         self.img_file_released = "assets/buttons/tasks_button.png"
         self.img_file_pressed = "assets/buttons/tasks_button_pressed.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
@@ -262,7 +257,7 @@ class TaskButton(Button):
         y = self.window_height // 5
         return x, y, k, unit_width, unit_height
 
-    def start(self):
+    def command(self):
         self.pressed = False
         self.game.main_hero.move_blocked = not self.game.main_hero.move_blocked
         self.game.screen_controller.main_screen_saver.notification_screen.active = \
@@ -274,7 +269,7 @@ class SoundButton(Button):
         """
         Кнопка возвращения на экран с уровнями на экране игры
         """
-        super().__init__(_game, self.start)
+        super().__init__(_game)
         self.img_file_released = "assets/buttons/sound_on.png"
         self.img_file_pressed = "assets/buttons/sound_off.png"
         self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
@@ -287,16 +282,16 @@ class SoundButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
         :return: координаты, коэффициент размера, длину и высоту
         """
-        img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
+        img_rect = pygame.image.load("assets/buttons/sound_on.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
-        unit_width = self.window_width // 10
+        unit_width = self.window_width // 15
         k = unit_width / img_width
         unit_height = k * img_height
-        x = self.window_width // 10
-        y = self.window_height // 10
+        x = self.window_width // 20
+        y = self.window_height // 10 * 9
         return x, y, k, unit_width, unit_height
 
-    def start(self):
-        self.pressed = False
-        self.game.sounds_controller.sounds_on_off()
+    def command(self):
+        self.game.sounds_controller.music_on_off()
+        self.game.sounds_controller.update()
