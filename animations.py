@@ -42,6 +42,9 @@ class Animator:
         self.elevator_correction_x, self.elevator_correction_y = \
             self.painter.elevator_correction_x, self.painter.elevator_correction_y
 
+    def add_quest_animation(self, quest, number):
+        self.add_animation(QuestAnimation(quest, self.fps, number))
+
     def add_animation(self, animation):
         """
         добавляет в листы анимаций координат и изображений новую
@@ -219,7 +222,7 @@ class QuestAnimation:
     def __init__(self, _quest, _fps, _pos_in_order, _begin_opacity=255):
         self.indent = 20
         self.quest = _quest
-        self.img_surf = pygame.image.load(self.quest.img_file).convert_alpha()
+        self.img_surf = self.quest.active_surf
         self.begin_opacity = _begin_opacity
         self.opacity = 255
         self.fps = _fps
@@ -232,25 +235,23 @@ class QuestAnimation:
         self.unit_width = 0
         self.unit_height = 0
         self.scale_k = 0
+        self.img_rect = None
         self.calculate_params()
 
     def calculate_params(self):
-        self.unit_width = self.quest.notification_screen.main_screen_saver.game.screen_width // 5
+        self.unit_width = self.quest.character.game.screen_width // 4
         img_width = self.img_surf.get_width()
         img_height = self.img_surf.get_height()
         self.scale_k = self.unit_width / img_width
         self.unit_height = img_height * self.scale_k
         self.screen_x = self.indent + self.unit_width // 2
         self.screen_y = self.indent + self.unit_height // 2 + self.pos_in_order * (self.indent + self.pos_in_order)
-
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "quest":
-            self.img_surf = pygame.image.load(self.quest.img_file).convert_alpha()
+        self.img_surf = pygame.transform.scale(self.img_surf, (self.unit_width, self.unit_height))
+        self.img_rect = self.img_surf.get_rect(center=(self.screen_x, self.screen_y))
 
     def update_pic(self):
-        self.update_image(self.quest.notification_screen.main_screen_saver.game.game_surf, self.img_surf, self.screen_x,
-                          self.screen_y, self.opacity, self.scale_k)
+        self.img_surf.set_alpha(self.opacity)
+        self.quest.character.game.game_surf.blit(self.img_surf, self.img_rect)
 
     def update(self):
         self.time += (1 / max(self.fps.value, MinAllowableFps))
@@ -261,24 +262,6 @@ class QuestAnimation:
                     (1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
             self.opacity += self.step_change
             self.update_pic()
-
-    @staticmethod
-    def update_image(surf, obj_surf, x, y, opacity, scale_k=1):
-        """
-        Отрисовывает на экран картинку из файла
-        :param y:
-        :param x:
-        :param obj_surf:
-        :param surf: main Surface
-        :param scale_k: размер относительно единичной длины
-        :param opacity: непрозрачность картинки
-        """
-        img_width = obj_surf.get_width()
-        img_height = obj_surf.get_height()
-        img_surf = pygame.transform.scale(obj_surf, (int(scale_k * img_width), int(scale_k * img_height)))
-        img_surf.set_alpha(opacity)
-        img_rect = img_surf.get_rect(center=(x, y))
-        surf.blit(img_surf, img_rect)
 
 
 class ElevatorCorrectionCordsAnimation:
@@ -305,9 +288,6 @@ class ElevatorCorrectionCordsAnimation:
         self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (
                 _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
         self.done = False
-
-    # def __setattr__(self, key, value):
-    #     self.__dict__[key] = value
 
     def change_variables(self):
         """

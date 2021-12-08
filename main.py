@@ -1,5 +1,6 @@
 import json
 import time
+from pprint import pprint
 
 import pygame
 import ctypes
@@ -10,6 +11,7 @@ from sound_control import SoundController
 import animations
 from heroes import MainHero, Character
 from labyrinth import Labyrinth
+from game_main_process_control import GameMainProcessController
 
 pygame.init()
 
@@ -35,11 +37,17 @@ class Game:
         self.labyrinth = None
         self.labyrinth_file = ""
         self.main_hero = None
-        self.characters = None
+        self.characters = []
+        self.game_controller = GameMainProcessController(self)
         self.screen_controller = ScreenSaverController(self)
         self.event_processor = EventProcessor(self)
         self.sounds_controller = SoundController(self)
         self.active_screen = "start_screen"
+
+    def end_level(self):
+        self.labyrinth = None
+        self.main_hero = None
+        self.characters = None
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -99,6 +107,7 @@ class Game:
     def set_game_params_to_game_modules(self):
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
+        self.game_controller.set_game_params(self.main_hero, self.characters)
 
     def set_active_screen(self, screen_name):
         self.active_screen = screen_name
@@ -124,6 +133,7 @@ class Game:
 
 
 class Fps:
+
     def __init__(self, _clock):
         self.value = FPS
         self.start_time = 0

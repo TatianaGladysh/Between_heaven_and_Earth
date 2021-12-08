@@ -1,7 +1,6 @@
 # здесь отдельно от всего можно рисовать объекты
 import pygame
 import labyrinth
-import heroes
 from animations import Animator
 from math import floor, ceil
 
@@ -26,7 +25,7 @@ class Painter:
         self.img_scale_k = 0
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
-        self.characters = self.game.characters
+        self.active_characters = self.game.game_controller.active_characters
         self.elevator_correction_x = 0
         self.elevator_correction_y = 0
         self.draw_main_hero_in_the_elevator = False
@@ -67,16 +66,14 @@ class Painter:
         self.unit_height = int(self.unit_width / k)
         self.unit_depth = int(self.unit_height * 0.18333333333)
 
-    def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero: heroes.MainHero, _characters):
+    def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero):
         """
         при запуске основной части игры устанавливает параметры:
         :param _labyrinth: лабиринт
         :param _main_hero: главный герой
-        :param _characters: другие персонажи
         """
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
-        self.characters = _characters
         self.calculate_unit_lengths()
         self.calculate_scale_k()
         self.calculate_zero_screen_cords()
@@ -159,13 +156,13 @@ class Painter:
             self.update_elevator_inside()
             self.update_main_hero_pic()
             self.update_rooms_pics()
-            self.update_character(self.game.screen_controller.main_screen_saver.notification_screen.active_stage)
+            self.update_character()
             self.update_grid_img()
         else:
             if self.labyrinth.get_room(*self.main_hero.get_cords()).type == "elevator":
                 self.update_elevator_inside()
             self.update_rooms_pics()
-            self.update_character(self.game.screen_controller.main_screen_saver.notification_screen.active_stage)
+            self.update_character()
             self.update_main_hero_pic()
             self.update_grid_img()
 
@@ -182,18 +179,18 @@ class Painter:
         вызывает функцию обновления изображения главного героя
         """
         main_hero_screen_x = self.zero_screen_cord_x + self.main_hero.x * self.unit_width + self.elevator_correction_x
-        main_hero_screen_y = (
-                                         self.zero_screen_cord_y + self.main_hero.y * self.unit_height + self.elevator_correction_y) - \
-                             (self.main_hero.z - floor(self.main_hero.z)) * self.unit_depth
+        main_hero_screen_y = (self.zero_screen_cord_y + self.main_hero.y * self.unit_height +
+                              self.elevator_correction_y) - (
+                                         self.main_hero.z - floor(self.main_hero.z)) * self.unit_depth
         self.update_image(self.surf, self.main_hero.img_surf, main_hero_screen_x, main_hero_screen_y, 255,
                           self.img_scale_k)
 
-    def update_character(self, active_game_stage):
-        hero = self.characters[active_game_stage]
-        if 1 > self.main_hero.z - hero.z >= 0:
-            hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width
-            hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height
-            self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)
+    def update_character(self):
+        for hero in self.active_characters:
+            if 1 > self.main_hero.z - hero.z >= 0:
+                hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width
+                hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height
+                self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)
 
     @staticmethod
     def update_image(surf, obj_surf, x, y, opacity, scale_k=1):

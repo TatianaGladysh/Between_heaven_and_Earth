@@ -31,11 +31,14 @@ class EventProcessor:
                 self.quit = True
                 continue
             if self.game.active_screen == "main_screen":
-                if event.type == pygame.KEYDOWN and not self.game.main_hero.move_blocked:
-                    self.move_main_hero(event)
-                else:
-                    self.screen_buttons_check(event, self.back_to_levels_button)
-                    self.screen_buttons_check(event, self.task_button)
+                try:
+                    if event.type == pygame.KEYDOWN and not self.game.main_hero.move_blocked:
+                        self.move_main_hero(event)
+                    else:
+                        self.screen_buttons_check(event, self.back_to_levels_button)
+                        self.screen_buttons_check(event, self.task_button)
+                except AttributeError:
+                    print("main_hero is not announced yet")
             elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
                     self.screen_buttons_check(event, button)

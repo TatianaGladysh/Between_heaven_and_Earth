@@ -2,7 +2,6 @@ import pygame
 from draw_all import Painter
 import numpy as np
 from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton
-from animations import QuestAnimation
 import animations
 
 pygame.init()
@@ -10,6 +9,7 @@ pygame.init()
 TimeScreenSwitchAnimationCorrection = 0.07
 
 LevelsCount = 6
+NotificationsIndent = 20
 
 
 class ScreenSaverController:
@@ -18,7 +18,7 @@ class ScreenSaverController:
         self.fps = self.game.fps
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
-        self.characters = self.game.characters
+        self.active_characters = self.game.game_controller.active_characters
         self.surf = self.game.game_surf
         self.window_height = self.game.screen_height
         self.window_width = self.game.screen_width
@@ -87,14 +87,14 @@ class ScreenSaverController:
         self.update_loading_screen()
         pygame.display.update()
 
-    def set_game_params(self, _labyrinth, _main_hero, _characters):
+    def set_game_params(self, _labyrinth, _main_hero, _active_characters):
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
-        self.characters = _characters
+        self.active_characters = _active_characters
         self.set_game_params_to_main_screen_saver()
 
     def set_game_params_to_main_screen_saver(self):
-        self.main_screen_saver.set_game_params(self.labyrinth, self.main_hero, self.characters)
+        self.main_screen_saver.set_game_params(self.labyrinth, self.main_hero, self.active_characters)
 
 
 class GameScreenSaver:
@@ -168,7 +168,6 @@ class MainScreenSaver(GameScreenSaver):
         super().__init__(self.game, "assets/backgrounds/main_background.png")
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
-        self.characters = self.game.characters
         self.painter = Painter(self.game, self.game.screen_width, self.game.screen_height)
         self.notifications = []
         self.back_button = BackButton(self.game)
@@ -182,158 +181,72 @@ class MainScreenSaver(GameScreenSaver):
         self.update_background()
         self.painter.update()
 
+    def set_game_params(self, _labyrinth, _main_hero, _active_characters):
+        self.labyrinth = _labyrinth
+        self.main_hero = _main_hero
+        self.painter.set_game_params(self.labyrinth, self.main_hero)
+
     def update(self):
         """
         будет обрабатывать действия с уведомлениями
         """
         self.main_hero.update()
-        self.characters[self.notification_screen.active_stage].update()
+        for character in self.game.game_controller.active_characters:
+            character.update()
         self.draw_game_space()
         if self.notification_screen.active:
             self.notification_screen.update()
         self.back_button.update()
         self.task_button.update()
 
-    def set_game_params(self, _labyrinth, _main_hero, _characters):
-        self.labyrinth = _labyrinth
-        self.main_hero = _main_hero
-        self.characters = _characters
-        self.painter.set_game_params(self.labyrinth, self.main_hero, self.characters)
-        self.notification_screen.set_quests()
-
 
 class NotificationsScreen:
 
     def __init__(self, _main_screen_saver):
-        self.quests = []
         self.main_screen_saver = _main_screen_saver
         self.active = False
-        self.background_surf = pygame.Surface(
-            (self.main_screen_saver.game.screen_width, self.main_screen_saver.game.screen_height))
-        self.background_surf.set_colorkey("BLACK")
         self.background_opacity = 128
-        self.active_stage = 0
+        self.background_surf = pygame.Surface(
+            (self.main_screen_saver.game.screen_width, self.main_screen_saver.game.screen_height)).convert_alpha()
+        self.background_surf.set_alpha(self.background_opacity)
+        self.background_surf.fill("BLACK")
+        self.active_characters = self.main_screen_saver.game.game_controller.active_characters
+        self.coming_characters = self.main_screen_saver.game.game_controller.upcoming_characters
+        self.passed_characters = self.main_screen_saver.game.game_controller.passed_characters
+        self.active_stage = self.main_screen_saver.game.game_controller.active_stage
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "active_stage":
             self.recalculate_order_of_quests()
-            pos_in_anim_order = 0
-            for quest in self.find_quests_by_stage(self.active_stage):
-                quest.draw_spawn_animation(pos_in_anim_order)
-                pos_in_anim_order += 1
+
+    def draw_spawn_animations(self):
+        i = 0
+        for character in self.active_characters:
+            character.quest.draw_spawn_animation(i)
+            i += 1
 
     def recalculate_order_of_quests(self):
-        correct_quests_queue = [*self.find_quests_by_stage(self.active_stage)]
-        for i in range(self.find_max_stage_of_quest() - self.active_stage):
-            for quest in self.find_quests_by_stage(i):
-                correct_quests_queue.append(quest)
-        for i in range(self.active_stage):
-            for quest in self.find_quests_by_stage(i):
-                correct_quests_queue.append(quest)
-        self.quests = correct_quests_queue
-        for i in range(len(self.quests)):
-            self.quests[i].set_pos_in_order(i)
-
-    def find_quests_by_stage(self, _stage):
-        found_quests = []
-        for quest in self.quests:
-            if quest.stage == _stage:
-                found_quests.append(quest)
-        return found_quests
-
-    def find_max_stage_of_quest(self):
-        max_stage = 0
-        for quest in self.quests:
-            if quest.stage >= max_stage:
-                max_stage = quest.stage
-        return max_stage
-
-    def set_quests(self):
-        for character in self.main_screen_saver.characters:
-            self.add_quest(character)
-        self.active_stage = 0
-
-    def add_quest(self, character):
-        self.quests.append(Quest(character, self))
-
-    @staticmethod
-    def finish_quest(quest):
-        quest.finish = True
+        i = 0
+        for character in self.active_characters:
+            character.quest.set_pos_in_order(i)
+            i += 1
+        for character in self.coming_characters:
+            character.quest.set_pos_in_order(i)
+            i += 1
+        for character in self.passed_characters:
+            character.quest.set_pos_in_order(i)
+            i += 1
 
     def update_background(self):
-        Painter.update_image(self.main_screen_saver.game.game_surf, self.background_surf,
-                             self.main_screen_saver.game.screen_width // 2,
-                             self.main_screen_saver.game.screen_height // 2, self.background_opacity)
+        self.main_screen_saver.game.game_surf.blit(self.background_surf, (0, 0))
 
     def update(self):
         if self.active:
             self.update_background()
-            for quest in self.quests:
-                quest.update()
-
-
-class Quest:
-
-    def __init__(self, _character, _notifications_screen):
-        self.notification_screen = _notifications_screen
-        self.indent = 20
-        self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
-        self.screen_y = 0
-        self.img_file = "assets/tasks/0-active.png"
-        self.unit_width = 0
-        self.unit_height = 0
-        self.scale_k = 0
-        self.opacity = 255
-        self.pos_in_quests_order = 0
-        self.calculate_screen_params()
-        self.character = _character
-        self.attached_character = _character
-        self.finish = False
-        self.stage = self.attached_character.appearance_stage
-        self.active_stage = 0
-        self.screen_position = 0
-
-    def calculate_screen_params(self):
-        img_surf = pygame.image.load(self.img_file).convert_alpha()
-        img_width = img_surf.get_width()
-        img_height = img_surf.get_height()
-        self.unit_width = self.notification_screen.main_screen_saver.game.screen_width // (3 / 4)
-        self.scale_k = self.unit_width / img_width
-        self.unit_height = img_height * self.scale_k
-        self.screen_x = self.notification_screen.main_screen_saver.game.screen_width // 2
-        self.screen_y = (self.indent + self.unit_height) * self.pos_in_quests_order + \
-                         self.indent + self.unit_height // 2
-
-    def set_pos_in_order(self, number):
-        self.pos_in_quests_order = number
-        self.calculate_screen_params()
-
-    def __setattr__(self, key, value):
-        self.__dict__[key] = value
-        if key == "notifications_screen":
-            if self.notification_screen.active_stage <= self.stage:
-                self.img_file = "assets/none.png"
-                self.opacity = 200
-            elif self.notification_screen.active_stage >= self.stage:
-                self.img_file = "assets/none.png"
-                self.opacity = 200
-            elif self.notification_screen.active_stage == self.stage:
-                self.img_file = "assets/none.png"
-                self.opacity = 255
-        elif key == "img_file":
-            self.img_surf = pygame.image.load(self.img_file).convert_alpha()
-
-    def draw_spawn_animation(self, pos_in_animations_order):
-        self.notification_screen.main_screen_saver.painter.animator.add_animation(
-            QuestAnimation(self, self.notification_screen.main_screen_saver.fps, pos_in_animations_order))
-
-    def update(self):
-        self.draw_itself()
-
-    def draw_itself(self):
-        Painter.update_image(self.notification_screen.main_screen_saver.game.game_surf, self.img_surf, self.screen_x,
-                             self.screen_y, 255, self.scale_k)
+            for character in self.active_characters + self.passed_characters + self.coming_characters:
+                character.quest.update()
+                print(character.quest.pos_in_order)
 
 
 class LevelScreenSaver(GameScreenSaver):
@@ -372,7 +285,7 @@ class LevelScreenSaver(GameScreenSaver):
                 buttons_array[i] = LevelButton(button_x, button_y, i, self.game)
             zero_button_x = self.window_width // 2 - (
                     ((self.levels_count - (self.levels_count + 1) // 2) / 2 - 1 / 2) * button_width + (
-                    self.levels_count - 1) / 2 * indent)
+                      self.levels_count - 1) / 2 * indent)
             for i in range((self.levels_count + 1) // 2, self.levels_count):
                 button_x = zero_button_x + (i - (self.levels_count + 1) // 2) * (button_width + indent)
                 button_y = zero_button_y + indent + button_height

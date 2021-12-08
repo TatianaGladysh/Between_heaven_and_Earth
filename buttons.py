@@ -272,7 +272,6 @@ class BackButton(Button):
         """
         if self.pressed:
             self.img_file = "assets/buttons/pressed_exit_button.png"
-            print(1)
         else:
             self.img_file = "assets/buttons/exit_button.png"
 
