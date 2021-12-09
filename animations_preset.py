@@ -57,6 +57,7 @@ ElevatorOpeningSurfs = make_surfs_from_files(
 LevelCompleteSurfsBeginAnimation = transform_surfs_scale_to_screen_params(make_surfs_from_files(
     ["assets/level_complete_animation_images/0.png", "assets/level_complete_animation_images/0.png",
      "assets/level_complete_animation_images/0.png", "assets/level_complete_animation_images/0.png",
+     "assets/level_complete_animation_images/0.png", "assets/level_complete_animation_images/0.png",
      "assets/level_complete_animation_images/0.png", "assets/level_complete_animation_images/1.png",
      "assets/level_complete_animation_images/2.png", "assets/level_complete_animation_images/3.png",
      "assets/level_complete_animation_images/4.png", "assets/level_complete_animation_images/5.png",
@@ -72,7 +73,11 @@ LevelCompleteSurfsBeginAnimation = transform_surfs_scale_to_screen_params(make_s
      "assets/level_complete_animation_images/24.png", "assets/level_complete_animation_images/25.png",
      "assets/level_complete_animation_images/26.png", "assets/level_complete_animation_images/27.png",
      "assets/level_complete_animation_images/28.png", "assets/level_complete_animation_images/29.png",
-     "assets/level_complete_animation_images/30.png"]
+     "assets/level_complete_animation_images/30.png", "assets/level_complete_animation_images/30.png",
+     "assets/level_complete_animation_images/30.png", "assets/level_complete_animation_images/30.png",
+     "assets/level_complete_animation_images/30.png", "assets/level_complete_animation_images/30.png",
+     "assets/level_complete_animation_images/30.png", "assets/level_complete_animation_images/30.png",
+     "assets/level_complete_animation_images/30.png", "assets/level_complete_animation_images/30.png"]
 ))
 
 LevelCompleteSurfsEndAnimation = transform_surfs_scale_to_screen_params(make_surfs_from_files(

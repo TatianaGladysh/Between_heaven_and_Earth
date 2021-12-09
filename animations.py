@@ -9,8 +9,7 @@ BeginScreenAnimationTime = 0.35
 EndOfScreenAnimationTime = 0.35
 MinAllowableFps = 35
 WalkingTimeInterval = 1
-LevelCompleteTimeAnimation = 2.0
-LevelCompleteTimeAnimationCorrection = 0.05
+LevelCompleteTimeAnimation = 1.5
 
 
 class Animator:
@@ -37,10 +36,6 @@ class Animator:
 
     def add_complete_level_animation(self):
         self.add_animation(LevelCompleteAnimation(self.painter.game, "begin"))
-        self.add_animation(
-            LevelCompleteAnimation(self.painter.game, "end",
-                                   _delay=LevelCompleteTimeAnimation - LevelCompleteTimeAnimationCorrection,
-                                   _time_interval=LevelCompleteTimeAnimation / 1.5))
 
     def set_game_params(self):
         """
@@ -569,6 +564,7 @@ class LevelCompleteAnimation:
         self.time = 0
         self.done = False
         self.delay = _delay
+        self.__update_pic()
 
     def __update_opacity(self):
         if 0 <= self.opacity <= 255:
@@ -601,4 +597,7 @@ class LevelCompleteAnimation:
                 self.__update_frame()
             self.__update_pic()
         elif self.delay + self.time_interval < self.time:
-            self.finish()
+            if self.opacity <= 10:
+                self.finish()
+            else:
+                self.__init__(self.game, "end", 0.0, self.time_interval / 1.3)
