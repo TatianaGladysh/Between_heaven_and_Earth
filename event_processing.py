@@ -104,7 +104,7 @@ class EventProcessor:
     def __screen_buttons_check(event, button):
         if event.type == pygame.MOUSEBUTTONUP:
             if button.pressed and button.check_button_click(pygame.mouse.get_pos()):
-                button.click()
+                button.command()
                 button.pressed = False
 
         if event.type == pygame.MOUSEMOTION:
@@ -119,8 +119,7 @@ class EventProcessor:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = not button.pressed
-                button.click()
-            self.game.sounds_controller.play_sound("button_click")
+                button.command()
 
     def have_a_door(self, direction):
         """

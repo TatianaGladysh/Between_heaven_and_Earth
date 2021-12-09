@@ -25,12 +25,6 @@ class Button:
         self.unit_width = 0
         self.unit_height = 0
 
-    def click(self):
-        """
-        Вызывает функцию, привязанную к кнопке
-        """
-        self.command()
-
     def get_cords(self):
         """
         возвращает координаты верхнего левого угла кнопки
