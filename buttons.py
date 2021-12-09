@@ -20,8 +20,9 @@ class Button:
         self.window_width = _game.screen_width
         self.surf = _game.game_surf
         self.pressed = False
-        self.img_file = "assets/none.png"
-        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_file_released = "assets/none.png"
+        self.img_file_pressed = "assets/none.png"
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.x = 0
         self.y = 0
         self.unit_width = 0
@@ -95,7 +96,7 @@ class StartButton(Button):
         super().__init__(_game)
         self.img_file_released = "assets/buttons/start_button.png"
         self.img_file_pressed = "assets/buttons/pressed_start_button.png"
-        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.active_screen = _active_screen
@@ -130,7 +131,7 @@ class ExitButton(Button):
         super().__init__(_game)
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
         self.img_file_released = "assets/buttons/exit_button.png"
-        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -226,7 +227,7 @@ class BackButton(Button):
         super().__init__(_game)
         self.img_file_released = "assets/buttons/exit_button.png"
         self.img_file_pressed = "assets/buttons/pressed_exit_button.png"
-        self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -263,7 +264,7 @@ class TaskButton(Button):
         super().__init__(_game)
         self.img_file_released = "assets/buttons/tasks_button.png"
         self.img_file_pressed = "assets/buttons/tasks_button_pressed.png"
-        self.img_surf = pygame.image.load(self.img_file).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
@@ -298,7 +299,7 @@ class SoundButton(Button):
         super().__init__(_game)
         self.img_file_released = "assets/buttons/sound_on.png"
         self.img_file_pressed = "assets/buttons/sound_off.png"
-        self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
+        self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         self.img_height = self.img_surf.get_height()
         self.img_width = self.img_surf.get_width()
         self.x, self.y, self.scale_k, self.unit_width, self.unit_height = self.calculate_cords()
