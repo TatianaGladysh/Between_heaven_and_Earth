@@ -17,7 +17,7 @@
     "layer_3" : [
       "x x x x x",
       "x 0 0 e x",
-      "x 0 0 e x",
+      "x d 0 e x",
       "x 0 e e x",
       "x d e d x"
     ],
@@ -42,8 +42,8 @@
   "characters": [
     {
       "type" : "Hero",
-      "name": "Leonid",
-      "start_cords": [2, 2, 1],
+      "name": "Artemiy",
+      "start_cords": [3, 2, 4],
       "appearance_stage": 0
     }
   ]

@@ -9,7 +9,6 @@ class Hero:
     """
     Класс героев.
     """
-
     def __init__(self, _start_position):
         """
         Инициализация героя. Имеет стартовую позицию в лабиринте.
@@ -37,8 +36,12 @@ class MainHero(Hero):
     """
     Класс главного героя, т.е. самого игрока.
     """
-
     def __init__(self, _game):
+        """
+        Инициализация главного героя. Изначально изображение направлено вправо (self.walking_direction),
+        скорость равна 0. Имеет начальные координаты.
+        :param _game: Объект класса Game
+        """
         self.game = _game
         self.walking_direction = "right"
         self.read_cords()
@@ -83,6 +86,11 @@ class MainHero(Hero):
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
     def move_x_axis(self, move_by_length):
+        """
+        Движение главного героя по оси x.
+        :param move_by_length: Расстояние, на которое перемещается герой. Певроначально либо на 1 вправо,
+        либо на 1 влево. В зависимости от направления движения меняется направление героя.
+        """
         if self.game.labyrinth.get_x_width() > self.arrival_x + move_by_length >= 0 and abs(
                 self.arrival_x - self.x) < 1:
             self.arrival_x += move_by_length
@@ -93,17 +101,34 @@ class MainHero(Hero):
                 self.walking_direction = "left"
 
     def move_y_axis(self, move_by_length):
+        """
+        Движение главного героя по оси y.
+        :param move_by_length: Расстояние, на которое перемещается герой. Певроначально либо на 1 вверх,
+        либо на 1 вниз.
+        """
         self.arrival_y += move_by_length
         self.speed_y = sign(10 * self.max_speed, move_by_length)
 
     def move_z_axis(self, move_by_length):
+        """
+        Движение главного героя по оси z.
+        :param move_by_length: Расстояние, на которое перемещается герой. Певроначально либо на 1 от нас,
+        либо на 1 на нас.
+        """
         self.arrival_z += move_by_length
         self.speed_z = sign(self.max_speed, move_by_length)
 
     def quest_check(self):
+        """
+        Обновление game_controller.
+        """
         self.game.game_controller.update()
 
     def check_own_and_arrival_pos(self):
+        """
+        Проверка местоположения героя и возможность движениия по каждой оси.
+        Если движение невозможно, скорость обнуляется и герой не двигается, упервшись в стену.
+        """
         if abs(self.x - self.arrival_x) < self.epsilon:
             self.speed_x = 0
             self.x = round(self.x)
@@ -116,11 +141,19 @@ class MainHero(Hero):
             self.z = round(self.z)
 
     def walking_animation_check(self):
+        """
+        Проверка того, нужна ли анимация движения, и воспроизведение анимации при необходимости.
+        """
         if (self.game.screen_controller.main_screen_saver.painter.animator.main_hero_walking_animations == []) and \
                 self.speed_x != 0:
             self.game.screen_controller.main_screen_saver.painter.animator.add_walking_animation(self)
 
     def update(self):
+        """
+        Обновление героя. Каждый раз определяет, в каком состоянии находится герой и выполняет необходимые команды -
+        движение, анимация, отрисовка.
+        :return:
+        """
         if self.speed_x or self.speed_y or self.speed_z:
             self.check_own_and_arrival_pos()
             if not self.move_blocked:
@@ -132,8 +165,18 @@ class MainHero(Hero):
 
 
 class Character(Hero):
-
+    """
+    Герои, которые не двигаются и привязаны к лабиринту. Первоначально лекторы.
+    """
     def __init__(self, _game, _start_position, _name, _appearance_stage):
+        """
+        Инициализация героя.
+        :param _game:
+        :param _start_position: Стартовая позиция.
+        :param _name: Имя героя(лектора).
+        :param _appearance_stage: Порядок, в котором они появляются. Если пройти одного, может появиться другой,
+        и так до тех пор, пока не пройти всех.
+        """
         self.game = _game
         self.name = _name
         self.appearance_stage = _appearance_stage
@@ -149,6 +192,9 @@ class Character(Hero):
         self.quest = Quest(self)
 
     def def_img_and_surf(self):
+        """
+        Список возможных персонажей и их статичные изображения. Присваивает изображение и поверхность герою.
+        """
         if self.name == "Roma":
             self.image_file = "assets/Heroes/Karas/stay.png"
         elif self.name == "Leonid":
@@ -166,6 +212,9 @@ class Character(Hero):
         self.img_surf = pygame.image.load(self.image_file).convert_alpha()
 
     def move_x_axis(self):
+        """
+        Движение героя по оси x.
+        """
         if self.arrival_x == self.x:
             move_by_length = (-1) * randint(2, 3)
             if self.block_check(move_by_length):
@@ -173,18 +222,32 @@ class Character(Hero):
                 self.speed_x = sign(self.max_speed, move_by_length)
 
     def block_check(self, move_by_length):
+        """
+        Возвращает  True или False в зависимости от того, заблокирован проход или нет.
+        :param move_by_length: На сколько перемещается.
+        """
         return not self.game.labyrinth.get_room(self.x + move_by_length, self.y, self.z).type == "block"
 
     def update(self):
+        """
+        Обновление координаты героя.
+        """
         self.move_check()
         self.x += self.speed_x * (1 / self.fps)
 
     def move_check(self):
+        """
+        Проверка движения героя.
+        """
         if abs(self.x - self.arrival_x) < self.epsilon:
             self.speed_x = 0
             self.x = self.arrival_x
 
     def check_task_completion(self):
+        """
+        Проверка, выполнил ли игрок задание.
+        :return: True else False
+        """
         if self.game.main_hero.get_cords() == self.get_cords():
             if self.game.main_hero.inside_elevator == self.inside_elevator:
                 self.quest_is_done = True
@@ -200,8 +263,14 @@ class MapMarker(Character):
 
 
 class Quest:
-
+    """
+    Класс заданий.
+    """
     def __init__(self, _character):
+        """
+        У каждого героя есть задание, которое должен сделать игрок. Они трех типов - неактивное, активное, завершенное.
+        :param _character: Герой, которому присваивают задания.
+        """
         self.character = _character
         self.indent = 9
         self.screen_x = self.character.game.screen_width // 2
@@ -246,13 +315,16 @@ class Quest:
         self.coming_surf = pygame.transform.scale(self.coming_surf, (int(img_width * k), int(img_height * k)))
 
     def define_img_file(self):
+        """
+        По имени героя ему присваивается задание в трех состояниях. Возвращает список с изображениями.
+        """
         if self.character.name == "Leonid":
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
-        elif self.character.name == "Khiryanov":
+        elif self.character.name == "Roma":
             img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
                          "assets/tasks/1-coming.png"]
-        elif self.character.name == "Roma":
+        elif self.character.name == "Khiryanov":
             img_files = ["assets/tasks/2-done.png", "assets/tasks/2-active.png",
                          "assets/tasks/2-coming.png"]
         elif self.character.name == "Kozheva":
