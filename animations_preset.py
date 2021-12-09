@@ -7,6 +7,12 @@ pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 
 def make_surfs_from_files(list_of_pics_files):
+    """
+    Возвращает список поверхностей для заданного списка изображений
+
+    :param list_of_pics_files: список файлов с картинками
+    :return: список поверхностей для этих избражений
+    """
     result_surfaces = []
     for file in list_of_pics_files:
         result_surfaces.append(pygame.image.load(file).convert_alpha())
@@ -14,6 +20,12 @@ def make_surfs_from_files(list_of_pics_files):
 
 
 def transform_surfs_scale_to_screen_params(list_of_surfs):
+    """
+    Меняет масштаб для поверхностей из заданного списка
+
+    :param list_of_surfs: список поверхностей для обработки
+    :return: обработанный список поверхностей
+    """
     screen_width = pygame.display.Info().current_w
     for i in range(len(list_of_surfs)):
         surf = list_of_surfs[i]
@@ -22,6 +34,8 @@ def transform_surfs_scale_to_screen_params(list_of_surfs):
                                                           screen_width / surf.get_width()))))
     return list_of_surfs
 
+
+# создание списков поверхностей для различных анимаций
 
 WalkingAnimationsSurfs = make_surfs_from_files(
     ["assets/main_hero/step1.png", "assets/main_hero/step2.png", "assets/main_hero/step3.png",
