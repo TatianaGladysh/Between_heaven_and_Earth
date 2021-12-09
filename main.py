@@ -44,7 +44,7 @@ class Game:
 
     def complete_level(self):
         """
-        Поздравить с завершением уровня и открыть следующий
+        Поздравить с завершением уровня и открыть доступ к следующему
         """
         self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
         self.open_new_level()
@@ -59,7 +59,7 @@ class Game:
 
     def exit_level(self):
         """
-        Сбрасывает все данные уровня как будто его еще не открывали
+        Сбрасывает данные уровня при выходе с него
         """
         self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BeginScreenAnimationTime,
                                                           self.fps))
@@ -76,6 +76,11 @@ class Game:
         self.set_game_params_to_game_modules()
 
     def __setattr__(self, key, value):
+        """
+        если игрок переходит на следующий экран, вызывает анимацию смены экрана и через некоторое вреям передает
+        информацию о действующем экране в следующие модули
+        Если игра только запустилась, вызывает запуск анимации "появления" экрана
+        """
         self.__dict__[key] = value
         if key == "active_screen":
             if self.active_screen == "main_screen":
@@ -89,7 +94,8 @@ class Game:
 
     def run_switch_to_main_screen_animation(self):
         """
-
+        вызывает анимации смены экрана при переходе на игровое поле, передает имя лабиринта дял считывания
+        в функцию start_main_part
         """
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(
@@ -101,6 +107,9 @@ class Game:
                                    self.fps, ["main_screen"]))
 
     def run_switch_screen_animation(self):
+        """
+        вызывает запуск анимации изменения экрана
+        """
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(animations.LaterOnFunc(
             self.set_active_screen_in_screen_controller,
@@ -112,8 +121,7 @@ class Game:
 
     def set_active_screen_in_screen_controller(self, screen_name):
         """
-        Сменить экран игры
-
+        Изменяет экран игры в объекте класса ScreenController
         :param screen_name: иня нового экрана
         """
         self.screen_controller.set_active_screen(screen_name)
@@ -163,13 +171,23 @@ class Game:
         self.game_controller.set_game_params(self.main_hero, self.characters)
 
     def set_active_screen(self, screen_name):
+        """
+        устанавливает в главный клвсс игры действующий экран из параметра
+        :param screen_name: новый экран
+        """
         self.active_screen = screen_name
 
     def update_later_on_funcs(self):
+        """
+        обновляет функции с задержкой
+        """
         for func in self.later_on_funcs:
             func.update()
 
     def main_process(self):
+        """
+        выполняет обновления основных модулей
+        """
         self.sounds_controller.update()
         self.event_processor.update()
         self.screen_controller.update()
@@ -188,6 +206,11 @@ class Game:
 class Fps:
 
     def __init__(self, _clock):
+        """
+        объект класса в каждую новую итерацию цикла перерасчитывает значение фпс, которое впоследствие
+        используется в игре
+        :param _clock: часы
+        """
         self.value = FPS
         self.start_time = 0
         self.end_time = 0
@@ -199,9 +222,17 @@ class Fps:
         return other / self.value
 
     def begin_of_cycle(self):
+        """
+        снимает значение времени в начале итеррации
+        :return:
+        """
         self.start_time = time.time()
 
     def end_of_cycle(self):
+        """
+        снимает значение времени в конце цикла и
+        :return:
+        """
         self.end_time = time.time()
         self.value = 1 / (self.end_time - self.start_time)
         self.display_countdown += (1 / self.value)
