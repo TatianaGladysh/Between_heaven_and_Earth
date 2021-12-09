@@ -51,12 +51,11 @@ class SoundController:
             self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), MusicVolume,
                                                                    MusicIncreaseTime, self.game.fps)
             self.music_on = True
-            self.sounds_on = True
         else:
             self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), 0,
                                                                    MusicIncreaseTime / 2, self.game.fps)
             self.music_on = False
-            self.sounds_on = False
+        self.sounds_on_off()
 
     def update(self):
         if self.music_volume_changing:

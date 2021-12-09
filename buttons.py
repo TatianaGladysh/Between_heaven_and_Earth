@@ -11,6 +11,8 @@ class Button:
         :param _args: параметры команды
         """
         self.game = _game
+        self.img_file_pressed = "assets/none.png"
+        self.img_file_released = "assets/none.png"
         if _args is None:
             _args = []
         self.args = _args

@@ -7,7 +7,7 @@ QuestAnimationTime = 3
 ElevatorOpeningClosingAnimation = 0.5
 BeginScreenAnimationTime = 0.35
 EndOfScreenAnimationTime = 0.35
-MinAllowableFps = 35
+MinAllowableFps = 25
 WalkingTimeInterval = 1
 LevelCompleteTimeAnimation = 1.5
 
@@ -172,11 +172,6 @@ class Animator:
                 self.cords_animations.remove(animation)
             else:
                 animation.update()
-        for func in self.later_on_funcs:
-            if func.done:
-                self.later_on_funcs.remove(func)
-            else:
-                func.update()
         for animation in self.main_hero_walking_animations:
             if animation.done:
                 self.main_hero_walking_animations.remove(animation)
@@ -187,6 +182,11 @@ class Animator:
                 self.complete_level_animations.remove(animation)
             else:
                 animation.update()
+        for func in self.later_on_funcs:
+            if func.done:
+                self.later_on_funcs.remove(func)
+            else:
+                func.update()
 
 
 class AnimationSwitchScreen:
