@@ -35,19 +35,19 @@
       "name": "Roma",
       "task": "Доказать теорему Пуанкаре",
       "start_cords": [1, 0, 0],
-      "appearance_stage": 1
+      "appearance_stage": 0
     },
     {
       "name": "Hiryanov",
       "task": "Пояснить за то, как попасть в Гугл",
       "start_cords": [1, 2, 3],
-      "appearance_stage": 2
+      "appearance_stage": 0
     },
     {
       "name": "Kozheva",
       "task": "Объяснить в каком кольце твоя домашка",
       "start_cords": [1, 0, 0],
-      "appearance_stage": 3
+      "appearance_stage": 0
     },
     {
       "name": "Klemeshov",

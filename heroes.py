@@ -127,7 +127,7 @@ class Character(Hero):
             self.image_file = "assets/Heroes/Karas/stay.png"
         elif self.name == "Leonid":
             self.image_file = "assets/Heroes/Leonid/Leonid.png"
-        elif self.name == "Hiroya":
+        elif self.name == "Khiryanov":
             self.image_file = "assets/Heroes/Khiryanov/stay.png"
         elif self.name == "Kozheva":
             self.image_file = "assets/Heroes/Kozhevnikov/stay.png"
