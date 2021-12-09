@@ -406,7 +406,9 @@ class LaterOnFunc:
 
 
 class ImageAnimation:
-    def __init__(self, _obj, _frames_surfs, _time_interval, _fps, _delay):
+    id = 0
+
+    def __init__(self, _obj, _frames_surfs, _time_interval, _fps, _delay, _nature_of_frames_change="linear"):
         """
         объект класса может описывать анимацию, связанную с изменением изображений с течением времени, пока только
         линейным
@@ -414,6 +416,7 @@ class ImageAnimation:
         :param _time_interval: общее время выполнения анимации
         :param _fps: фпс
         :param _delay: задержка перед началом выполнения функции
+        :param _nature_of_frames_change: характер изменения изображений во времени, пока осуществим только линейный
         """
         self.obj = _obj
         self.frames_surfs = _frames_surfs
@@ -425,6 +428,7 @@ class ImageAnimation:
         self.converting_frame_interval = 0
         self.countdown = self.time_interval / len(self.frames_surfs)
         self.done = False
+        self.nature_of_frames_change = _nature_of_frames_change
         self.id = ImageAnimation.id
         self.delay = _delay
 
@@ -452,6 +456,9 @@ class ImageAnimation:
                 self.obj.set_surf(pygame.transform.flip(self.active_surf, True, False))
             else:
                 self.obj.set_surf(self.active_surf)
+        if self.nature_of_frames_change == "linear":
+            pass
+        # при нелинейной анимации можно будет изменять время cool_count
 
     def emergency_finish(self):
         """
