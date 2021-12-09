@@ -33,7 +33,6 @@
     {
       "type" : "Hero",
       "name": "Leonid",
-      "task": "Сдать экзамен по СТО",
       "start_cords": [2, 2, 2],
       "appearance_stage": 0
     }
