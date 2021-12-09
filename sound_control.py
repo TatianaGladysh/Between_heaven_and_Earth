@@ -28,11 +28,13 @@ class SoundController:
         self.music_on_off()
 
     def exit_elevator_sound_play(self):
-        self.sounds["elevator_bell"].play()
-        self.sounds["elevator_doors"].play()
+        if self.sounds_on:
+            self.sounds["elevator_bell"].play()
+            self.sounds["elevator_doors"].play()
 
     def enter_elevator_sound_play(self):
-        self.sounds["elevator_doors"].play()
+        if self.sounds_on:
+            self.sounds["elevator_doors"].play()
 
     def play_sound(self, action):
         if self.sounds_on:
