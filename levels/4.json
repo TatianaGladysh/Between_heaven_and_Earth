@@ -7,13 +7,13 @@
     ],
     "layer_2" : [
       "0 x x x 0",
-      "d 0 x 0 d",
+      "d d x 0 d",
       "d x x x d"
     ],
     "layer_3" : [
       "x x e x x",
-      "0 x e x d",
-      "d x e x d"
+      "0 x e d d",
+      "d 0 e x d"
     ],
     "layer_4" : [
       "d x x x d",
