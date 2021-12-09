@@ -8,7 +8,14 @@ pygame.mixer.init()
 
 
 class SoundController:
+    """
+    Модуль контроля звуков в игре.
+    """
     def __init__(self, _game):
+        """
+        Инициализация музыки. Загрузка всех мелодий в словарь.
+        :param _game: Объект класса Game
+        """
         self.game = _game
         pygame.mixer.music.load("assets/sounds/background_music.mp3")
         pygame.mixer.music.play(999)
@@ -28,25 +35,42 @@ class SoundController:
         self.music_on_off()
 
     def exit_elevator_sound_play(self):
+        """
+        Музыка при закрытии лифта.
+        """
         if self.sounds_on:
             self.sounds["elevator_bell"].play()
             self.sounds["elevator_doors"].play()
 
     def enter_elevator_sound_play(self):
+        """
+        Музыка при открытии лифта.
+        """
         if self.sounds_on:
             self.sounds["elevator_doors"].play()
 
     def play_sound(self, action):
+        """
+        Проигрывание музыки при действии
+        :param action: Действие, а точнее ключ из словаря звуков.
+        """
         if self.sounds_on:
             self.sounds[action].play()
 
     def sounds_on_off(self, value=None):
+        """
+        Выключение или включение звуков
+        :param value: True else False
+        """
         if value is None:
             self.sounds_on = not self.sounds_on
         else:
             self.sounds_on = value
 
     def music_on_off(self):
+        """
+        Выключение или выключение фоновой музыки и всех звуков.
+        """
         if not self.music_on:
             self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), MusicVolume,
                                                                    MusicIncreaseTime, self.game.fps)
@@ -65,7 +89,17 @@ class SoundController:
 
 
 class SmoothMusicVolumeChanging:
+    """
+    Класс для плавного уменьшения/увеличения громкости при включении/выключении музыки.
+    """
     def __init__(self, volume, _end_volume, _time_interval, _fps, _delay=0):
+        """
+        :param volume: Начальная громкость
+        :param _end_volume: Конечная громкость
+        :param _time_interval: Временной интервал
+        :param _fps: FPS
+        :param _delay: Время действия
+        """
         self.volume = volume
         self.delay = _delay
         self.fps = _fps
@@ -76,6 +110,9 @@ class SmoothMusicVolumeChanging:
         self.done = False
 
     def change_volume_on_step(self):
+        """
+        Изменение громкости за интервал времени. Обеспечивает плавность перехода.
+        """
         self.volume += self.general_changing * (
                 (1 / self.fps.value) / self.time_interval)
         pygame.mixer.music.set_volume(self.volume)
