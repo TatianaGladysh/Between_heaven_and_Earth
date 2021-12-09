@@ -54,6 +54,7 @@
   },
   "characters": [
     {
+      "type" : "Hero",
       "name": "Roma",
       "task": "Доказать теорему Пуанкаре",
       "start_cords": [3, 1, 7],
@@ -61,6 +62,7 @@
     },
 
     {
+      "type" : "Hero",
       "name": "Kozheva",
       "task": "Объяснить в каком кольце твоя домашка",
       "start_cords": [0, 0, 5],

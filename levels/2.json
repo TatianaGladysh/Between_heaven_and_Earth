@@ -41,6 +41,7 @@
   },
   "characters": [
     {
+      "type" : "Hero",
       "name": "Kiselev",
       "task": "Алгебра ли алгебра Ли?",
       "start_cords": [0, 4, 2],

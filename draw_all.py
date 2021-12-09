@@ -3,6 +3,7 @@ import pygame
 import labyrinth
 from animations import Animator
 from math import floor, ceil
+import heroes
 
 indent = 40
 
@@ -187,7 +188,7 @@ class Painter:
 
     def update_character(self):
         for hero in self.active_characters:
-            if 1 > self.main_hero.z - hero.z >= 0:
+            if 1 > self.main_hero.z - hero.z >= 0 and not isinstance(hero, heroes.MapMarker):
                 hero_screen_x = self.zero_screen_cord_x + hero.x * self.unit_width
                 hero_screen_y = self.zero_screen_cord_y + hero.y * self.unit_height
                 self.update_image(self.surf, hero.img_surf, hero_screen_x, hero_screen_y, 255, self.img_scale_k)

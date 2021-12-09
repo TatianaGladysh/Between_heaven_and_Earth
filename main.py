@@ -7,7 +7,7 @@ from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
 from sound_control import SoundController
 import animations
-from heroes import MainHero, Character
+from heroes import MainHero, Character, MapMarker
 from labyrinth import Labyrinth
 from game_main_process_control import GameMainProcessController
 
@@ -95,11 +95,17 @@ class Game:
             characters_dict = json.load(file)["characters"]
         self.characters = []
         for character_description_dict in characters_dict:
-            cords = character_description_dict["start_cords"]
-            appearance_stage = character_description_dict["appearance_stage"]
-            name = character_description_dict["name"]
-            task = character_description_dict["task"]
-            self.characters.append(Character(self, cords, name, task, appearance_stage))
+            if character_description_dict["type"] == "MapMarker":
+                cords = character_description_dict["start_cords"]
+                appearance_stage = character_description_dict["appearance_stage"]
+                name = character_description_dict["name"]
+                elevator_condition = character_description_dict["inside_elevator"]
+                self.characters.append(MapMarker(self, cords, name, elevator_condition, appearance_stage))
+            else:
+                cords = character_description_dict["start_cords"]
+                appearance_stage = character_description_dict["appearance_stage"]
+                name = character_description_dict["name"]
+                self.characters.append(Character(self, cords, name, appearance_stage))
 
     def start_main_part(self, level_file_name):
         """

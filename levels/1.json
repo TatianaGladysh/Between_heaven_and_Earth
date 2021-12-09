@@ -26,6 +26,7 @@
   },
   "characters": [
     {
+      "type" : "Hero",
       "name": "Khiryanov",
       "task": "Пояснить за то, как попасть в Гугл",
       "start_cords": [0, 2, 3],

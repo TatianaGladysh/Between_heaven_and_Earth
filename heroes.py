@@ -9,6 +9,7 @@ class Hero:
     """
     Класс героев.
     """
+
     def __init__(self, _start_position):
         """
         Инициализация героя. Имеет стартовую позицию в лабиринте.
@@ -36,6 +37,7 @@ class MainHero(Hero):
     """
     Класс главного героя, т.е. самого игрока.
     """
+
     def __init__(self, _game):
         self.game = _game
         self.walking_direction = "right"
@@ -75,6 +77,8 @@ class MainHero(Hero):
                 self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
             except AttributeError:
                 print("Main hero is not announced")
+            finally:
+                self.quest_check()
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
@@ -97,7 +101,7 @@ class MainHero(Hero):
         self.speed_z = sign(self.max_speed, move_by_length)
 
     def quest_check(self):
-        self.game.game_controller.quest_complete_check()
+        self.game.game_controller.update()
 
     def check_own_and_arrival_pos(self):
         if abs(self.x - self.arrival_x) < self.epsilon:
@@ -129,11 +133,11 @@ class MainHero(Hero):
 
 class Character(Hero):
 
-    def __init__(self, _game, _start_position, _name, _task, _appearance_stage):
+    def __init__(self, _game, _start_position, _name, _appearance_stage):
         self.game = _game
-        self.task = _task
         self.name = _name
         self.appearance_stage = _appearance_stage
+        self.inside_elevator = False
         super().__init__(_start_position)
         self.speed_x = 0
         self.max_speed = 100
@@ -180,8 +184,19 @@ class Character(Hero):
             self.speed_x = 0
             self.x = self.arrival_x
 
-    def image_change(self):
-        pass
+    def check_task_completion(self):
+        if self.game.main_hero.get_cords() == self.get_cords():
+            if self.game.main_hero.inside_elevator == self.inside_elevator:
+                self.quest_is_done = True
+        return self.quest_is_done
+
+
+class MapMarker(Character):
+
+    def __init__(self, _game, _start_position, _appearance_object_name: str, _inside_elevator, _appearance_stage):
+        self.name = _appearance_object_name
+        super().__init__(_game, _start_position, self.name, _appearance_stage)
+        self.inside_elevator = _inside_elevator
 
 
 class Quest:
@@ -234,10 +249,10 @@ class Quest:
         if self.character.name == "Leonid":
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
-        elif self.character.name == "Roma":
+        elif self.character.name == "Khiryanov":
             img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
                          "assets/tasks/1-coming.png"]
-        elif self.character.name == "Khiryanov":
+        elif self.character.name == "Roma":
             img_files = ["assets/tasks/2-done.png", "assets/tasks/2-active.png",
                          "assets/tasks/2-coming.png"]
         elif self.character.name == "Kozheva":
@@ -252,6 +267,31 @@ class Quest:
         elif self.character.name == "Artemiy":
             img_files = ["assets/tasks/6-done.png", "assets/tasks/6-active.png",
                          "assets/tasks/6-coming.png"]
+        elif self.character.name == "F_button":
+            if self.character.inside_elevator:
+                img_files = ["assets/tasks/Education/5-done.png", "assets/tasks/Education/5-active.png",
+                             "assets/tasks/Education/5-coming.png"]
+            else:
+                img_files = ["assets/tasks/Education/7-done.png", "assets/tasks/Education/7-active.png",
+                             "assets/tasks/Education/7-coming.png"]
+        elif self.character.name == "D_button":
+            img_files = ["assets/tasks/Education/1-done.png", "assets/tasks/Education/1-active.png",
+                         "assets/tasks/Education/1-coming.png"]
+        elif self.character.name == "A_button":
+            img_files = ["assets/tasks/Education/2-done.png", "assets/tasks/Education/2-active.png",
+                         "assets/tasks/Education/2-coming.png"]
+        elif self.character.name == "W_button":
+            img_files = ["assets/tasks/Education/3-done.png", "assets/tasks/Education/3-active.png",
+                         "assets/tasks/Education/3-coming.png"]
+        elif self.character.name == "S_button":
+            img_files = ["assets/tasks/Education/4-done.png", "assets/tasks/Education/4-active.png",
+                         "assets/tasks/Education/4-coming.png"]
+        elif self.character.name == "UP_button":
+            img_files = ["assets/tasks/Education/8-done.png", "assets/tasks/Education/8-active.png",
+                         "assets/tasks/Education/8-coming.png"]
+        elif self.character.name == "DOWN_button":
+            img_files = ["assets/tasks/Education/6-done.png", "assets/tasks/Education/6-active.png",
+                         "assets/tasks/Education/6-coming.png"]
         else:
             img_files = ["assets/none.png", "assets/none.png", "assets/none.png"]
         return img_files
@@ -271,8 +311,8 @@ class Quest:
             self.surf_rect = self.active_surf.get_rect(center=(self.screen_x, self.screen_y))
 
     def draw_spawn_animation(self, pos_in_animations_order):
-        self.character.game.screen_controller. \
-            main_screen_saver.painter.animator.add_quest_animation(self, pos_in_animations_order)
+        self.character.game.screen_controller.main_screen_saver.painter.animator.add_quest_animation(
+            self, pos_in_animations_order)
 
     def update(self):
         self.draw_itself()
