@@ -41,13 +41,13 @@ class ScreenSaverController:
         self.later_on_funcs.append(
             animations.LaterOnFunc(self.end_loading, TimeScreenSwitchAnimationCorrection, self.fps))
         self.screen_animations.append(
-            animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.EndOfScreenAnimationTime))
+            animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.END_OF_SCREEN_ANIMATION_TIME))
 
     def add_blackout_screen_animation(self):
         self.screen_animations.append(
-            animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BeginScreenAnimationTime))
+            animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BEGIN_SCREEN_ANIMATION_TIME))
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.start_loading, animations.BeginScreenAnimationTime,
+            animations.LaterOnFunc(self.start_loading, animations.BEGIN_SCREEN_ANIMATION_TIME,
                                    self.fps))
 
     def update_screen_animations(self):

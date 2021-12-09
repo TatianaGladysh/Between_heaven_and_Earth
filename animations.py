@@ -3,13 +3,13 @@ from labyrinth import Room
 from heroes import MainHero
 import animations_preset
 
-QuestAnimationTime = 3
-ElevatorOpeningClosingAnimation = 0.5
-BeginScreenAnimationTime = 0.35
-EndOfScreenAnimationTime = 0.35
-MinAllowableFps = 25
-WalkingTimeInterval = 1
-LevelCompleteTimeAnimation = 1.5
+QUEST_ANIMATION_TIME = 3
+ELEVATOR_OPENING_CLOSING_ANIMATION = 0.5
+BEGIN_SCREEN_ANIMATION_TIME = 0.35
+END_OF_SCREEN_ANIMATION_TIME = 0.35
+MIN_ALLOWABLE_FPS = 25
+WALKING_ANIMATION_TIME_INTERVAL = 1
+LEVEL_COMPLETE_ANIMATION_TIME = 1.5
 
 
 class Animator:
@@ -73,7 +73,7 @@ class Animator:
 
     def add_walking_animation(self, obj):
         if isinstance(obj, MainHero):
-            self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, WalkingTimeInterval))
+            self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, WALKING_ANIMATION_TIME_INTERVAL))
 
     def add_later_on_funcs(self, func, delay, args=None):
         """
@@ -122,17 +122,17 @@ class Animator:
         self.__add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
-                                     _time_interval=ElevatorOpeningClosingAnimation))
-        self.add_later_on_funcs(self.change_rendering_of_layers, delay=ElevatorOpeningClosingAnimation, args=[True])
+                                     _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION))
+        self.add_later_on_funcs(self.change_rendering_of_layers, delay=ELEVATOR_OPENING_CLOSING_ANIMATION, args=[True])
         self.__add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
                                                                              self.max_elevator_correction_y),
-                                                              _time_interval=ElevatorOpeningClosingAnimation,
+                                                              _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION,
                                                               _fps=self.painter.fps))
         self.__add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
-                                     _time_interval=ElevatorOpeningClosingAnimation,
-                                     _delay=ElevatorOpeningClosingAnimation))
+                                     _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION,
+                                     _delay=ELEVATOR_OPENING_CLOSING_ANIMATION))
 
     def elevator_exit(self):
         """
@@ -143,16 +143,16 @@ class Animator:
         self.__add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
-                                     _time_interval=ElevatorOpeningClosingAnimation))
+                                     _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION))
         self.__add_animation(
-            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=ElevatorOpeningClosingAnimation,
-                                             _fps=self.painter.fps, _delay=ElevatorOpeningClosingAnimation))
+            ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION,
+                                             _fps=self.painter.fps, _delay=ELEVATOR_OPENING_CLOSING_ANIMATION))
         self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[False])
         self.__add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
-                                     _time_interval=ElevatorOpeningClosingAnimation,
-                                     _delay=ElevatorOpeningClosingAnimation))
+                                     _time_interval=ELEVATOR_OPENING_CLOSING_ANIMATION,
+                                     _delay=ELEVATOR_OPENING_CLOSING_ANIMATION))
 
     def update(self):
         """
@@ -218,7 +218,7 @@ class AnimationSwitchScreen:
         """
         устанавливает новый коэффициент прозрачности в свой surface
         """
-        self.opacity += self.general_delta * ((1 / max(self.game.fps.value, MinAllowableFps)) / self.time_interval)
+        self.opacity += self.general_delta * ((1 / max(self.game.fps.value, MIN_ALLOWABLE_FPS)) / self.time_interval)
         if self.opacity > 255:
             self.opacity = 255
         if self.opacity < 0:
@@ -234,7 +234,7 @@ class AnimationSwitchScreen:
             self.game.game_surf.blit(self.self_surf, (0, 0))
         elif self.time > self.delay + self.time_interval:
             self.done = True
-        self.time += (1 / max(self.game.fps.value, MinAllowableFps))
+        self.time += (1 / max(self.game.fps.value, MIN_ALLOWABLE_FPS))
 
 
 class QuestAnimation:
@@ -253,7 +253,7 @@ class QuestAnimation:
         self.begin_opacity = _begin_opacity
         self.opacity = 255
         self.fps = _fps
-        self.step_change = (0 - self.opacity) * ((1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
+        self.step_change = (0 - self.opacity) * ((1 / max(self.fps.value, MIN_ALLOWABLE_FPS)) / QUEST_ANIMATION_TIME)
         self.time = 0
         self.done = False
         self.pos_in_order = _pos_in_order
@@ -290,12 +290,12 @@ class QuestAnimation:
         """
         обновляет прозрачность квеста и следит за окончанием анимации
         """
-        self.time += (1 / max(self.fps.value, MinAllowableFps))
-        if self.time >= QuestAnimationTime:
+        self.time += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
+        if self.time >= QUEST_ANIMATION_TIME:
             self.done = True
         else:
             self.step_change = (0 - self.begin_opacity) * (
-                    (1 / max(self.fps.value, MinAllowableFps)) / QuestAnimationTime)
+                    (1 / max(self.fps.value, MIN_ALLOWABLE_FPS)) / QUEST_ANIMATION_TIME)
             self.opacity += self.step_change
             self.update_pic()
 
@@ -320,9 +320,9 @@ class ElevatorCorrectionCordsAnimation:
         self.fps = _fps
         self.delay = _delay
         self.variable_step_x = (_end_values_cords[0] - self.variable_x) / (
-                _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
+                _time_interval / (1 / max(self.fps.value, MIN_ALLOWABLE_FPS)))
         self.variable_step_y = (_end_values_cords[1] - self.variable_y) / (
-                _time_interval / (1 / max(self.fps.value, MinAllowableFps)))
+                _time_interval / (1 / max(self.fps.value, MIN_ALLOWABLE_FPS)))
         self.done = False
 
     def change_variables(self):
@@ -347,7 +347,7 @@ class ElevatorCorrectionCordsAnimation:
         вызывает обновление координат
         :return:
         """
-        self.time += (1 / max(self.fps.value, MinAllowableFps))
+        self.time += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
         if self.delay <= self.time <= self.delay + self.time_interval and not self.done:
             self.change_variables()
         if self.time > self.delay + self.time_interval:
@@ -392,7 +392,7 @@ class LaterOnFunc:
         обновляет время и вызывает выполнение функции по его прошествии
         :return:
         """
-        self.time += (1 / max(self.fps.value, MinAllowableFps))
+        self.time += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
         if self.time_interval <= self.time:
             if not self.done:
                 self.execute()
@@ -473,9 +473,9 @@ class ImageAnimation:
         вызывает обновление кадров анимации в нужное время
         """
         if self.delay > 0:
-            self.delay -= (1 / max(self.fps.value, MinAllowableFps))
+            self.delay -= (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
         else:
-            self.converting_frame_interval += (1 / max(self.fps.value, MinAllowableFps))
+            self.converting_frame_interval += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
             if self.converting_frame_interval >= self.countdown:
                 self.update_frame()
 
@@ -569,7 +569,7 @@ class WalkingAnimation(ImageAnimation):
 
 class LevelCompleteAnimation:
 
-    def __init__(self, _game, _process_type="begin", _delay=0.0, _time_interval=LevelCompleteTimeAnimation):
+    def __init__(self, _game, _process_type="begin", _delay=0.0, _time_interval=LEVEL_COMPLETE_ANIMATION_TIME):
         """
         Анимация после прохождения уровня уровня
         :param _game: игра
@@ -598,7 +598,7 @@ class LevelCompleteAnimation:
         self.converting_frame_interval = 0
         self.rect = self.active_surf.get_rect()
         self.opacity_step_change = (self.end_opacity - self.opacity) * (
-                (1 / max(self.fps.value, MinAllowableFps)) / self.opacity_time_interval)
+                (1 / max(self.fps.value, MIN_ALLOWABLE_FPS)) / self.opacity_time_interval)
         self.time = 0
         self.done = False
         self.delay = _delay
@@ -610,7 +610,7 @@ class LevelCompleteAnimation:
         """
         if 0 <= self.opacity <= 255:
             self.step_change = (self.end_opacity - self.begin_opacity) * (
-                    (1 / max(self.fps.value, MinAllowableFps)) / self.opacity_time_interval)
+                    (1 / max(self.fps.value, MIN_ALLOWABLE_FPS)) / self.opacity_time_interval)
             self.opacity += self.step_change
             self.active_surf.set_alpha(self.opacity)
 
@@ -643,9 +643,9 @@ class LevelCompleteAnimation:
         обновляет свое время, картинку, если это надо и непрозрачность, а также завершает себя если это нужно
         если закончилось начало анимации, вызывает свой инит, только уже для конца анимации
         """
-        self.time += (1 / max(self.fps.value, MinAllowableFps))
+        self.time += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
         if self.delay <= self.time <= self.delay + self.time_interval:
-            self.converting_frame_interval += (1 / max(self.fps.value, MinAllowableFps))
+            self.converting_frame_interval += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
             self.__update_opacity()
             if self.converting_frame_interval >= self.frame_countdown:
                 self.__update_frame()

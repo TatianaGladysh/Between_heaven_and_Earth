@@ -61,7 +61,7 @@ class Game:
         """
         Сбрасывает данные уровня при выходе с него
         """
-        self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BeginScreenAnimationTime,
+        self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BEGIN_SCREEN_ANIMATION_TIME,
                                                           self.fps))
 
     def clear_game_params(self):
@@ -99,11 +99,11 @@ class Game:
         """
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
+            animations.LaterOnFunc(self.start_main_part, animations.BEGIN_SCREEN_ANIMATION_TIME,
                                    self.fps, [self.labyrinth_file]))
         self.later_on_funcs.append(
             animations.LaterOnFunc(self.screen_controller.set_active_screen,
-                                   animations.BeginScreenAnimationTime,
+                                   animations.BEGIN_SCREEN_ANIMATION_TIME,
                                    self.fps, ["main_screen"]))
 
     def run_switch_screen_animation(self):
@@ -113,11 +113,11 @@ class Game:
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(animations.LaterOnFunc(
             self.set_active_screen_in_screen_controller,
-            animations.BeginScreenAnimationTime,
+            animations.BEGIN_SCREEN_ANIMATION_TIME,
             self.fps, [self.active_screen]))
         self.later_on_funcs.append(
             animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
-                                   animations.BeginScreenAnimationTime, self.fps))
+                                   animations.BEGIN_SCREEN_ANIMATION_TIME, self.fps))
 
     def set_active_screen_in_screen_controller(self, screen_name):
         """
