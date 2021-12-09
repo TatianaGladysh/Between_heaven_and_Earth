@@ -43,19 +43,31 @@ class Game:
         self.active_screen = "start_screen"
 
     def complete_level(self):
+        """
+        Поздравить с завершением уровня и открыть следующий
+        """
         self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
         self.open_new_level()
 
     def open_new_level(self):
+        """
+        Разблокирует кнопку нового уровня
+        """
         if self.screen_controller.level_screen_saver.selected_level < screensavers_control.LevelsCount - 1:
             self.screen_controller.level_screen_saver.level_buttons[
                 self.screen_controller.level_screen_saver.selected_level + 1].block = False
 
     def exit_level(self):
+        """
+        Сбрасывает все данные уровня как будто его еще не открывали
+        """
         self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BeginScreenAnimationTime,
                                                           self.fps))
 
     def clear_game_params(self):
+        """
+        Делает параметры игры идентичными исходным
+        """
         self.labyrinth = None
         self.main_hero = None
         self.characters.clear()
@@ -76,6 +88,9 @@ class Game:
                     self.begin = True
 
     def run_switch_to_main_screen_animation(self):
+        """
+
+        """
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(
             animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
@@ -91,18 +106,28 @@ class Game:
             self.set_active_screen_in_screen_controller,
             animations.BeginScreenAnimationTime,
             self.fps, [self.active_screen]))
-
         self.later_on_funcs.append(
             animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
                                    animations.BeginScreenAnimationTime, self.fps))
 
     def set_active_screen_in_screen_controller(self, screen_name):
+        """
+        Сменить экран игры
+
+        :param screen_name: иня нового экрана
+        """
         self.screen_controller.set_active_screen(screen_name)
 
     def create_main_hero(self):
+        """
+        Создать главного героя
+        """
         self.main_hero = MainHero(self)
 
     def create_characters(self):
+        """
+        Создать второстепенных персонажей
+        """
         with open(self.labyrinth_file) as file:
             characters_dict = json.load(file)["characters"]
         self.characters = []
@@ -121,7 +146,7 @@ class Game:
 
     def start_main_part(self, level_file_name):
         """
-        потом можно будет сделать выбор карты
+        Запуск уровня
         """
         self.labyrinth = Labyrinth(level_file_name)
         self.create_main_hero()
@@ -130,6 +155,9 @@ class Game:
         self.screen_controller.add_lightening_screen_animation()
 
     def set_game_params_to_game_modules(self):
+        """
+        Задание параметров текущего уровня всем обработчикам
+        """
         self.screen_controller.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.event_processor.set_game_params(self.labyrinth, self.main_hero, self.characters)
         self.game_controller.set_game_params(self.main_hero, self.characters)
