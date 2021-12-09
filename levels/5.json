@@ -45,36 +45,6 @@
       "task": "Сдать экзамен по СТО",
       "start_cords": [1, 0, 0],
       "appearance_stage": 0
-    },
-    {
-      "name": "Roma",
-      "task": "Доказать теорему Пуанкаре",
-      "start_cords": [1, 0, 0],
-      "appearance_stage": 1
-    },
-    {
-      "name": "Hiryanov",
-      "task": "Пояснить за то, как попасть в Гугл",
-      "start_cords": [1, 0, 0],
-      "appearance_stage": 2
-    },
-    {
-      "name": "Kozheva",
-      "task": "Объяснить в каком кольце твоя домашка",
-      "start_cords": [1, 0, 0],
-      "appearance_stage": 3
-    },
-    {
-      "name": "Klemeshov",
-      "task": "Доказать, что оригинальность доклада больше 10 %",
-      "start_cords": [1, 0, 0],
-      "appearance_stage": 4
-    },
-    {
-      "name": "Kiselev",
-      "task": "Алгебра ли алгебра Ли?",
-      "start_cords": [1, 0, 0],
-      "appearance_stage": 5
     }
   ]
 }
