@@ -11,6 +11,14 @@ class GameMainProcessController:
         self.active_stage = 0
         self.level_complete = False
 
+    def clear_params(self):
+        self.active_stage = 0
+        self.max_stage = 0
+        self.level_complete = False
+        self.active_characters.clear()
+        self.passed_characters.clear()
+        self.upcoming_characters.clear()
+
     def __define_max_stage(self):
         _max_stage = 0
         for character in self.characters:

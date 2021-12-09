@@ -225,8 +225,9 @@ class BackButton(Button):
         self.pressed = False
         if self.game.active_screen == "level_screen":
             self.game.active_screen = "start_screen"
-        else:
+        elif self.game.active_screen == "main_screen":
             self.game.active_screen = "level_screen"
+            self.game.exit_level()
 
 
 class TaskButton(Button):

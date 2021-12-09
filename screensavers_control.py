@@ -9,7 +9,7 @@ pygame.init()
 TimeScreenSwitchAnimationCorrection = 0.07
 
 LevelsCount = 6
-NotificationsIndent = 20
+NotificationsIndent = 0
 
 
 class ScreenSaverController:
@@ -25,7 +25,6 @@ class ScreenSaverController:
         self.level_screen_saver = LevelScreenSaver(self.game)
         self.start_screen_saver = StartScreenSaver(self.game)
         self.main_screen_saver = MainScreenSaver(self.game)
-        self.selected_level = None
         self.screen_animations = []
         self.active_screen = "start_screen"
         self.loading = False
@@ -76,7 +75,6 @@ class ScreenSaverController:
         """
         Вызывает функции обновления объекта отрисовки игровых объектов и интерфейса
         """
-        self.surf.fill("WHITE")
         if self.active_screen == "start_screen":
             self.start_screen_saver.update()
         elif self.active_screen == "main_screen":
@@ -171,7 +169,6 @@ class MainScreenSaver(GameScreenSaver):
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
         self.painter = Painter(self.game, self.game.screen_width, self.game.screen_height)
-        self.notifications = []
         self.back_button = BackButton(self.game)
         self.task_button = TaskButton(self.game)
         self.notification_screen = NotificationsScreen(self)
@@ -192,7 +189,10 @@ class MainScreenSaver(GameScreenSaver):
         """
         будет обрабатывать действия с уведомлениями
         """
-        self.main_hero.update()
+        try:
+            self.main_hero.update()
+        except AttributeError:
+            print("main_hero is not announced already or yet")
         for character in self.game.game_controller.active_characters:
             character.update()
         self.draw_game_space()
@@ -216,6 +216,10 @@ class NotificationsScreen:
         self.coming_characters = self.main_screen_saver.game.game_controller.upcoming_characters
         self.passed_characters = self.main_screen_saver.game.game_controller.passed_characters
         self.active_stage = self.main_screen_saver.game.game_controller.active_stage
+
+    def clear_params(self):
+        self.active_stage = 0
+        self.active = False
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -248,7 +252,6 @@ class NotificationsScreen:
             self.update_background()
             for character in self.active_characters + self.passed_characters + self.coming_characters:
                 character.quest.update()
-                print(character.quest.pos_in_order)
 
 
 class LevelScreenSaver(GameScreenSaver):

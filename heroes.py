@@ -203,7 +203,7 @@ class Quest:
 
     def __init__(self, _character):
         self.character = _character
-        self.indent = 20
+        self.indent = 9
         self.screen_x = self.character.game.screen_width // 2
         self.screen_y = 0
         self.unit_height = 0
@@ -238,7 +238,7 @@ class Quest:
     def transform_self_surfs(self):
         img_width = self.active_surf.get_width()
         img_height = self.active_surf.get_height()
-        unit_width = (3 / 5) * self.character.game.screen_width
+        unit_width = (9 / 20) * self.character.game.screen_width
         k = unit_width / img_width
         self.unit_height = img_height * k
         self.active_surf = pygame.transform.scale(self.active_surf, (int(img_width * k), int(img_height * k)))

@@ -75,9 +75,10 @@ class Painter:
         """
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
-        self.calculate_unit_lengths()
-        self.calculate_scale_k()
-        self.calculate_zero_screen_cords()
+        if self.labyrinth:
+            self.calculate_unit_lengths()
+            self.calculate_scale_k()
+            self.calculate_zero_screen_cords()
         self.animator.set_game_params()
 
     def calculate_zero_screen_cords(self):
@@ -153,19 +154,20 @@ class Painter:
         """
         Обновляет картинки комнат и героев на экране
         """
-        if self.draw_main_hero_in_the_elevator:
-            self.update_elevator_inside()
-            self.update_main_hero_pic()
-            self.update_rooms_pics()
-            self.update_character()
-            self.update_grid_img()
-        else:
-            if self.labyrinth.get_room(*self.main_hero.get_cords()).type == "elevator":
+        if self.labyrinth:
+            if self.draw_main_hero_in_the_elevator:
                 self.update_elevator_inside()
-            self.update_rooms_pics()
-            self.update_character()
-            self.update_main_hero_pic()
-            self.update_grid_img()
+                self.update_main_hero_pic()
+                self.update_rooms_pics()
+                self.update_character()
+                self.update_grid_img()
+            else:
+                if self.labyrinth.get_room(*self.main_hero.get_cords()).type == "elevator":
+                    self.update_elevator_inside()
+                self.update_rooms_pics()
+                self.update_character()
+                self.update_main_hero_pic()
+                self.update_grid_img()
 
     def update_elevator_inside(self):
         """

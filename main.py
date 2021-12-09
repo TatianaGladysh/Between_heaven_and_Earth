@@ -45,33 +45,38 @@ class Game:
         self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
 
     def exit_level(self):
-        self.nullify_game_params()
+        self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BeginScreenAnimationTime,
+                                                          self.fps))
 
-    def nullify_game_params(self):
+    def clear_game_params(self):
         self.labyrinth = None
         self.main_hero = None
-        self.characters = None
+        self.characters.clear()
+        self.game_controller.clear_params()
+        self.screen_controller.main_screen_saver.notification_screen.clear_params()
         self.set_game_params_to_game_modules()
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "active_screen":
             if self.active_screen == "main_screen":
-                self.screen_controller.add_blackout_screen_animation()
-                self.later_on_funcs.append(
-                    animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
-                                           self.fps, [self.labyrinth_file]))
-                self.later_on_funcs.append(
-                    animations.LaterOnFunc(self.screen_controller.set_active_screen,
-                                           animations.BeginScreenAnimationTime,
-                                           self.fps, ["main_screen"]))
-
+                self.run_switch_to_main_screen_animation()
             else:
                 if self.begin:
                     self.run_switch_screen_animation()
                 else:
                     self.screen_controller.add_lightening_screen_animation()
                     self.begin = True
+
+    def run_switch_to_main_screen_animation(self):
+        self.screen_controller.add_blackout_screen_animation()
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.start_main_part, animations.BeginScreenAnimationTime,
+                                   self.fps, [self.labyrinth_file]))
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.screen_controller.set_active_screen,
+                                   animations.BeginScreenAnimationTime,
+                                   self.fps, ["main_screen"]))
 
     def run_switch_screen_animation(self):
         self.screen_controller.add_blackout_screen_animation()
