@@ -10,9 +10,11 @@ indent = 40
 
 class Painter:
 
-    def __init__(self, _game, _width, _height):
+    def __init__(self, _game):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
+
+        :param _game: объект класса Game
         """
         self.game = _game
         self.grid_unit_surf = pygame.image.load("assets/grid_unit.png").convert_alpha()
@@ -37,6 +39,7 @@ class Painter:
     def draw_grid_cell(self, x, y, opacity):
         """
         Вызывает отрисовку единицы сетки экрана
+
         :param x: координаты на экране центра клетки,
         :param y: которую обрамляет рамка
         :param opacity: прозрачность
@@ -46,6 +49,7 @@ class Painter:
     def update_elevator_correction_cords(self, x, y):
         """
         обновляет значения корректировочных координат персонажа при заходе/выходе из лифта
+
         :param x: значения корректировочных координат
         :param y: на экране
         """
@@ -233,10 +237,20 @@ class ElevatorInside:
         self.screen_x, self.screen_y = -10, -10
 
     def set_screen_cords(self, x, y):
+        """
+        Устанавливает определенные координаты лифта на экране
+        :param x: координата OX
+        :param y: координата OY
+        """
         self.screen_x = x
         self.screen_y = y
 
     def __setattr__(self, key, value):
+        """
+        Обновляет значение атрбута key на значение value и в некоторых случаях обновляет картинку
+        :param key: атрибут
+        :param value: значение
+        """
         self.__dict__[key] = value
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
