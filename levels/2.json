@@ -37,7 +37,7 @@
     ]
   },
   "main_hero": {
-    "start_cords": [0, 0, 0]
+    "start_cords": [4, 4, 3]
   },
   "characters": [
     {
@@ -73,7 +73,7 @@
     {
       "name": "Kiselev",
       "task": "Алгебра ли алгебра Ли?",
-      "start_cords": [1, 0, 0],
+      "start_cords": [0, 4, 2],
       "appearance_stage": 5
     }
   ]

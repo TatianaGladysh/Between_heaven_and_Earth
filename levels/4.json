@@ -1,42 +1,39 @@
 {
   "layers": {
     "layer_1": [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "d 0 e 0 d",
+      "x d e d x",
+      "d 0 e 0 d"
     ],
     "layer_2" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "0 x x x 0",
+      "d 0 x 0 d",
+      "d x x x d"
     ],
     "layer_3" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "x x e x x",
+      "0 x e x d",
+      "d x e x d"
     ],
     "layer_4" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "d x x x d",
+      "x 0 0 d 0",
+      "d x d 0 d"
+    ],
+    "layer_5" : [
+      "e 0 0 0 0",
+      "e x x 0 x",
+      "e x 0 x 0"
     ]
   },
   "main_hero": {
-    "start_cords": [0, 0, 0]
+    "start_cords": [0, 0, 3]
   },
   "characters": [
     {
       "name": "Leonid",
       "task": "Сдать экзамен по СТО",
-      "start_cords": [1, 0, 0],
+      "start_cords": [2, 2, 2],
       "appearance_stage": 0
     },
     {

@@ -1,32 +1,24 @@
 {
   "layers": {
     "layer_1": [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "d 0 d",
+      "0 0 d",
+      "d 0 d"
     ],
     "layer_2" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "d x e",
+      "x x e",
+      "d x d"
     ],
     "layer_3" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+      "d x x",
+      "e x d",
+      "e x 0"
     ],
-    "layer_4" : [
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x",
-      "0 0 e e d d x x"
+    "layer_4": [
+      "0 0 0",
+      "0 0 0",
+      "0 0 x"
     ]
   },
   "main_hero": {
@@ -48,7 +40,7 @@
     {
       "name": "Hiryanov",
       "task": "Пояснить за то, как попасть в Гугл",
-      "start_cords": [1, 0, 0],
+      "start_cords": [1, 2, 3],
       "appearance_stage": 2
     },
     {
@@ -60,7 +52,7 @@
     {
       "name": "Klemeshov",
       "task": "Доказать, что оригинальность доклада больше 10 %",
-      "start_cords": [1, 0, 0],
+      "start_cords": [2, 0, 3],
       "appearance_stage": 4
     },
     {
