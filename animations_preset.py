@@ -18,8 +18,8 @@ def transform_surfs_scale_to_screen_params(list_of_surfs):
     for i in range(len(list_of_surfs)):
         surf = list_of_surfs[i]
         list_of_surfs[i] = pygame.transform.scale(surf,
-                                                  (screen_width, surf.get_height() * (
-                                                          screen_width / surf.get_width())))
+                                                  (int(screen_width), int(surf.get_height() * (
+                                                          screen_width / surf.get_width()))))
     return list_of_surfs
 
 

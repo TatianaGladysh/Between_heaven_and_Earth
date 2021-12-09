@@ -1,7 +1,8 @@
-from math import copysign as sign
-from random import randint
 import pygame
 import json
+
+from math import copysign as sign
+from random import randint
 
 
 class Hero:
@@ -126,7 +127,7 @@ class Character(Hero):
             self.image_file = "assets/Heroes/Karas/stay.png"
         elif self.name == "Leonid":
             self.image_file = "assets/Heroes/Leonid/Leonid.png"
-        elif self.name == "Hiryanov":
+        elif self.name == "Hiroya":
             self.image_file = "assets/Heroes/Khiryanov/stay.png"
         elif self.name == "Kozheva":
             self.image_file = "assets/Heroes/Kozhevnikov/stay.png"
