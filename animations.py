@@ -51,6 +51,11 @@ class Animator:
             self.painter.elevator_correction_x, self.painter.elevator_correction_y
 
     def add_quest_animation(self, quest, number):
+        """
+        Добавляет анимацию задания в очередь
+        :param quest: само задание
+        :param number: номер в очереди
+        """
         self.__add_animation(QuestAnimation(quest, self.fps, number))
 
     def __add_animation(self, animation):
@@ -72,6 +77,9 @@ class Animator:
             self.complete_level_animations.append(animation)
 
     def add_walking_animation(self, obj):
+        """
+        Добавляет анимацию перемещения главного героя
+        """
         if isinstance(obj, MainHero):
             self.main_hero_walking_animations.append(WalkingAnimation(obj, self.fps, WALKING_ANIMATION_TIME_INTERVAL))
 
@@ -96,6 +104,9 @@ class Animator:
             self.painter.draw_main_hero_in_the_elevator = value
 
     def end_walking_animations(self, hero):
+        """
+        отвечает за прерывание процесса ходьбы
+        """
         if isinstance(hero, MainHero):
             for animation in self.main_hero_walking_animations:
                 animation.emergency_finish()
@@ -158,7 +169,6 @@ class Animator:
         """
         обновляет все анимации и функции с задержкой, из соответствующих списков, удаляет из них завершенные,
         если таковые имеются
-        :return:
         """
         for animation in self.quests_animations:
             if animation.done:
@@ -375,7 +385,6 @@ class LaterOnFunc:
     def execute(self):
         """
         вызывает выполнение функции
-        :return:
         """
         self.done = True
         self.func(*self.args)
@@ -383,14 +392,12 @@ class LaterOnFunc:
     def emergency_finish(self):
         """
         вызывает быстрое выполнение функции, ранее чем прошло время задержки
-        :return:
         """
         self.execute()
 
     def update(self):
         """
         обновляет время и вызывает выполнение функции по его прошествии
-        :return:
         """
         self.time += (1 / max(self.fps.value, MIN_ALLOWABLE_FPS))
         if self.time_interval <= self.time:
@@ -399,9 +406,7 @@ class LaterOnFunc:
 
 
 class ImageAnimation:
-    id = 0
-
-    def __init__(self, _obj, _frames_surfs, _time_interval, _fps, _delay, _nature_of_frames_change="linear"):
+    def __init__(self, _obj, _frames_surfs, _time_interval, _fps, _delay):
         """
         объект класса может описывать анимацию, связанную с изменением изображений с течением времени, пока только
         линейным
@@ -409,7 +414,6 @@ class ImageAnimation:
         :param _time_interval: общее время выполнения анимации
         :param _fps: фпс
         :param _delay: задержка перед началом выполнения функции
-        :param _nature_of_frames_change: характер изменения изображений во времени, пока осуществим только линейный
         """
         self.obj = _obj
         self.frames_surfs = _frames_surfs
@@ -421,7 +425,6 @@ class ImageAnimation:
         self.converting_frame_interval = 0
         self.countdown = self.time_interval / len(self.frames_surfs)
         self.done = False
-        self.nature_of_frames_change = _nature_of_frames_change
         self.id = ImageAnimation.id
         self.delay = _delay
 
@@ -449,9 +452,6 @@ class ImageAnimation:
                 self.obj.set_surf(pygame.transform.flip(self.active_surf, True, False))
             else:
                 self.obj.set_surf(self.active_surf)
-        if self.nature_of_frames_change == "linear":
-            pass
-        # при нелинейной анимации можно будет изменять время cool_count
 
     def emergency_finish(self):
         """

@@ -26,8 +26,7 @@ class EventProcessor:
 
     def __global_event_process(self):
         """
-
-        :return:
+        Обработка событий мыши и клавиатуры
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,6 +51,10 @@ class EventProcessor:
                 self.__screen_buttons_check(event, self.exit_button)
 
     def __move_main_hero(self, event):
+        """
+        Перемещение
+        :param event:
+        """
         if not self.main_hero.inside_elevator and self.main_hero.speed_z == 0:
 
             if event.key == pygame.K_a and \
