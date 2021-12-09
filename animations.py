@@ -35,7 +35,10 @@ class Animator:
         self.processing = False
 
     def add_complete_level_animation(self):
-        self.add_animation(LevelCompleteAnimation(self.painter.game, "begin"))
+        """
+        добавляет в список анимаций анимацию после прохождения уровня
+        """
+        self.__add_animation(LevelCompleteAnimation(self.painter.game, "begin"))
 
     def set_game_params(self):
         """
@@ -48,9 +51,9 @@ class Animator:
             self.painter.elevator_correction_x, self.painter.elevator_correction_y
 
     def add_quest_animation(self, quest, number):
-        self.add_animation(QuestAnimation(quest, self.fps, number))
+        self.__add_animation(QuestAnimation(quest, self.fps, number))
 
-    def add_animation(self, animation):
+    def __add_animation(self, animation):
         """
         добавляет в листы анимаций координат и изображений новую
         :param animation: анимация, которую нужно добавить
@@ -116,16 +119,16 @@ class Animator:
         завершает анимации с лифтом, которые были вызваны и активны до этого
         """
         self.emergency_finish_elevator_animations()
-        self.add_animation(
+        self.__add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
                                      _time_interval=ElevatorOpeningClosingAnimation))
         self.add_later_on_funcs(self.change_rendering_of_layers, delay=ElevatorOpeningClosingAnimation, args=[True])
-        self.add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
-                                                                           self.max_elevator_correction_y),
-                                                            _time_interval=ElevatorOpeningClosingAnimation,
-                                                            _fps=self.painter.fps))
-        self.add_animation(
+        self.__add_animation(ElevatorCorrectionCordsAnimation(self.painter, (self.max_elevator_correction_x,
+                                                                             self.max_elevator_correction_y),
+                                                              _time_interval=ElevatorOpeningClosingAnimation,
+                                                              _fps=self.painter.fps))
+        self.__add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
                                      _time_interval=ElevatorOpeningClosingAnimation,
@@ -137,15 +140,15 @@ class Animator:
         завершает анимации с лифтом, которые были вызваны и активны до этого
         """
         self.emergency_finish_elevator_animations()
-        self.add_animation(
+        self.__add_animation(
             ElevatorOpeningAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
                                      _time_interval=ElevatorOpeningClosingAnimation))
-        self.add_animation(
+        self.__add_animation(
             ElevatorCorrectionCordsAnimation(self.painter, (0, 0), _time_interval=ElevatorOpeningClosingAnimation,
                                              _fps=self.painter.fps, _delay=ElevatorOpeningClosingAnimation))
         self.add_later_on_funcs(self.change_rendering_of_layers, delay=0.15, args=[False])
-        self.add_animation(
+        self.__add_animation(
             ElevatorClosingAnimation(self.painter.labyrinth.get_room(*self.painter.main_hero.get_cords()),
                                      self.painter.fps, self.painter.main_hero,
                                      _time_interval=ElevatorOpeningClosingAnimation,
@@ -193,13 +196,12 @@ class AnimationSwitchScreen:
 
     def __init__(self, _game, _start_opacity, _end_opacity, _delay, _switch_time):
         """
-        init
-        :param _game:
-        :param _start_opacity:
-        :param _end_opacity:
-        :param _delay:
-        :param _switch_time:
-        :return:
+        анимация смены экрана
+        :param _game: игра
+        :param _start_opacity: начальная непрозрачность
+        :param _end_opacity: конечная непрозрачность
+        :param _delay: задержка до старта работы функции
+        :param _switch_time: время анимации
         """
         self.game = _game
         self.self_surf = pygame.Surface((self.game.screen_width, self.game.screen_height))
@@ -213,6 +215,9 @@ class AnimationSwitchScreen:
         self.done = False
 
     def set_new_alpha(self):
+        """
+        устанавливает новый коэффициент прозрачности в свой surface
+        """
         self.opacity += self.general_delta * ((1 / max(self.game.fps.value, MinAllowableFps)) / self.time_interval)
         if self.opacity > 255:
             self.opacity = 255
@@ -221,6 +226,9 @@ class AnimationSwitchScreen:
         self.self_surf.set_alpha(self.opacity)
 
     def update(self):
+        """
+        вызывает обновление коэффициента прозрачности и отрисовывает свой surface на экране
+        """
         if self.delay <= self.time <= self.delay + self.time_interval:
             self.set_new_alpha()
             self.game.game_surf.blit(self.self_surf, (0, 0))
@@ -232,6 +240,13 @@ class AnimationSwitchScreen:
 class QuestAnimation:
 
     def __init__(self, _quest, _fps, _pos_in_order, _begin_opacity=255):
+        """
+        анимации появления заданий на экране игры
+        :param _quest: привязанное задание
+        :param _fps: фпс
+        :param _pos_in_order: позиция задания в очереди
+        :param _begin_opacity: начальная прозрачность квеста
+        """
         self.indent = 10
         self.quest = _quest
         self.img_surf = self.quest.active_surf
@@ -251,6 +266,9 @@ class QuestAnimation:
         self.calculate_params()
 
     def calculate_params(self):
+        """
+        вычисляет параметры уведомления на экране
+        """
         self.unit_width = self.quest.character.game.screen_width // 4
         img_width = self.img_surf.get_width()
         img_height = self.img_surf.get_height()
@@ -262,10 +280,16 @@ class QuestAnimation:
         self.img_rect = self.img_surf.get_rect(center=(self.screen_x, self.screen_y))
 
     def update_pic(self):
+        """
+        обновляет картинку квеста
+        """
         self.img_surf.set_alpha(self.opacity)
         self.quest.character.game.game_surf.blit(self.img_surf, self.img_rect)
 
     def update(self):
+        """
+        обновляет прозрачность квеста и следит за окончанием анимации
+        """
         self.time += (1 / max(self.fps.value, MinAllowableFps))
         if self.time >= QuestAnimationTime:
             self.done = True
@@ -521,9 +545,16 @@ class WalkingAnimation(ImageAnimation):
         super().__init__(_hero, self.frames_surfaces, _time_interval, _fps, _delay)
 
     def update_frame(self):
+        """
+        обновляет кадр
+        """
         super().update_frame()
 
     def emergency_finish(self):
+        """
+        быстро заканчивает работу анимации, а именно
+        устанавливает конечные значения параметров
+        """
         super().emergency_finish()
         self.hero.img_surf = animations_preset.StayMainPersonSurf
         if self.hero.walking_direction == "left":
@@ -539,6 +570,13 @@ class WalkingAnimation(ImageAnimation):
 class LevelCompleteAnimation:
 
     def __init__(self, _game, _process_type="begin", _delay=0.0, _time_interval=LevelCompleteTimeAnimation):
+        """
+        Анимация после прохождения уровня уровня
+        :param _game: игра
+        :param _process_type: тип процесса, то есть начало или конец анимации
+        :param _delay: задержка перед началом
+        :param _time_interval: время анимации
+        """
         self.game = _game
         self.fps = self.game.fps
         self.time_interval = _time_interval
@@ -567,6 +605,9 @@ class LevelCompleteAnimation:
         self.__update_pic()
 
     def __update_opacity(self):
+        """
+        обновляет значение непрозрачности
+        """
         if 0 <= self.opacity <= 255:
             self.step_change = (self.end_opacity - self.begin_opacity) * (
                     (1 / max(self.fps.value, MinAllowableFps)) / self.opacity_time_interval)
@@ -574,6 +615,9 @@ class LevelCompleteAnimation:
             self.active_surf.set_alpha(self.opacity)
 
     def __update_frame(self):
+        """
+        обновляет картинку
+        """
         self.converting_frame_interval = 0
         if self.active_surf_num > len(self.frames_surfs) - 1:
             self.finish()
@@ -583,12 +627,22 @@ class LevelCompleteAnimation:
         self.active_surf_num += 1
 
     def finish(self):
+        """
+        устанавливает параметр сделано
+        """
         self.done = True
 
     def __update_pic(self):
+        """
+        обновляет картинку на экране
+        """
         self.game.game_surf.blit(self.active_surf, self.rect)
 
     def update(self):
+        """
+        обновляет свое время, картинку, если это надо и непрозрачность, а также завершает себя если это нужно
+        если закончилось начало анимации, вызывает свой инит, только уже для конца анимации
+        """
         self.time += (1 / max(self.fps.value, MinAllowableFps))
         if self.delay <= self.time <= self.delay + self.time_interval:
             self.converting_frame_interval += (1 / max(self.fps.value, MinAllowableFps))
