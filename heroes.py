@@ -157,6 +157,8 @@ class Character(Hero):
             self.image_file = "assets/Heroes/Klemeshov/stay.png"
         elif self.name == "Kiselev":
             self.image_file = "assets/Heroes/Kisel/stay.png"
+        elif self.name == "Artemiy":
+            self.image_file = "assets/Heroes/Artemiy/stay.png"
         self.img_surf = pygame.image.load(self.image_file).convert_alpha()
 
     def move_x_axis(self):
@@ -232,10 +234,10 @@ class Quest:
         if self.character.name == "Leonid":
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
-        elif self.character.name == "Hiryanov":
+        elif self.character.name == "Roma":
             img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
                          "assets/tasks/1-coming.png"]
-        elif self.character.name == "Roma":
+        elif self.character.name == "Khiryanov":
             img_files = ["assets/tasks/2-done.png", "assets/tasks/2-active.png",
                          "assets/tasks/2-coming.png"]
         elif self.character.name == "Kozheva":
@@ -247,6 +249,9 @@ class Quest:
         elif self.character.name == "Kiselev":
             img_files = ["assets/tasks/5-done.png", "assets/tasks/5-active.png",
                          "assets/tasks/5-coming.png"]
+        elif self.character.name == "Artemiy":
+            img_files = ["assets/tasks/6-done.png", "assets/tasks/6-active.png",
+                         "assets/tasks/6-coming.png"]
         else:
             img_files = ["assets/none.png", "assets/none.png", "assets/none.png"]
         return img_files
