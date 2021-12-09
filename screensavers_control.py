@@ -168,7 +168,7 @@ class MainScreenSaver(GameScreenSaver):
         super().__init__(self.game, "assets/backgrounds/main_background.png")
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
-        self.painter = Painter(self.game, self.game.screen_width, self.game.screen_height)
+        self.painter = Painter(self.game)
         self.back_button = BackButton(self.game)
         self.task_button = TaskButton(self.game)
         self.notification_screen = NotificationsScreen(self)
