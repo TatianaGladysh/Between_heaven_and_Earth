@@ -29,7 +29,7 @@ class Button:
         """
         Вызывает функцию, привязанную к кнопке
         """
-        self.command(*self.args)
+        self.command()
 
     def get_cords(self):
         """
@@ -82,6 +82,12 @@ class Button:
         обновляет картинку кнопки
         """
         self.update_image(255)
+
+    def command(self):
+        """
+        Выполняет команду, привязанную к данной кнопке
+        """
+        pass
 
 
 class StartButton(Button):
