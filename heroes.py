@@ -255,8 +255,18 @@ class Character(Hero):
 
 
 class MapMarker(Character):
-
+    """
+    Класс, хранящий в себе метки для обучающего, т.е. 0 уровня. Может использоваться и для других уровней.
+    Задания привязываются к конкретной координате, которые хранит этот класс.
+    """
     def __init__(self, _game, _start_position, _appearance_object_name: str, _inside_elevator, _appearance_stage):
+        """
+        :param _game: Объект класса game
+        :param _start_position: Координата задания.
+        :param _appearance_object_name: Название задания
+        :param _inside_elevator: Внутри лифта или нет.
+        :param _appearance_stage: Порядок выполнения
+        """
         self.name = _appearance_object_name
         super().__init__(_game, _start_position, self.name, _appearance_stage)
         self.inside_elevator = _inside_elevator
@@ -290,6 +300,10 @@ class Quest:
         self.pos_in_order = 0
 
     def set_pos_in_order(self, number):
+        """
+        Присваивает  заданию номер его вывода на экран,начиная сверху.
+        :param number: Номер задания
+        """
         self.pos_in_order = number
 
     def __setattr__(self, key, value):
@@ -305,6 +319,9 @@ class Quest:
             self.new_pos_in_order()
 
     def transform_self_surfs(self):
+        """
+        Изменение размеров поверхности задания для правильной отрисовки.
+        """
         img_width = self.active_surf.get_width()
         img_height = self.active_surf.get_height()
         unit_width = (9 / 20) * self.character.game.screen_width
@@ -369,6 +386,9 @@ class Quest:
         return img_files
 
     def update_working_surface(self):
+        """
+        Изменение изображения задания в зависимости от прогресса его выполнения.
+        """
         if self.stage < self.character.game.game_controller.active_stage or self.character.quest_is_done:
             self.working_surface = self.done_surf
         elif self.stage > self.character.game.game_controller.active_stage:
@@ -377,17 +397,31 @@ class Quest:
             self.working_surface = self.active_surf
 
     def new_pos_in_order(self):
+        """
+        Вычисление координат расположения изображения задания.
+        """
         self.screen_y = self.indent + (self.indent + self.unit_height) * self.pos_in_order + self.unit_height // 2
         self.update_working_surface()
         if self.stage == self.character.game.game_controller.active_stage:
             self.surf_rect = self.active_surf.get_rect(center=(self.screen_x, self.screen_y))
 
     def draw_spawn_animation(self, pos_in_animations_order):
+        """
+        Вызывает анимацию отрисовки уведомлений в левомверхнем углу.
+        :param pos_in_animations_order:
+        """
         self.character.game.screen_controller.main_screen_saver.painter.animator.add_quest_animation(
             self, pos_in_animations_order)
 
     def update(self):
+        """
+        Совершение draw_itself()
+        """
         self.draw_itself()
 
     def draw_itself(self):
+        """
+        Отрисовка поверхности задания на экране.
+        :return:
+        """
         self.character.game.game_surf.blit(self.working_surface, self.surf_rect)
