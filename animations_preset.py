@@ -112,5 +112,3 @@ LevelCompleteSurfsEndAnimation = transform_surfs_scale_to_screen_params(make_sur
      "assets/level_complete_animation_images/2.png", "assets/level_complete_animation_images/1.png",
      "assets/level_complete_animation_images/0.png"]
 ))
-
-
