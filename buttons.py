@@ -49,7 +49,7 @@ class Button:
         """
         return self.unit_height
 
-    def update_image(self, opacity):
+    def update_image(self, opacity=255):
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
         self.img_surf.set_alpha(opacity)
         img_rect = self.img_surf.get_rect(center=(self.x, self.y))
@@ -81,7 +81,7 @@ class Button:
         """
         обновляет картинку кнопки
         """
-        self.update_image(255)
+        self.update_image()
 
     def command(self):
         """
