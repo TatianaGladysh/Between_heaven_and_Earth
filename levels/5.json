@@ -43,7 +43,7 @@
     {
       "type" : "Hero",
       "name": "Leonid",
-      "start_cords": [1, 0, 0],
+      "start_cords": [2, 2, 1],
       "appearance_stage": 0
     }
   ]

@@ -3,6 +3,7 @@ import time
 
 import pygame
 
+import screensavers_control
 from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
 from sound_control import SoundController
@@ -43,6 +44,12 @@ class Game:
 
     def complete_level(self):
         self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
+        self.open_new_level()
+
+    def open_new_level(self):
+        if self.screen_controller.level_screen_saver.selected_level < screensavers_control.LevelsCount - 1:
+            self.screen_controller.level_screen_saver.level_buttons[
+                self.screen_controller.level_screen_saver.selected_level + 1].block = False
 
     def exit_level(self):
         self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BeginScreenAnimationTime,

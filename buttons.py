@@ -58,7 +58,7 @@ class Button:
         button_height = self.get_height()
         mouse_x, mouse_y = mouse_position
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def update(self):
         """
@@ -156,20 +156,41 @@ class ExitButton(Button):
 class LevelButton(Button):
 
     def __init__(self, _x, _y, _id, _game):
-        self.id = _id
+        self.id: int = _id
         super(LevelButton, self).__init__(_game)
         self.x = _x
         self.y = _y
-        self.block = self.adopted_from_file()
-        # self.img_file = self.read_img_file()
-        self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
-        self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
+        self.block = self.__adopted_from_file()
+        if not self.block:
+            self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
+            self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
+        else:
+            self.img_file_released = "assets/buttons/lock_level_button.png"
+            self.img_file_pressed = "assets/buttons/lock_level_button.png"
         self.pressed = False
-        self.width, self.height = self.calculate_dimensions()
+        self.width, self.height = self.__calculate_dimensions()
         self.unit_width, self.unit_height = self.width, self.height
+        self.selected_level = 0
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+        if key == "block":
+            if self.block:
+                self.img_file_released = "assets/buttons/lock_level_button.png"
+                self.img_file_pressed = "assets/buttons/lock_level_button.png"
+            else:
+                self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
+                self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
+            with open("levels/button_lock_data.txt", 'r') as file:
+                string_with_data = file.readline()
+                codes_array = list(string_with_data.split())
+                codes_array[self.id] = "T" if self.block else "F"
+                result_string = " ".join(codes_array)
+            with open("levels/button_lock_data.txt", 'w') as file:
+                file.write(result_string)
 
     @staticmethod
-    def calculate_dimensions():
+    def __calculate_dimensions():
         img_surf = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha()
         return img_surf.get_width(), img_surf.get_height()
 
@@ -177,7 +198,7 @@ class LevelButton(Button):
         img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
         return img_file
 
-    def adopted_from_file(self):
+    def __adopted_from_file(self):
         with open("levels/button_lock_data.txt", 'r') as file:
             string_with_data = file.readline()
             code = string_with_data.split()[self.id]
@@ -189,8 +210,10 @@ class LevelButton(Button):
             return block
 
     def command(self):
-        self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
-        self.game.active_screen = "main_screen"
+        if not self.block:
+            self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
+            self.game.active_screen = "main_screen"
+            self.game.screen_controller.level_screen_saver.selected_level = self.id
 
 
 class BackButton(Button):
