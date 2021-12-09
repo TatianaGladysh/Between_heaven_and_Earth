@@ -28,7 +28,7 @@ class Game:
         self.begin = False
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
-        self.game_surf = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.game_surf = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.fps = Fps(self.clock)
         self.labyrinth = None
@@ -41,10 +41,11 @@ class Game:
         self.sounds_controller = SoundController(self)
         self.active_screen = "start_screen"
 
+    def end_complete_level(self):
+        self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
+
     def end_level(self):
-        self.labyrinth = None
-        self.main_hero = None
-        self.characters = None
+        self.end_complete_level()
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -115,7 +116,7 @@ class Game:
 
     def main_process(self):
         self.sounds_controller.update()
-        self.event_processor.update_events_statuses_and_objects_cords()
+        self.event_processor.update()
         self.screen_controller.update()
         self.update_later_on_funcs()
 

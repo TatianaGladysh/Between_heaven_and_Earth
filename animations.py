@@ -9,6 +9,8 @@ BeginScreenAnimationTime = 0.35
 EndOfScreenAnimationTime = 0.35
 MinAllowableFps = 35
 WalkingTimeInterval = 1
+LevelCompleteTimeAnimation = 2.0
+LevelCompleteTimeAnimationCorrection = 0.05
 
 
 class Animator:
@@ -29,8 +31,16 @@ class Animator:
         self.quests_animations = []
         self.switch_screen_animations = []
         self.main_hero_walking_animations = []
+        self.complete_level_animations = []
         self.fps = _painter.fps
         self.processing = False
+
+    def add_complete_level_animation(self):
+        self.add_animation(LevelCompleteAnimation(self.painter.game, "begin"))
+        self.add_animation(
+            LevelCompleteAnimation(self.painter.game, "end",
+                                   _delay=LevelCompleteTimeAnimation - LevelCompleteTimeAnimationCorrection,
+                                   _time_interval=LevelCompleteTimeAnimation / 1.5))
 
     def set_game_params(self):
         """
@@ -60,6 +70,8 @@ class Animator:
             self.switch_screen_animations.append(animation)
         elif isinstance(animation, WalkingAnimation):
             self.main_hero_walking_animations.append(animation)
+        elif isinstance(animation, LevelCompleteAnimation):
+            self.complete_level_animations.append(animation)
 
     def add_walking_animation(self, obj):
         if isinstance(obj, MainHero):
@@ -173,6 +185,11 @@ class Animator:
         for animation in self.main_hero_walking_animations:
             if animation.done:
                 self.main_hero_walking_animations.remove(animation)
+            else:
+                animation.update()
+        for animation in self.complete_level_animations:
+            if animation.done:
+                self.complete_level_animations.remove(animation)
             else:
                 animation.update()
 
@@ -522,3 +539,66 @@ class WalkingAnimation(ImageAnimation):
         обновляет параметры анимации и параметр героя, отвечающий за блокировку его движений при выполнении анимации
         """
         super(WalkingAnimation, self).update()
+
+
+class LevelCompleteAnimation:
+
+    def __init__(self, _game, _process_type="begin", _delay=0.0, _time_interval=LevelCompleteTimeAnimation):
+        self.game = _game
+        self.fps = self.game.fps
+        self.time_interval = _time_interval
+        if _process_type == "begin":
+            self.opacity = 0.0
+            self.end_opacity = 255.0
+            self.frames_surfs = animations_preset.LevelCompleteSurfsBeginAnimation
+            self.opacity_time_interval = self.time_interval / 2
+        else:
+            self.opacity = 255.0
+            self.end_opacity = 0.0
+            self.frames_surfs = animations_preset.LevelCompleteSurfsEndAnimation
+            self.opacity_time_interval = self.time_interval
+        self.frame_countdown = self.time_interval / len(self.frames_surfs)
+
+        self.begin_opacity = self.opacity
+        self.active_surf = self.frames_surfs[0]
+        self.active_surf_num = 0
+        self.converting_frame_interval = 0
+        self.rect = self.active_surf.get_rect()
+        self.opacity_step_change = (self.end_opacity - self.opacity) * (
+                (1 / max(self.fps.value, MinAllowableFps)) / self.opacity_time_interval)
+        self.time = 0
+        self.done = False
+        self.delay = _delay
+
+    def __update_opacity(self):
+        if 0 <= self.opacity <= 255:
+            self.step_change = (self.end_opacity - self.begin_opacity) * (
+                    (1 / max(self.fps.value, MinAllowableFps)) / self.opacity_time_interval)
+            self.opacity += self.step_change
+            self.active_surf.set_alpha(self.opacity)
+
+    def __update_frame(self):
+        self.converting_frame_interval = 0
+        if self.active_surf_num > len(self.frames_surfs) - 1:
+            self.finish()
+        else:
+            self.active_surf = self.frames_surfs[self.active_surf_num]
+        self.active_surf.set_alpha(self.opacity)
+        self.active_surf_num += 1
+
+    def finish(self):
+        self.done = True
+
+    def __update_pic(self):
+        self.game.game_surf.blit(self.active_surf, self.rect)
+
+    def update(self):
+        self.time += (1 / max(self.fps.value, MinAllowableFps))
+        if self.delay <= self.time <= self.delay + self.time_interval:
+            self.converting_frame_interval += (1 / max(self.fps.value, MinAllowableFps))
+            self.__update_opacity()
+            if self.converting_frame_interval >= self.frame_countdown:
+                self.__update_frame()
+            self.__update_pic()
+        elif self.delay + self.time_interval < self.time:
+            self.finish()

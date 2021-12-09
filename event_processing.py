@@ -5,6 +5,7 @@ class EventProcessor:
     """
     Класс обработчика событий
     """
+
     def __init__(self, _game):
         """
         Конструктор класса обработки событий
@@ -23,7 +24,7 @@ class EventProcessor:
         self.labyrinth = self.game.labyrinth
         self.characters = self.game.characters
 
-    def global_event_process(self):
+    def __global_event_process(self):
         """
 
         :return:
@@ -32,25 +33,25 @@ class EventProcessor:
             if event.type == pygame.QUIT:
                 self.quit = True
                 continue
-            self.screen_buttons_check_click(event, self.sound_button)
+            self.__sound_button_check_click(event, self.sound_button)
             if self.game.active_screen == "main_screen":
                 try:
                     if event.type == pygame.KEYDOWN and not self.game.main_hero.move_blocked:
-                        self.move_main_hero(event)
+                        self.__move_main_hero(event)
                     else:
-                        self.screen_buttons_check(event, self.back_to_levels_button)
-                        self.screen_buttons_check(event, self.task_button)
+                        self.__screen_buttons_check(event, self.back_to_levels_button)
+                        self.__screen_buttons_check(event, self.task_button)
                 except AttributeError:
                     print("main_hero is not announced yet")
             elif self.game.active_screen == "level_screen":
                 for button in self.level_buttons:
-                    self.screen_buttons_check(event, button)
-                self.screen_buttons_check(event, self.back_button)
+                    self.__screen_buttons_check(event, button)
+                self.__screen_buttons_check(event, self.back_button)
             elif self.game.active_screen == "start_screen":
-                self.screen_buttons_check(event, self.start_button)
-                self.screen_buttons_check(event, self.exit_button)
+                self.__screen_buttons_check(event, self.start_button)
+                self.__screen_buttons_check(event, self.exit_button)
 
-    def move_main_hero(self, event):
+    def __move_main_hero(self, event):
         if not self.main_hero.inside_elevator and self.main_hero.speed_z == 0:
 
             if event.key == pygame.K_a and \
@@ -99,12 +100,12 @@ class EventProcessor:
                 self.main_hero.move_z_axis(-1)
                 self.game.sounds_controller.play_sound("door_open")
 
-    def screen_buttons_check(self, event, button):
+    @staticmethod
+    def __screen_buttons_check(event, button):
         if event.type == pygame.MOUSEBUTTONUP:
             if button.pressed and button.check_button_click(pygame.mouse.get_pos()):
                 button.click()
                 button.pressed = False
-                self.game.sounds_controller.play_sound("button_click")
 
         if event.type == pygame.MOUSEMOTION:
             if not button.check_button_click(pygame.mouse.get_pos()):
@@ -114,7 +115,7 @@ class EventProcessor:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = True
 
-    def screen_buttons_check_click(self, event, button):
+    def __sound_button_check_click(self, event, button):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = not button.pressed
@@ -147,9 +148,8 @@ class EventProcessor:
     def set_active_screen(self, screen_name: str):
         self.game.active_screen = screen_name
 
-    def update_events_statuses_and_objects_cords(self):
-        # FIXME мб сразу давать ссылку на следующую функцию?
-        self.global_event_process()
+    def update(self):
+        self.__global_event_process()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
         self.labyrinth = _labyrinth

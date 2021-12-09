@@ -4,58 +4,36 @@
       "e 0 d 0 0 0",
       "e 0 d 0 0 0"
     ],
-    "layer_2" : [
+    "layer_2": [
       "e 0 d 0 0 0",
       "e 0 d 0 0 0"
     ],
-    "layer_3" : [
+    "layer_3": [
       "e 0 d 0 0 0",
       "e 0 d 0 0 0"
     ],
-    "layer_4" : [
+    "layer_4": [
       "e 0 d 0 0 0",
       "e 0 d 0 0 0"
     ]
   },
   "main_hero": {
-    "start_cords": [0, 0, 0]
+    "start_cords": [
+      0,
+      0,
+      0
+    ]
   },
   "characters": [
     {
       "name": "Leonid",
       "task": "Сдать экзамен по СТО",
-      "start_cords": [1, 0, 0],
+      "start_cords": [
+        1,
+        0,
+        0
+      ],
       "appearance_stage": 0
-    },
-    {
-      "name": "Roma",
-      "task": "Доказать теорему Пуанкаре",
-      "start_cords": [2, 0, 0],
-      "appearance_stage": 0
-    },
-    {
-      "name": "Hiryanov",
-      "task": "Пояснить за то, как попасть в Гугл",
-      "start_cords": [3, 0, 0],
-      "appearance_stage": 0
-    },
-    {
-      "name": "Kozheva",
-      "task": "Объяснить в каком кольце твоя домашка",
-      "start_cords": [4, 0, 0],
-      "appearance_stage": 3
-    },
-    {
-      "name": "Klemeshov",
-      "task": "Доказать, что оригинальность доклада больше 10 %",
-      "start_cords": [1, 1, 0],
-      "appearance_stage": 4
-    },
-    {
-      "name": "Kiselev",
-      "task": "Алгебра ли алгебра Ли?",
-      "start_cords": [2, 1, 0],
-      "appearance_stage": 5
     }
   ]
 }

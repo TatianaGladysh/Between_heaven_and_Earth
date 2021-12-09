@@ -1,6 +1,6 @@
 import pygame
 
-MusicIncreaseTime = 2
+MusicIncreaseTime = 1.5
 MusicVolume = 0.7
 
 pygame.init()
@@ -34,7 +34,6 @@ class SoundController:
     def enter_elevator_sound_play(self):
         self.sounds["elevator_doors"].play()
 
-
     def play_sound(self, action):
         if self.sounds_on:
             self.sounds[action].play()
@@ -44,7 +43,7 @@ class SoundController:
             self.sounds_on = not self.sounds_on
         else:
             self.sounds_on = value
-            
+
     def music_on_off(self):
         if self.music_on:
             self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), MusicVolume,

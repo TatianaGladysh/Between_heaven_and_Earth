@@ -210,20 +210,20 @@ class Quest:
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
         elif self.character.name == "Hiryanov":
-            img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
-                         "assets/tasks/0-coming.png"]
+            img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
+                         "assets/tasks/1-coming.png"]
         elif self.character.name == "Roma":
-            img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
-                         "assets/tasks/0-coming.png"]
+            img_files = ["assets/tasks/2-done.png", "assets/tasks/2-active.png",
+                         "assets/tasks/2-coming.png"]
         elif self.character.name == "Kozheva":
-            img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
-                         "assets/tasks/0-coming.png"]
+            img_files = ["assets/tasks/3-done.png", "assets/tasks/3-active.png",
+                         "assets/tasks/3-coming.png"]
         elif self.character.name == "Klemeshov":
-            img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
-                         "assets/tasks/0-coming.png"]
+            img_files = ["assets/tasks/4-done.png", "assets/tasks/4-active.png",
+                         "assets/tasks/4-coming.png"]
         elif self.character.name == "Kiselev":
-            img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
-                         "assets/tasks/0-coming.png"]
+            img_files = ["assets/tasks/5-done.png", "assets/tasks/5-active.png",
+                         "assets/tasks/5-coming.png"]
         else:
             img_files = ["assets/none.png", "assets/none.png", "assets/none.png"]
         return img_files
