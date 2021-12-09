@@ -192,6 +192,13 @@ class LevelButton(Button):
         self.selected_level = 0
 
     def __setattr__(self, key, value):
+        """
+        при изменении параметра block для кнопки уровня меняет свои surface' ы и записывает обновленные данные
+        о заблокированных уровнях в файл
+        :param key:
+        :param value:
+        :return:
+        """
         self.__dict__[key] = value
         if key == "block":
             if self.block:
