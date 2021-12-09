@@ -2,7 +2,7 @@
   "layers": {
     "layer_1": [
       "d 0 d",
-      "0 0 d",
+      "d 0 d",
       "d 0 d"
     ],
     "layer_2" : [
@@ -28,7 +28,7 @@
     {
       "type" : "Hero",
       "name": "Khiryanov",
-      "start_cords": [0, 2, 3],
+      "start_cords": [2, 2, 2],
       "appearance_stage": 0
     }
   ]
