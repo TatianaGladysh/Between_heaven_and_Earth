@@ -6,20 +6,36 @@ from random import randint
 
 
 class Hero:
+    """
+    Класс героев.
+    """
     def __init__(self, _start_position):
+        """
+        Инициализация героя. Имеет стартовую позицию в лабиринте.
+        :param _start_position: Стартовая позиция героя, которая задается в json-файле лабиринта изначально.
+        """
         self.x, self.y, self.z = _start_position[0], _start_position[1], _start_position[2]
         self.arrival_x, self.arrival_y, self.arrival_z = self.x, self.y, self.z
         self.img_surf = None
 
     def get_cords(self):
+        """
+        Возвращает координаты героя.
+        """
         return self.x, self.y, self.z
 
     def set_surf(self, surf):
+        """
+        Присваивает поверхность отрисовки героя.
+        :param surf: Поверхность,которая присваивается.
+        """
         self.img_surf = surf
 
 
 class MainHero(Hero):
-
+    """
+    Класс главного героя, т.е. самого игрока.
+    """
     def __init__(self, _game):
         self.game = _game
         self.walking_direction = "right"
@@ -37,9 +53,15 @@ class MainHero(Hero):
         self.move_blocked = False
 
     def is_moves(self):
+        """
+        Проверка, движется ли герой, и возврат True в случае движения и False в обратном случае.
+        """
         return self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
 
     def read_cords(self):
+        """
+        Сначала считывает координаты главного героя из json-файла, а затем присваивает их главному герою.
+        """
         with open(self.game.labyrinth_file, "r") as file:
             main_hero_cords = json.load(file)["main_hero"]["start_cords"]
         self.x = main_hero_cords[0]
@@ -210,7 +232,7 @@ class Quest:
         if self.character.name == "Leonid":
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
-        elif self.character.name == "Khiryanov":
+        elif self.character.name == "Hiryanov":
             img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
                          "assets/tasks/1-coming.png"]
         elif self.character.name == "Roma":
@@ -225,8 +247,6 @@ class Quest:
         elif self.character.name == "Kiselev":
             img_files = ["assets/tasks/5-done.png", "assets/tasks/5-active.png",
                          "assets/tasks/5-coming.png"]
-        elif self.character.name == "Artemiy":
-            img_files = [""]
         else:
             img_files = ["assets/none.png", "assets/none.png", "assets/none.png"]
         return img_files
