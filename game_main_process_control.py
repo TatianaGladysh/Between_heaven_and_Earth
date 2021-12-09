@@ -3,7 +3,7 @@ class GameMainProcessController:
     def __init__(self, _game):
         """
         объект класса обрабатывает массивы героев, обновляет их в связи с выполненными заданиями
-        :param _game: игра
+        :param _game: объект класса Game
         """
         self.game = _game
         self.characters = self.game.characters
@@ -28,7 +28,7 @@ class GameMainProcessController:
 
     def __define_max_stage(self):
         """
-        определяет максимальный stage героев
+        определяет максимальный этап появления героев
         """
         _max_stage = 0
         for character in self.characters:
@@ -39,6 +39,8 @@ class GameMainProcessController:
     def __setattr__(self, key, value):
         """
         при обновлении стадии игры вызывает обновление массива героев
+        :param key: атрибут
+        :param value: новое значение
         """
         self.__dict__[key] = value
         if key == "active_stage":
@@ -51,6 +53,8 @@ class GameMainProcessController:
     def set_game_params(self, _main_hero, _characters):
         """
         устанавливает параметры героев в себя
+        :param _main_hero: герой
+        :param _characters: персонажи
         """
         self.main_hero = _main_hero
         self.characters = _characters

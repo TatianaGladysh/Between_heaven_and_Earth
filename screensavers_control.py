@@ -94,12 +94,20 @@ class ScreenSaverController:
         self.set_game_params_to_main_screen_saver()
 
     def set_game_params_to_main_screen_saver(self):
+        """
+        передает лабиринт, героя и персонажей в main_screen_saver
+        """
         self.main_screen_saver.set_game_params(self.labyrinth, self.main_hero, self.active_characters)
 
 
 class GameScreenSaver:
 
     def __init__(self, _game, _background_img):
+        """
+        Заставка экрана
+        :param _game: объект класса Game
+        :param _background_img: фоновое изображение
+        """
         self.game = _game
         self.surf = self.game.game_surf
         self.game_time = 0
@@ -115,6 +123,7 @@ class GameScreenSaver:
     def calculate_background_scale_k(self):
         """
         Рассчет коэффициента размера картинки заднего фона
+        :return: коэффициент
         """
         img_surf = pygame.image.load(self.background_img).convert_alpha()
         k = self.window_height / img_surf.get_height()
@@ -130,22 +139,11 @@ class GameScreenSaver:
 class StartScreenSaver(GameScreenSaver):
 
     def __init__(self, _game):
-        self.game = _game
-        super(StartScreenSaver, self).__init__(self.game, "assets/backgrounds/start_background.png")
+        super(StartScreenSaver, self).__init__(_game, "assets/backgrounds/start_background.png")
         self.start_button = StartButton(self.game)
         self.exit_button = ExitButton(self.game)
-        self.window_height = self.game.screen_height
-        self.window_width = self.game.screen_width
         self.background_img = "assets/backgrounds/start_background.png"
         self.background_scale_k = self.calculate_background_scale_k()
-
-    def calculate_background_scale_k(self):
-        """
-        Рассчет коэффициента размера картинки заднего фона
-        """
-        img_surf = pygame.image.load(self.background_img).convert_alpha()
-        k = self.window_height / img_surf.get_height()
-        return k
 
     def update(self):
         """
@@ -233,6 +231,9 @@ class NotificationsScreen:
             i += 1
 
     def recalculate_order_of_quests(self):
+        """
+        Рассчитывает порядок заданий по порядку персонажей
+        """
         i = 0
         for character in self.active_characters:
             character.quest.set_pos_in_order(i)
@@ -245,9 +246,15 @@ class NotificationsScreen:
             i += 1
 
     def update_background(self):
+        """
+        обновляет фон
+        """
         self.main_screen_saver.game.game_surf.blit(self.background_surf, (0, 0))
 
     def update(self):
+        """
+        Обновляет фон и все задания
+        """
         if self.active:
             self.update_background()
             for character in self.active_characters + self.passed_characters + self.coming_characters:
@@ -299,6 +306,9 @@ class LevelScreenSaver(GameScreenSaver):
         return buttons_array
 
     def update(self):
+        """
+        Обновляет фон и все кнопки
+        """
         self.update_background()
         for button in self.level_buttons:
             button.update()
