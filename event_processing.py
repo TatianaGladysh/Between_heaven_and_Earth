@@ -52,8 +52,8 @@ class EventProcessor:
 
     def __move_main_hero(self, event):
         """
-        Перемещение
-        :param event:
+        Перемещение героя в зависимости от действия с клавиатуры
+        :param event: нажатие на клавиатуру
         """
         if not self.main_hero.inside_elevator and self.main_hero.speed_z == 0:
 
@@ -105,6 +105,11 @@ class EventProcessor:
 
     @staticmethod
     def __screen_buttons_check(event, button):
+        """
+        Обработка события мыши
+        :param event: событие мыши
+        :param button: кнопка
+        """
         if event.type == pygame.MOUSEBUTTONUP:
             if button.pressed and button.check_button_click(pygame.mouse.get_pos()):
                 button.command()
@@ -120,6 +125,11 @@ class EventProcessor:
 
     @staticmethod
     def __sound_button_check_click(event, button):
+        """
+        Проверка нажатия на кнопку
+        :param event: событие мыши
+        :param button: кнопка
+        """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = not button.pressed
@@ -128,6 +138,8 @@ class EventProcessor:
     def have_a_door(self, direction):
         """
         функция проверяет наличие двери в ячейке нахождения персонажа
+        :param direction: положение двери относительно персонажа
+        :return: True/False
         """
         if direction == "behind":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z).type == "door"
@@ -137,6 +149,8 @@ class EventProcessor:
     def have_an_elevator(self, direction):
         """
         функция проверяет наличие лифта в ячейке нахождения персонажа (вдруг клавиша будет нажата случайно)
+        :param direction: положение лифта относительно персонажа
+        :return: True/False
         """
         if direction == "below":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y + 1,
@@ -149,12 +163,24 @@ class EventProcessor:
                                            self.main_hero.z).type == "elevator"
 
     def set_active_screen(self, screen_name: str):
+        """
+        меняет тип экрана игры
+        """
         self.game.active_screen = screen_name
 
     def update(self):
+        """
+        обновляет игру, запуская обработку всех событий
+        """
         self.__global_event_process()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
+        """
+        устанавливает заданные лабиринт, главного героя и персонажей
+        :param _labyrinth: лабиринт
+        :param _main_hero: главный герой
+        :param _characters: персонажи
+        """
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters
