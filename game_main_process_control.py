@@ -1,5 +1,6 @@
 import copy
 
+
 class GameMainProcessController:
 
     def __init__(self, _game):
@@ -11,6 +12,7 @@ class GameMainProcessController:
         self.main_hero = self.game.main_hero
         self.max_stage = 0
         self.active_stage = 0
+        self.level_complete = False
 
     def define_max_stage(self):
         _max_stage = 0
@@ -60,7 +62,8 @@ class GameMainProcessController:
                 if len(self.active_characters) == 0:
                     self.active_stage += 1
                     self.game.screen_controller.main_screen_saver.notification_screen.draw_spawn_animations()
-        if self.active_stage > self.max_stage:
-            self.game.end_level()
+        if self.active_stage > self.max_stage and not self.level_complete:
+            self.level_complete = True
+            self.game.complete_level()
         else:
             self.update_active_characters_array()

@@ -210,7 +210,7 @@ class Quest:
         if self.character.name == "Leonid":
             img_files = ["assets/tasks/0-done.png", "assets/tasks/0-active.png",
                          "assets/tasks/0-coming.png"]
-        elif self.character.name == "Hiryanov":
+        elif self.character.name == "Khiryanov":
             img_files = ["assets/tasks/1-done.png", "assets/tasks/1-active.png",
                          "assets/tasks/1-coming.png"]
         elif self.character.name == "Roma":
@@ -225,6 +225,8 @@ class Quest:
         elif self.character.name == "Kiselev":
             img_files = ["assets/tasks/5-done.png", "assets/tasks/5-active.png",
                          "assets/tasks/5-coming.png"]
+        elif self.character.name == "Artemiy":
+            img_files = [""]
         else:
             img_files = ["assets/none.png", "assets/none.png", "assets/none.png"]
         return img_files

@@ -41,11 +41,17 @@ class Game:
         self.sounds_controller = SoundController(self)
         self.active_screen = "start_screen"
 
-    def end_complete_level(self):
+    def complete_level(self):
         self.screen_controller.main_screen_saver.painter.animator.add_complete_level_animation()
 
-    def end_level(self):
-        self.end_complete_level()
+    def exit_level(self):
+        self.nullify_game_params()
+
+    def nullify_game_params(self):
+        self.labyrinth = None
+        self.main_hero = None
+        self.characters = None
+        self.set_game_params_to_game_modules()
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -62,18 +68,21 @@ class Game:
 
             else:
                 if self.begin:
-                    self.screen_controller.add_blackout_screen_animation()
-                    self.later_on_funcs.append(animations.LaterOnFunc(
-                        self.set_active_screen_in_screen_controller,
-                        animations.BeginScreenAnimationTime,
-                        self.fps, [self.active_screen]))
-
-                    self.later_on_funcs.append(
-                        animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
-                                               animations.BeginScreenAnimationTime, self.fps))
+                    self.run_switch_screen_animation()
                 else:
                     self.screen_controller.add_lightening_screen_animation()
                     self.begin = True
+
+    def run_switch_screen_animation(self):
+        self.screen_controller.add_blackout_screen_animation()
+        self.later_on_funcs.append(animations.LaterOnFunc(
+            self.set_active_screen_in_screen_controller,
+            animations.BeginScreenAnimationTime,
+            self.fps, [self.active_screen]))
+
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
+                                   animations.BeginScreenAnimationTime, self.fps))
 
     def set_active_screen_in_screen_controller(self, screen_name):
         self.screen_controller.set_active_screen(screen_name)
