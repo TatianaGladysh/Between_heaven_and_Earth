@@ -115,7 +115,8 @@ class EventProcessor:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = True
 
-    def __sound_button_check_click(self, event, button):
+    @staticmethod
+    def __sound_button_check_click(event, button):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = not button.pressed
