@@ -69,6 +69,7 @@ class Painter:
         self.unit_width = int(min((self.window_width - 2 * indent) / labyrinth_x_len,
                                   k * (self.window_height - 2 * indent) / labyrinth_y_len))
         self.unit_height = int(self.unit_width / k)
+        # специально подобранные параметры
         self.unit_depth = int(self.unit_height * 0.18333333333)
 
     def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero):
@@ -134,12 +135,14 @@ class Painter:
         x0, y0, z0 = self.main_hero.get_cords()
         for i in range(0, self.labyrinth.get_x_width()):
             for j in range(0, self.labyrinth.get_y_width()):
+                # непрозрачные объекты
                 opacity = 255
                 room = self.labyrinth.get_room(i, j, z0)
                 if isinstance(room, labyrinth.Room):
                     self.update_room_pic(room, opacity)
 
         for i in range(-1, 2):
+            # прозрачность дополнительного слоя
             opacity = 64
             x0, y0, z0 = self.main_hero.get_cords()
             check_room = self.labyrinth.get_room(x0 + i, y0, z0 - 1)

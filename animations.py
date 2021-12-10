@@ -45,6 +45,7 @@ class Animator:
         устанавливает максимальные координаты коррекции для захождения в лифт и выхода из него при рассчете единичных
         длин в painter 'е
         """
+        # специально подобранные параметры для того, чтобы лифт оказался за отверстием в стене
         self.max_elevator_correction_y = - 0.09166 * self.painter.unit_height
         self.max_elevator_correction_x = - 0.015 * self.painter.unit_width
         self.elevator_correction_x, self.elevator_correction_y = \
