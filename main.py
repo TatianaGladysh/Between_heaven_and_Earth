@@ -61,8 +61,9 @@ class Game:
         """
         Сбрасывает данные уровня при выходе с него
         """
-        self.later_on_funcs.append(animations.LaterOnFunc(self.clear_game_params, animations.BEGIN_SCREEN_ANIMATION_TIME,
-                                                          self.fps))
+        self.later_on_funcs.append(
+            animations.LaterOnFunc(self.clear_game_params, animations.BEGIN_SCREEN_ANIMATION_TIME,
+                                   self.fps))
 
     def clear_game_params(self):
         """
