@@ -70,7 +70,7 @@ class Painter:
                                   k * (self.window_height - 2 * INDENT) / labyrinth_y_len))
         self.unit_height = int(self.unit_width / k)
         # специально подобранные параметры
-        self.unit_depth = int(self.unit_height * 0.18333333333)
+        self.unit_depth = int(self.unit_height * 0.183)
 
     def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero):
         """
