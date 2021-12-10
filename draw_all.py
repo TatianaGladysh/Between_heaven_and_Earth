@@ -5,7 +5,7 @@ from animations import Animator
 from math import floor, ceil
 import heroes
 
-indent = 40
+INDENT = 40
 
 
 class Painter:
@@ -66,8 +66,8 @@ class Painter:
         k = img_width / img_height
         labyrinth_x_len = self.labyrinth.get_x_width()
         labyrinth_y_len = self.labyrinth.get_y_width()
-        self.unit_width = int(min((self.window_width - 2 * indent) / labyrinth_x_len,
-                                  k * (self.window_height - 2 * indent) / labyrinth_y_len))
+        self.unit_width = int(min((self.window_width - 2 * INDENT) / labyrinth_x_len,
+                                  k * (self.window_height - 2 * INDENT) / labyrinth_y_len))
         self.unit_height = int(self.unit_width / k)
         self.unit_depth = int(self.unit_height * 0.18333333333)
 

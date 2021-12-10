@@ -1,7 +1,7 @@
 import pygame
 
-MusicIncreaseTime = 1.0
-MusicVolume = 0.7
+MUSIC_INCREASE_TIME = 1.0
+MUSIC_VOLUME = 0.7
 
 pygame.init()
 pygame.mixer.init()
@@ -72,12 +72,12 @@ class SoundController:
         Выключение или выключение фоновой музыки и всех звуков.
         """
         if not self.music_on:
-            self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), MusicVolume,
-                                                                   MusicIncreaseTime, self.game.fps)
+            self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), MUSIC_VOLUME,
+                                                                   MUSIC_INCREASE_TIME, self.game.fps)
             self.music_on = True
         else:
             self.music_volume_changing = SmoothMusicVolumeChanging(pygame.mixer.music.get_volume(), 0,
-                                                                   MusicIncreaseTime / 2, self.game.fps)
+                                                                   MUSIC_INCREASE_TIME / 2, self.game.fps)
             self.music_on = False
         self.sounds_on_off()
 

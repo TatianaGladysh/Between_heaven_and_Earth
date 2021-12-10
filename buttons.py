@@ -65,7 +65,7 @@ class Button:
         button_height = self.get_height()
         mouse_x, mouse_y = mouse_position
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def update(self):
         """
