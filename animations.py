@@ -2,12 +2,13 @@ import pygame
 from labyrinth import Room
 from heroes import MainHero
 import animations_preset
+import auxiliary_class
+from auxiliary_class import MIN_ALLOWABLE_FPS
 
 QUEST_ANIMATION_TIME = 3
 ELEVATOR_OPENING_CLOSING_ANIMATION = 0.5
 BEGIN_SCREEN_ANIMATION_TIME = 0.35
 END_OF_SCREEN_ANIMATION_TIME = 0.35
-MIN_ALLOWABLE_FPS = 25
 WALKING_ANIMATION_TIME_INTERVAL = 1
 LEVEL_COMPLETE_ANIMATION_TIME = 1.5
 
@@ -93,7 +94,7 @@ class Animator:
         """
         if args is None:
             args = []
-        self.later_on_funcs.append(LaterOnFunc(func, delay, self.painter.fps, args))
+        self.later_on_funcs.append(auxiliary_class.LaterOnFunc(func, delay, self.painter.fps, args))
 
     def change_rendering_of_layers(self, value=None):
         """

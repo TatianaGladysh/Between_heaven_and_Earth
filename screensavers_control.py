@@ -1,8 +1,10 @@
 import pygame
 import numpy as np
+
 from draw_all import Painter
 from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton, SoundButton
 import animations
+import auxiliary_class
 
 pygame.init()
 
@@ -51,7 +53,7 @@ class ScreenSaverController:
         добавление анимации завершения загрузки
         """
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.end_loading, TIME_SCREEN_SWITCH_ANIMATION_CORRECTION, self.fps))
+            auxiliary_class.LaterOnFunc(self.end_loading, TIME_SCREEN_SWITCH_ANIMATION_CORRECTION, self.fps))
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.END_OF_SCREEN_ANIMATION_TIME))
 
@@ -62,8 +64,8 @@ class ScreenSaverController:
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BEGIN_SCREEN_ANIMATION_TIME))
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.start_loading, animations.BEGIN_SCREEN_ANIMATION_TIME,
-                                   self.fps))
+            auxiliary_class.LaterOnFunc(self.start_loading, animations.BEGIN_SCREEN_ANIMATION_TIME,
+                                        self.fps))
 
     def update_screen_animations(self):
         """
@@ -177,7 +179,6 @@ class StartScreenSaver(GameScreenSaver):
         """
         Заставка экрана
         :param _game: объект класса Game
-        :param _background_img: фоновое изображение
         """
         super(StartScreenSaver, self).__init__(_game, "assets/backgrounds/start_background.png")
         self.start_button = StartButton(self.game)

@@ -3,6 +3,7 @@ import time
 
 import pygame
 
+import auxiliary_class
 import screensavers_control
 from event_processing import EventProcessor
 from screensavers_control import ScreenSaverController
@@ -62,8 +63,8 @@ class Game:
         Сбрасывает данные уровня при выходе с него
         """
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.clear_game_params, animations.BEGIN_SCREEN_ANIMATION_TIME,
-                                   self.fps))
+            auxiliary_class.LaterOnFunc(self.clear_game_params, animations.BEGIN_SCREEN_ANIMATION_TIME,
+                                        self.fps))
 
     def clear_game_params(self):
         """
@@ -100,25 +101,25 @@ class Game:
         """
         self.screen_controller.add_blackout_screen_animation()
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.start_main_part, animations.BEGIN_SCREEN_ANIMATION_TIME,
-                                   self.fps, [self.labyrinth_file]))
+            auxiliary_class.LaterOnFunc(self.start_main_part, animations.BEGIN_SCREEN_ANIMATION_TIME,
+                                        self.fps, [self.labyrinth_file]))
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.screen_controller.set_active_screen,
-                                   animations.BEGIN_SCREEN_ANIMATION_TIME,
-                                   self.fps, ["main_screen"]))
+            auxiliary_class.LaterOnFunc(self.screen_controller.set_active_screen,
+                                        animations.BEGIN_SCREEN_ANIMATION_TIME,
+                                        self.fps, ["main_screen"]))
 
     def run_switch_screen_animation(self):
         """
         вызывает запуск анимации изменения экрана
         """
         self.screen_controller.add_blackout_screen_animation()
-        self.later_on_funcs.append(animations.LaterOnFunc(
+        self.later_on_funcs.append(auxiliary_class.LaterOnFunc(
             self.set_active_screen_in_screen_controller,
             animations.BEGIN_SCREEN_ANIMATION_TIME,
             self.fps, [self.active_screen]))
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
-                                   animations.BEGIN_SCREEN_ANIMATION_TIME, self.fps))
+            auxiliary_class.LaterOnFunc(self.screen_controller.add_lightening_screen_animation,
+                                        animations.BEGIN_SCREEN_ANIMATION_TIME, self.fps))
 
     def set_active_screen_in_screen_controller(self, screen_name):
         """

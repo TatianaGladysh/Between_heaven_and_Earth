@@ -1,3 +1,6 @@
+MIN_ALLOWABLE_FPS = 25
+
+
 class LaterOnFunc:
     def __init__(self, _func, _time_interval, _fps, _args=None):
         """
