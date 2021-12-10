@@ -63,7 +63,7 @@ class MainHero(Hero):
         """
         Проверка, движется ли герой, и возврат True в случае движения и False в обратном случае.
         """
-        return self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
+        return not self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
 
     def read_cords(self):
         """
@@ -78,12 +78,7 @@ class MainHero(Hero):
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "inside_elevator":
-            try:
-                self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
-            except AttributeError:
-                print("Main hero is not announced")
-            finally:
-                self.quest_check()
+            self.quest_check()
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 

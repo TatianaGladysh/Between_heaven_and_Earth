@@ -6,10 +6,9 @@ import animations
 
 pygame.init()
 
-TimeScreenSwitchAnimationCorrection = 0.07
+TIME_SCREEN_SWITCH_ANIMATION_CORRECTION = 0.07
 
-LevelsCount = 6
-NotificationsIndent = 0
+LEVELS_COUNT = 6
 
 
 class ScreenSaverController:
@@ -49,16 +48,16 @@ class ScreenSaverController:
 
     def add_lightening_screen_animation(self):
         """
-        завершение загрузки и открывание экрана игры
+        добавление анимации завершения загрузки
         """
         self.later_on_funcs.append(
-            animations.LaterOnFunc(self.end_loading, TimeScreenSwitchAnimationCorrection, self.fps))
+            animations.LaterOnFunc(self.end_loading, TIME_SCREEN_SWITCH_ANIMATION_CORRECTION, self.fps))
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 255, 0, 0, animations.END_OF_SCREEN_ANIMATION_TIME))
 
     def add_blackout_screen_animation(self):
         """
-        затемнение экрана для загрузки и отрисовки
+        добавление анимаций затемнения экрана для загрузк
         """
         self.screen_animations.append(
             animations.AnimationSwitchScreen(self.game, 0, 255, 0, animations.BEGIN_SCREEN_ANIMATION_TIME))
@@ -78,8 +77,8 @@ class ScreenSaverController:
 
     def set_active_screen(self, _active_screen):
         """
-        установка главного экрана
-        :param _active_screen: новый главный экран
+        установка активного экрана
+        :param _active_screen: новый экран
         """
         self.active_screen = _active_screen
 
@@ -92,7 +91,7 @@ class ScreenSaverController:
 
     def update_later_on_funcs(self):
         """
-        перебирает массив later_on_funcs и удаляет выполненные
+        перебирает массив later_on_funcs и удаляет выполненные функции из объектов соответствующего класса
         """
         for func in self.later_on_funcs:
             if func.done:
@@ -112,7 +111,8 @@ class ScreenSaverController:
             self.level_screen_saver.update()
         self.update_screen_animations()
         self.update_later_on_funcs()
-        self.update_loading_screen()
+        if self.loading:
+            self.update_loading_screen()
         self.sound_button.update()
         pygame.display.update()
 
@@ -332,7 +332,7 @@ class LevelScreenSaver(GameScreenSaver):
         super().__init__(_game, "assets/backgrounds/start_background.png")
         self.window_width = self.game.screen_width
         self.window_height = self.game.screen_height
-        self.levels_count = LevelsCount
+        self.levels_count = LEVELS_COUNT
         self.labyrinth_file = self.game.labyrinth_file
         self.active_screen = _active_screen
         self.level_buttons = self.fill_level_buttons_array()

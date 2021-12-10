@@ -53,7 +53,7 @@ class Game:
         """
         Разблокирует кнопку нового уровня
         """
-        if self.screen_controller.level_screen_saver.selected_level < screensavers_control.LevelsCount - 1:
+        if self.screen_controller.level_screen_saver.selected_level < screensavers_control.LEVELS_COUNT - 1:
             self.screen_controller.level_screen_saver.level_buttons[
                 self.screen_controller.level_screen_saver.selected_level + 1].block = False
 
