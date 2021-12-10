@@ -1,6 +1,5 @@
 import json
 import time
-
 import pygame
 
 import auxiliary_class

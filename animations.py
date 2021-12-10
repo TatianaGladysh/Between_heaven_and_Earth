@@ -1,4 +1,5 @@
 import pygame
+
 from labyrinth import Room
 from heroes import MainHero
 import animations_preset
