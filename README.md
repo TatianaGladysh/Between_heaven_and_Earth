@@ -10,6 +10,6 @@
 Гибадуллин Айназ, Гладыш Татьяна, Жигальский Иван, Казимиров Ярослав
 
 ###Используемые библиотеки:
-pygame, numpy, math, json
+pygame, numpy, math, json, pygame.image, random, time
 
 Осень 2021, МФТИ
