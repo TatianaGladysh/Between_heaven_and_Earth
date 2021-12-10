@@ -65,7 +65,7 @@ class Button:
         button_height = self.get_height()
         mouse_x, mouse_y = mouse_position
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def update(self):
         """
@@ -178,7 +178,7 @@ class LevelButton(Button):
         super(LevelButton, self).__init__(_game)
         self.x = _x
         self.y = _y
-        self.block = self.__adopted_from_file()
+        self.block = self.adopted_from_file()
         if not self.block:
             self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
             self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
@@ -207,13 +207,17 @@ class LevelButton(Button):
             else:
                 self.img_file_released = "assets/buttons/" + str(self.id) + "_lvl_button.png"
                 self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
-            with open("levels/button_lock_data.txt", 'r') as file:
-                string_with_data = file.readline()
-                codes_array = list(string_with_data.split())
-                codes_array[self.id] = "T" if self.block else "F"
-                result_string = " ".join(codes_array)
-            with open("levels/button_lock_data.txt", 'w') as file:
-                file.write(result_string)
+
+            if hasattr(self.game, "event_processor"):
+                print(self.game.event_processor.levels_cheat_active, self.block)
+                if self.game.event_processor.levels_cheat_active:
+                    with open("levels/button_lock_data.txt", 'r') as file:
+                        string_with_data = file.readline()
+                        codes_array = list(string_with_data.split())
+                        codes_array[self.id] = "T" if self.block else "F"
+                        result_string = " ".join(codes_array)
+                    with open("levels/button_lock_data.txt", 'w') as file:
+                        file.write(result_string)
 
     def read_img_file(self):
         """
@@ -222,7 +226,7 @@ class LevelButton(Button):
         img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
         return img_file
 
-    def __adopted_from_file(self):
+    def adopted_from_file(self):
         """
         Считывает, открыл или закрыт сейчас данный уровень
         :return: закрыт ли уровень, True/False

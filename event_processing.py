@@ -1,5 +1,6 @@
 import pygame
 
+import buttons
 
 class EventProcessor:
     """
@@ -23,6 +24,7 @@ class EventProcessor:
         self.main_hero = self.game.main_hero
         self.labyrinth = self.game.labyrinth
         self.characters = self.game.characters
+        self.levels_cheat_active = False
 
     def __global_event_process(self):
         """
@@ -32,6 +34,9 @@ class EventProcessor:
             if event.type == pygame.QUIT:
                 self.quit = True
                 continue
+            if event.type == pygame.KEYDOWN and pygame.key.get_mods() == pygame.KMOD_RCTRL and event.key == pygame.K_a:
+                self.levels_unblock_cheat_code()
+
             self.__sound_button_check_click(event, self.sound_button)
             if self.game.active_screen == "main_screen":
                 try:
@@ -167,6 +172,16 @@ class EventProcessor:
         меняет тип экрана игры
         """
         self.game.active_screen = screen_name
+
+    def levels_unblock_cheat_code(self):
+        if self.levels_cheat_active:
+            for button in self.game.screen_controller.level_screen_saver.level_buttons:
+                button.block = button.adopted_from_file()
+            self.levels_cheat_active = False
+        else:
+            for button in self.game.screen_controller.level_screen_saver.level_buttons:
+                button.block = False
+            self.levels_cheat_active = True
 
     def update(self):
         """
