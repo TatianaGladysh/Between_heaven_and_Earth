@@ -1,8 +1,8 @@
 # здесь отдельно от всего можно рисовать объекты
 import pygame
+from math import floor, ceil
 import labyrinth
 from animations import Animator
-from math import floor, ceil
 import heroes
 
 indent = 40
