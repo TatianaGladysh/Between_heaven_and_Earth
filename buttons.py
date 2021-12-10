@@ -209,7 +209,6 @@ class LevelButton(Button):
                 self.img_file_pressed = "assets/buttons/pressed_" + str(self.id) + "_lvl_button.png"
 
             if hasattr(self.game, "event_processor"):
-                print(self.game.event_processor.levels_cheat_active, self.block)
                 if self.game.event_processor.levels_cheat_active:
                     with open("levels/button_lock_data.txt", 'r') as file:
                         string_with_data = file.readline()

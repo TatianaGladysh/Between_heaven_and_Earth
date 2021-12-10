@@ -1,6 +1,5 @@
 import pygame
 
-import buttons
 
 class EventProcessor:
     """
