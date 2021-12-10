@@ -330,7 +330,8 @@ class LevelScreenSaver(GameScreenSaver):
         :param _game: объект класа Game
         :param _active_screen: активный экран
         """
-        super().__init__(self._game, "assets/backgrounds/start_background.png")
+        self.game = _game
+        super().__init__(self.game, "assets/backgrounds/start_background.png")
         self.window_width = self.game.screen_width
         self.window_height = self.game.screen_height
         self.levels_count = LevelsCount
