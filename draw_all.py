@@ -17,7 +17,7 @@ class Painter:
         :param _game: объект класса Game
         """
         self.game = _game
-        self.grid_unit_surf = pygame.image.load("assets/grid_unit.png").convert_alpha()
+        self.grid_unit_surf = pygame.image.load("assets/rooms/grid_unit.png").convert_alpha()
         self.fps = self.game.fps
         self.surf = self.game.game_surf
         self.window_width = self.game.screen_width
@@ -60,7 +60,7 @@ class Painter:
         """
         рассчитывает единичные размеры комнат(по сути, размеры комнат на экране)
         """
-        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
+        img_surf = pygame.image.load("assets/rooms/Default_room.png").convert_alpha()
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
         k = img_width / img_height
@@ -99,7 +99,7 @@ class Painter:
         """
         Рассчитыват коэффициент размера изображений
         """
-        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
+        img_surf = pygame.image.load("assets/rooms/Default_room.png").convert_alpha()
         img_height = img_surf.get_height()
         self.img_scale_k = self.unit_height / img_height
 
@@ -235,7 +235,7 @@ class ElevatorInside:
         """
         отвечает за отрисовку лифта изнутри
         """
-        self.img_file = "assets/elevator/elevator_inside.png"
+        self.img_file = "assets/rooms/elevator/elevator_inside.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.screen_x, self.screen_y = -10, -10
 

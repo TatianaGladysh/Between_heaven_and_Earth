@@ -47,16 +47,16 @@ class Room:
         Тип комнаты "none" - тип для класса NoneRoom. Она не отрисовывается.
         """
         if self.type == "empty":
-            img_file = "assets/Default_room.png"
+            img_file = "assets/rooms/Default_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "elevator":
-            img_file = "assets/elevator/close_elevator.png"
+            img_file = "assets/rooms/elevator/close_elevator.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "door":
-            img_file = "assets/door_room.png"
+            img_file = "assets/rooms/door_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "block":
-            img_file = "assets/block_room.png"
+            img_file = "assets/rooms/block_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "none":
             img_file = "assets/none.png"
