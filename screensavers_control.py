@@ -1,6 +1,6 @@
 import pygame
-from draw_all import Painter
 import numpy as np
+from draw_all import Painter
 from buttons import LevelButton, StartButton, BackButton, TaskButton, ExitButton, SoundButton
 import animations
 
@@ -201,9 +201,8 @@ class MainScreenSaver(GameScreenSaver):
         Главная заставка игры, где пользователь может управлять героем
         :param _game: объект класса Game
         """
-        self.game = _game
+        super().__init__(_game, "assets/backgrounds/main_background.png")
         self.fps = self.game.fps
-        super().__init__(self.game, "assets/backgrounds/main_background.png")
         self.labyrinth = self.game.labyrinth
         self.main_hero = self.game.main_hero
         self.painter = Painter(self.game)
@@ -330,8 +329,7 @@ class LevelScreenSaver(GameScreenSaver):
         :param _game: объект класа Game
         :param _active_screen: активный экран
         """
-        self.game = _game
-        super().__init__(self.game, "assets/backgrounds/start_background.png")
+        super().__init__(_game, "assets/backgrounds/start_background.png")
         self.window_width = self.game.screen_width
         self.window_height = self.game.screen_height
         self.levels_count = LEVELS_COUNT
