@@ -1,21 +1,23 @@
 # здесь отдельно от всего можно рисовать объекты
 import pygame
+from math import floor, ceil
 import labyrinth
 from animations import Animator
-from math import floor, ceil
 import heroes
 
-indent = 40
+INDENT = 40
 
 
 class Painter:
 
-    def __init__(self, _game, _width, _height):
+    def __init__(self, _game):
         """
         Класс, объект которого может рассчитывать по игровым координатам координаты объектов на экране и отрисовывать их
+
+        :param _game: объект класса Game
         """
         self.game = _game
-        self.grid_unit_surf = pygame.image.load("assets/grid_unit.png").convert_alpha()
+        self.grid_unit_surf = pygame.image.load("assets/rooms/grid_unit.png").convert_alpha()
         self.fps = self.game.fps
         self.surf = self.game.game_surf
         self.window_width = self.game.screen_width
@@ -37,6 +39,7 @@ class Painter:
     def draw_grid_cell(self, x, y, opacity):
         """
         Вызывает отрисовку единицы сетки экрана
+
         :param x: координаты на экране центра клетки,
         :param y: которую обрамляет рамка
         :param opacity: прозрачность
@@ -46,6 +49,7 @@ class Painter:
     def update_elevator_correction_cords(self, x, y):
         """
         обновляет значения корректировочных координат персонажа при заходе/выходе из лифта
+
         :param x: значения корректировочных координат
         :param y: на экране
         """
@@ -56,15 +60,16 @@ class Painter:
         """
         рассчитывает единичные размеры комнат(по сути, размеры комнат на экране)
         """
-        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
+        img_surf = pygame.image.load("assets/rooms/Default_room.png").convert_alpha()
         img_width = img_surf.get_width()
         img_height = img_surf.get_height()
         k = img_width / img_height
         labyrinth_x_len = self.labyrinth.get_x_width()
         labyrinth_y_len = self.labyrinth.get_y_width()
-        self.unit_width = int(min((self.window_width - 2 * indent) / labyrinth_x_len,
-                                  k * (self.window_height - 2 * indent) / labyrinth_y_len))
+        self.unit_width = int(min((self.window_width - 2 * INDENT) / labyrinth_x_len,
+                                  k * (self.window_height - 2 * INDENT) / labyrinth_y_len))
         self.unit_height = int(self.unit_width / k)
+        # специально подобранные параметры
         self.unit_depth = int(self.unit_height * 0.18333333333)
 
     def set_game_params(self, _labyrinth: labyrinth.Labyrinth, _main_hero):
@@ -94,7 +99,7 @@ class Painter:
         """
         Рассчитыват коэффициент размера изображений
         """
-        img_surf = pygame.image.load("assets/Default_room.png").convert_alpha()
+        img_surf = pygame.image.load("assets/rooms/Default_room.png").convert_alpha()
         img_height = img_surf.get_height()
         self.img_scale_k = self.unit_height / img_height
 
@@ -130,12 +135,14 @@ class Painter:
         x0, y0, z0 = self.main_hero.get_cords()
         for i in range(0, self.labyrinth.get_x_width()):
             for j in range(0, self.labyrinth.get_y_width()):
+                # непрозрачные объекты
                 opacity = 255
                 room = self.labyrinth.get_room(i, j, z0)
                 if isinstance(room, labyrinth.Room):
                     self.update_room_pic(room, opacity)
 
         for i in range(-1, 2):
+            # прозрачность дополнительного слоя
             opacity = 64
             x0, y0, z0 = self.main_hero.get_cords()
             check_room = self.labyrinth.get_room(x0 + i, y0, z0 - 1)
@@ -228,15 +235,25 @@ class ElevatorInside:
         """
         отвечает за отрисовку лифта изнутри
         """
-        self.img_file = "assets/elevator/elevator_inside.png"
+        self.img_file = "assets/rooms/elevator/elevator_inside.png"
         self.img_surf = pygame.image.load(self.img_file).convert_alpha()
         self.screen_x, self.screen_y = -10, -10
 
     def set_screen_cords(self, x, y):
+        """
+        Устанавливает определенные координаты лифта на экране
+        :param x: координата OX
+        :param y: координата OY
+        """
         self.screen_x = x
         self.screen_y = y
 
     def __setattr__(self, key, value):
+        """
+        Обновляет значение атрбута key на значение value и в некоторых случаях обновляет картинку
+        :param key: атрибут
+        :param value: значение
+        """
         self.__dict__[key] = value
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()

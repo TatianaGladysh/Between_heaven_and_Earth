@@ -26,8 +26,7 @@ class EventProcessor:
 
     def __global_event_process(self):
         """
-
-        :return:
+        Обработка событий мыши и клавиатуры
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,6 +51,10 @@ class EventProcessor:
                 self.__screen_buttons_check(event, self.exit_button)
 
     def __move_main_hero(self, event):
+        """
+        Перемещение героя в зависимости от действия с клавиатуры
+        :param event: нажатие на клавиатуру
+        """
         if not self.main_hero.inside_elevator and self.main_hero.speed_z == 0:
 
             if event.key == pygame.K_a and \
@@ -64,7 +67,7 @@ class EventProcessor:
                                             self.main_hero.z).type != "block":
                 self.main_hero.move_x_axis(1)
         # лифт
-        if event.key == pygame.K_f and self.main_hero.is_moves():
+        if event.key == pygame.K_f and not self.main_hero.is_moves():
             if self.main_hero.inside_elevator:
                 # механизм запускающий отрисовку выхождения из лифта
                 # (например отдельный параметр True or False)
@@ -90,18 +93,23 @@ class EventProcessor:
                 self.main_hero.move_y_axis(-1)
                 self.game.sounds_controller.play_sound("elevator_moving")
         # механизм входа в комнату
-        elif event.key == pygame.K_w and self.main_hero.is_moves() and \
+        elif event.key == pygame.K_w and not self.main_hero.is_moves() and \
                 self.main_hero.z != self.labyrinth.depth - 1 and \
                 self.have_a_door("behind") and not self.main_hero.inside_elevator:
             self.main_hero.move_z_axis(1)
             self.game.sounds_controller.play_sound("door_open")
-        elif event.key == pygame.K_s and self.main_hero.is_moves():
+        elif event.key == pygame.K_s and not self.main_hero.is_moves():
             if self.main_hero.z != 0 and self.have_a_door("front") and not self.main_hero.inside_elevator:
                 self.main_hero.move_z_axis(-1)
                 self.game.sounds_controller.play_sound("door_open")
 
     @staticmethod
     def __screen_buttons_check(event, button):
+        """
+        Обработка события мыши
+        :param event: событие мыши
+        :param button: кнопка
+        """
         if event.type == pygame.MOUSEBUTTONUP:
             if button.pressed and button.check_button_click(pygame.mouse.get_pos()):
                 button.command()
@@ -115,7 +123,13 @@ class EventProcessor:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = True
 
-    def __sound_button_check_click(self, event, button):
+    @staticmethod
+    def __sound_button_check_click(event, button):
+        """
+        Проверка нажатия на кнопку
+        :param event: событие мыши
+        :param button: кнопка
+        """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.check_button_click(pygame.mouse.get_pos()):
                 button.pressed = not button.pressed
@@ -124,6 +138,8 @@ class EventProcessor:
     def have_a_door(self, direction):
         """
         функция проверяет наличие двери в ячейке нахождения персонажа
+        :param direction: положение двери относительно персонажа
+        :return: True/False
         """
         if direction == "behind":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.y, self.main_hero.z).type == "door"
@@ -133,6 +149,8 @@ class EventProcessor:
     def have_an_elevator(self, direction):
         """
         функция проверяет наличие лифта в ячейке нахождения персонажа (вдруг клавиша будет нажата случайно)
+        :param direction: положение лифта относительно персонажа
+        :return: True/False
         """
         if direction == "below":
             return self.labyrinth.get_room(self.main_hero.x, self.main_hero.arrival_y + 1,
@@ -145,12 +163,24 @@ class EventProcessor:
                                            self.main_hero.z).type == "elevator"
 
     def set_active_screen(self, screen_name: str):
+        """
+        меняет тип экрана игры
+        """
         self.game.active_screen = screen_name
 
     def update(self):
+        """
+        обновляет игру, запуская обработку всех событий
+        """
         self.__global_event_process()
 
     def set_game_params(self, _labyrinth, _main_hero, _characters):
+        """
+        устанавливает заданные лабиринт, главного героя и персонажей
+        :param _labyrinth: лабиринт
+        :param _main_hero: главный герой
+        :param _characters: персонажи
+        """
         self.labyrinth = _labyrinth
         self.main_hero = _main_hero
         self.characters = _characters

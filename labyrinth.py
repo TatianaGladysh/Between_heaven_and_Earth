@@ -7,6 +7,7 @@ class Room:
     """
     Класс комнат. Каждая комната имеет расположение в лабиринте, а также ее тип.
     """
+
     def __init__(self, coordinates, type_of_room):
         """
         Инициализация комнаты. В соответствии с типом комнаты инициализируется изображение комнаты.
@@ -46,16 +47,16 @@ class Room:
         Тип комнаты "none" - тип для класса NoneRoom. Она не отрисовывается.
         """
         if self.type == "empty":
-            img_file = "assets/Default_room.png"
+            img_file = "assets/rooms/Default_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "elevator":
-            img_file = "assets/elevator/close_elevator.png"
+            img_file = "assets/rooms/elevator/close_elevator.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "door":
-            img_file = "assets/door_room.png"
+            img_file = "assets/rooms/door_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "block":
-            img_file = "assets/block_room.png"
+            img_file = "assets/rooms/block_room.png"
             return img_file, pygame.image.load(img_file).convert_alpha()
         if self.type == "none":
             img_file = "assets/none.png"
@@ -89,6 +90,7 @@ class Labyrinth:
     """
     Класс лабиринта. Игроку виден каждый раз срез параллельно плоскости x0y. Лабиринт состоит из комнат.
     """
+
     def __init__(self, _filename):
         """
         Инициализация трехмерного лабиринта. Размер может быть в теории любым, но рекомендуется по оси y не более
@@ -192,6 +194,6 @@ class NoneRoom(Room):
     """
     Класс комнаты, которая не отрислвывается.
     """
+
     def __init__(self):
         super(NoneRoom, self).__init__((-10, -10, -10), "none")
-

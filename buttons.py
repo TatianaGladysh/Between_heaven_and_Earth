@@ -3,19 +3,15 @@ import pygame
 
 class Button:
 
-    def __init__(self, _game, _args=None):
+    def __init__(self, _game):
         """
         Класс кнопок на разных экранах
 
         :param _game: объект класса Game
-        :param _args: параметры команды
         """
         self.game = _game
         self.img_file_pressed = "assets/none.png"
         self.img_file_released = "assets/none.png"
-        if _args is None:
-            _args = []
-        self.args = _args
         self.window_height = _game.screen_height
         self.window_width = _game.screen_width
         self.surf = _game.game_surf
@@ -31,54 +27,56 @@ class Button:
     def get_cords(self):
         """
         возвращает координаты верхнего левого угла кнопки
+        :return: координаты
         """
         return self.x, self.y
 
     def get_width(self):
         """
         возвращает ширину кнопки
+        :return: ширина
         """
         return self.unit_width
 
     def get_height(self):
         """
         возвращает высоту кнопки
+        :return: высота
         """
         return self.unit_height
 
-    def update_image(self, opacity=255):
+    def update_picture(self):
+        """
+        Обновляет изображение кнопки
+        """
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.img_surf.set_alpha(opacity)
+        self.img_surf.set_alpha(255)
         img_rect = self.img_surf.get_rect(center=(self.x, self.y))
         self.surf.blit(self.img_surf, img_rect)
 
     def check_button_click(self, mouse_position):
         """
         Проверяет нажатие мыши по кнопкам на экране
+
+        :param mouse_position: координата мыши на экране
         """
         button_x, button_y = self.get_cords()
         button_width = self.get_width()
         button_height = self.get_height()
         mouse_x, mouse_y = mouse_position
         return button_x - button_width // 2 <= mouse_x <= button_x + button_width // 2 and \
-               button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
+            button_y - button_height // 2 <= mouse_y <= button_y + button_height // 2
 
     def update(self):
         """
-        обновляет изображение, которое должно быть у кнопки
+        Обновляет изображение, которое должно быть у кнопки
         """
         if self.pressed:
             self.img_surf = pygame.image.load(self.img_file_pressed).convert_alpha()
         else:
             self.img_surf = pygame.image.load(self.img_file_released).convert_alpha()
         self.img_surf = pygame.transform.scale(self.img_surf, (int(self.unit_width), int(self.unit_height)))
-        self.update_pic()
-
-    def update_pic(self):
-        """
-        обновляет картинку кнопки
-        """
-        self.update_image()
+        self.update_picture()
 
     def command(self):
         """
@@ -105,8 +103,10 @@ class StartButton(Button):
     def calculate_cords(self):
         """
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки старта
+
         :return: координаты, коэффициент размера, длину и высоту
         """
+        # в расчетах используются специально подобранные параметры
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
@@ -118,6 +118,9 @@ class StartButton(Button):
         return x, y, k, unit_width, unit_height
 
     def command(self):
+        """
+        Переключает экран
+        """
         self.pressed = False
         self.game.active_screen = "level_screen"
 
@@ -141,6 +144,7 @@ class ExitButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки старта
         :return: координаты, коэффициент размера, длину и высоту
         """
+        # в расчетах используются специально подобранные параметры
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
@@ -152,6 +156,9 @@ class ExitButton(Button):
         return x, y, k, unit_width, unit_height
 
     def command(self):
+        """
+        Завершает игру
+        """
         self.pressed = False
         self.game.event_processor.quit = True
 
@@ -159,6 +166,14 @@ class ExitButton(Button):
 class LevelButton(Button):
 
     def __init__(self, _x, _y, _id, _game):
+        """
+        Создает кнопку уровня
+
+        :param _x: координата центра кнопки по оси OX
+        :param _y: координата центра по оси OY
+        :param _id: номер кнопки
+        :param _game: объект класса Game
+        """
         self.id: int = _id
         super(LevelButton, self).__init__(_game)
         self.x = _x
@@ -171,11 +186,19 @@ class LevelButton(Button):
             self.img_file_released = "assets/buttons/lock_level_button.png"
             self.img_file_pressed = "assets/buttons/lock_level_button.png"
         self.pressed = False
-        self.width, self.height = self.__calculate_dimensions()
+        self.width = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha().get_width()
+        self.height = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha().get_height()
         self.unit_width, self.unit_height = self.width, self.height
         self.selected_level = 0
 
     def __setattr__(self, key, value):
+        """
+        при изменении параметра block для кнопки уровня меняет свои surface' ы и записывает обновленные данные
+        о заблокированных уровнях в файл
+        :param key:
+        :param value:
+        :return:
+        """
         self.__dict__[key] = value
         if key == "block":
             if self.block:
@@ -192,16 +215,18 @@ class LevelButton(Button):
             with open("levels/button_lock_data.txt", 'w') as file:
                 file.write(result_string)
 
-    @staticmethod
-    def __calculate_dimensions():
-        img_surf = pygame.image.load("assets/buttons/0_lvl_button.png").convert_alpha()
-        return img_surf.get_width(), img_surf.get_height()
-
     def read_img_file(self):
+        """
+        Считывает подходищую по номеру уровня картинку для кнопки
+        """
         img_file = "assets/buttons/" + str(self.id) + "_lvl_button.png"
         return img_file
 
     def __adopted_from_file(self):
+        """
+        Считывает, открыл или закрыт сейчас данный уровень
+        :return: закрыт ли уровень, True/False
+        """
         with open("levels/button_lock_data.txt", 'r') as file:
             string_with_data = file.readline()
             code = string_with_data.split()[self.id]
@@ -213,6 +238,9 @@ class LevelButton(Button):
             return block
 
     def command(self):
+        """
+        Если уровень доступен, открывает его
+        """
         if not self.block:
             self.game.labyrinth_file = "levels/" + str(self.id) + ".json"
             self.game.active_screen = "main_screen"
@@ -223,6 +251,8 @@ class BackButton(Button):
     def __init__(self, _game):
         """
         Кнопка возвращения на экран с уровнями на экране игры
+
+        :param _game: объект класса Game
         """
         super().__init__(_game)
         self.img_file_released = "assets/buttons/exit_button.png"
@@ -237,6 +267,7 @@ class BackButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
         :return: координаты, коэффициент размера, длину и высоту
         """
+        # в расчетах используются специально подобранные параметры
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
@@ -248,6 +279,9 @@ class BackButton(Button):
         return x, y, k, unit_width, unit_height
 
     def command(self):
+        """
+        Переключает на предыдущий экран
+        """
         self.pressed = False
         if self.game.active_screen == "level_screen":
             self.game.active_screen = "start_screen"
@@ -260,6 +294,8 @@ class TaskButton(Button):
     def __init__(self, _game):
         """
         Кнопка открывает список заданий на экране игры
+
+        :param _game: объект класса Game
         """
         super().__init__(_game)
         self.img_file_released = "assets/buttons/tasks_button.png"
@@ -274,6 +310,7 @@ class TaskButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
         :return: координаты, коэффициент размера, длину и высоту
         """
+        # в расчетах используются специально подобранные параметры
         img_rect = pygame.image.load("assets/backgrounds/start_background.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
@@ -285,6 +322,10 @@ class TaskButton(Button):
         return x, y, k, unit_width, unit_height
 
     def command(self):
+        """
+        Открывает окно заданий и временно блокирует движение главного героя
+        Или же закрывает окно заданий и позволяет главному герою двигаться
+        """
         self.pressed = False
         self.game.main_hero.move_blocked = not self.game.main_hero.move_blocked
         self.game.screen_controller.main_screen_saver.notification_screen.active = \
@@ -295,6 +336,8 @@ class SoundButton(Button):
     def __init__(self, _game):
         """
         Кнопка возвращения на экран с уровнями на экране игры
+
+        :param _game: объект класса Game
         """
         super().__init__(_game)
         self.img_file_released = "assets/buttons/sound_on.png"
@@ -309,6 +352,7 @@ class SoundButton(Button):
         Рассчитывает координаты, коэффициент размера, длину и высоту картинки кнопки возвращения
         :return: координаты, коэффициент размера, длину и высоту
         """
+        # в расчетах используются специально подобранные параметры
         img_rect = pygame.image.load("assets/buttons/sound_on.png").get_rect()
         img_width = img_rect.width
         img_height = img_rect.height
@@ -320,5 +364,8 @@ class SoundButton(Button):
         return x, y, k, unit_width, unit_height
 
     def command(self):
+        """
+        Переключает звук
+        """
         self.game.sounds_controller.music_on_off()
         self.game.sounds_controller.update()

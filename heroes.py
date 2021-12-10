@@ -9,6 +9,7 @@ class Hero:
     """
     Класс героев.
     """
+
     def __init__(self, _start_position):
         """
         Инициализация героя. Имеет стартовую позицию в лабиринте.
@@ -36,6 +37,7 @@ class MainHero(Hero):
     """
     Класс главного героя, т.е. самого игрока.
     """
+
     def __init__(self, _game):
         """
         Инициализация главного героя. Изначально изображение направлено вправо (self.walking_direction),
@@ -61,7 +63,7 @@ class MainHero(Hero):
         """
         Проверка, движется ли герой, и возврат True в случае движения и False в обратном случае.
         """
-        return self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
+        return not self.speed_x ** 2 + self.speed_y ** 2 + self.speed_z ** 2 == 0
 
     def read_cords(self):
         """
@@ -76,12 +78,7 @@ class MainHero(Hero):
     def __setattr__(self, key, value):
         self.__dict__[key] = value
         if key == "inside_elevator":
-            try:
-                self.game.screen_controller.main_screen_saver.painter.animator.enter_exit_in_elevator()
-            except AttributeError:
-                print("Main hero is not announced")
-            finally:
-                self.quest_check()
+            self.quest_check()
         if key == "img_file":
             self.img_surf = pygame.image.load(self.img_file).convert_alpha()
 
@@ -168,6 +165,7 @@ class Character(Hero):
     """
     Герои, которые не двигаются и привязаны к лабиринту. Первоначально лекторы.
     """
+
     def __init__(self, _game, _start_position, _name, _appearance_stage):
         """
         Инициализация героя.
@@ -259,6 +257,7 @@ class MapMarker(Character):
     Класс, хранящий в себе метки для обучающего, т.е. 0 уровня. Может использоваться и для других уровней.
     Задания привязываются к конкретной координате, которые хранит этот класс.
     """
+
     def __init__(self, _game, _start_position, _appearance_object_name: str, _inside_elevator, _appearance_stage):
         """
         :param _game: Объект класса game
@@ -276,6 +275,7 @@ class Quest:
     """
     Класс заданий.
     """
+
     def __init__(self, _character):
         """
         У каждого героя есть задание, которое должен сделать игрок. Они трех типов - неактивное, активное, завершенное.
